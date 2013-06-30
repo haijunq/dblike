@@ -15,6 +15,7 @@ import java.security.MessageDigest;
  */
 public final class MD5Service {
     private static MD5Service md5Service = null;
+    private final int MD5_BLOCK_SIZE = 1024;
     
     private MD5Service() { 
     }
@@ -31,14 +32,31 @@ public final class MD5Service {
     }
     
     /**
-     * This method calculate the MD5 hash code from a file. 
+     * This method calls the MD5 hash code generator and converts to a string. 
      * @param filename should be an valid filename
      * @return checksum of the file
      * @throws Exception "file no found exception"
      */
-    private String getMD5Checksum(String filename) throws Exception {
+    private String getMD5Checksum(final String filename) throws Exception {
+        byte [] digest = this.getMD5HashByte(filename);
+
+        //convert the checksum to String
+        String checksum = "";
+        for (int i = 0; i < digest.length; i++) {
+            checksum += Integer.toString((digest[i] & 0xff) + 0x100, 16).substring(1);
+        }
+        return checksum;
+    }
+    
+    /**
+     * MD5 hash code generator for a file.
+     * @param filename should ba an valid filename
+     * @return byte array of the checksum
+     * @throws Exception "file no found exception
+     */
+    private byte [] getMD5HashByte(String filename) throws Exception {
         InputStream fis = new FileInputStream(filename);
-        byte [] buffer = new byte[1024];
+        byte [] buffer = new byte[MD5_BLOCK_SIZE];
         MessageDigest complete = MessageDigest.getInstance("MD5");
         int numRead;
 
@@ -50,13 +68,6 @@ public final class MD5Service {
             }
         } while (numRead != -1);
         fis.close();
-
-        //convert the checksum to String
-        String checksum = "";
-        byte [] digest = complete.digest();        
-        for (int i = 0; i < digest.length; i++) {
-            checksum += Integer.toString((digest[i] & 0xff) + 0x100, 16).substring(1);
-        }
-        return checksum;
+        return complete.digest();
     }
 }
