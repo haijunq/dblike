@@ -1,9 +1,7 @@
+package dblike.client;
 
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+import dblike.api.ServerAPI;
+import dblike.api.ClientAPI;
 import java.rmi.*;
 import java.rmi.server.*;
 import java.util.logging.Level;
