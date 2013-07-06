@@ -19,8 +19,13 @@ import java.util.ArrayList;
 public class FileSegmentService {
 
     private static final int CHUNK_SIZE = 4096;
-//    private static final String CURRENT_DIR = "";
 
+    /**
+     * 
+     * @param directory
+     * @param filename
+     * @throws Exception 
+     */
     public static void splitFileToSegments(final String directory, final String filename) throws Exception {
         File file = new File(directory + "/" + filename);
         long fileSize = file.length();
@@ -52,6 +57,12 @@ public class FileSegmentService {
         fis.close();
     }
 
+    /**
+     * This is a private method for other service methods. 
+     * @param bytesToSave
+     * @param path
+     * @throws Exception 
+     */
     private static void storeByteArrayToFile(byte[] bytesToSave, String path)
             throws Exception {
         FileOutputStream fout = new FileOutputStream(path);
@@ -64,6 +75,12 @@ public class FileSegmentService {
         }
     }
 
+    /**
+     * 
+     * @param directory
+     * @param filename
+     * @throws Exception 
+     */
     public static void mergeByteArrayToSingleFile(final String directory, final String filename)
             throws Exception {
         File dir = new File(directory);
@@ -102,7 +119,13 @@ public class FileSegmentService {
 
     }
     
-    
+    /**
+     * 
+     * @param directory
+     * @param filename
+     * @param fileChunks
+     * @throws Exception 
+     */
     public static void insertSegmentsToFile(final String directory, final String filename, ArrayList<String> fileChunks) throws Exception {
         if (fileChunks.isEmpty())
             return;
