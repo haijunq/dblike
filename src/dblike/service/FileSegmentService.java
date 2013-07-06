@@ -15,7 +15,7 @@ import java.nio.channels.FileChannel;
  *
  * @author haijun
  */
-public class FileChunkService {
+public class FileSegmentService {
 
     private static final int CHUNK_SIZE = 4096;
     private static final String CURRENT_DIR = ".";
