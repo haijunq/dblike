@@ -13,6 +13,7 @@ import java.util.Hashtable;
  */
 public final class FileListService {
 
+    private String pathname;
     private static Hashtable<String, FileInfo> fileHashTable ;
     
    
@@ -23,7 +24,8 @@ public final class FileListService {
 //        return fileHashTable;
 //    }
 
-    public FileListService() {
+    public FileListService(String pathname) {
+        this.pathname = pathname;
     }
 
     public static Hashtable<String, FileInfo> getFileHashTable() {

@@ -15,6 +15,7 @@ import java.util.Hashtable;
 public class FileInfo {
     
     private int version;
+    private String deviceID;
     private String timestamp;
     private long fileSize;
     private Hashtable<String, String> fileHashCode;
