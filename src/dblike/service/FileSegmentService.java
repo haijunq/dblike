@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
 
 /**
  *
@@ -18,10 +19,10 @@ import java.nio.channels.FileChannel;
 public class FileSegmentService {
 
     private static final int CHUNK_SIZE = 4096;
-    private static final String CURRENT_DIR = ".";
+//    private static final String CURRENT_DIR = "";
 
-    private static void splitFileToSegments(String filename) throws Exception {
-        File file = new File(filename);
+    public static void splitFileToSegments(final String directory, final String filename) throws Exception {
+        File file = new File(directory + "/" + filename);
         long fileSize = file.length();
         FileInputStream fis = new FileInputStream(file);
 
@@ -39,13 +40,13 @@ public class FileSegmentService {
             bb.flip();
             // save the part of the file into a chunk
             bytes = bb.array();
-            storeByteArrayToFile(bytes, filename + ".part." + String.format("%04d", i));
+            storeByteArrayToFile(bytes, directory + "/" + filename + ".part." + String.format("%04d", i));
             bb.clear();
         }
         fc.read(lastbb);
         lastbb.flip();
         bytes = lastbb.array();
-        storeByteArrayToFile(bytes, filename + ".part" + String.format("%04d", chunkCount));
+        storeByteArrayToFile(bytes, directory + "/" + filename + ".part." + String.format("%04d", chunkCount));
         lastbb.clear();
 
         fis.close();
@@ -63,9 +64,9 @@ public class FileSegmentService {
         }
     }
 
-    private static void mergeByteArrayToSingleFile(final String filename)
+    public static void mergeByteArrayToSingleFile(final String directory, final String filename)
             throws Exception {
-        File dir = new File(CURRENT_DIR);
+        File dir = new File(directory);
 
         File[] matches = dir.listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name) {
@@ -74,9 +75,11 @@ public class FileSegmentService {
         });
 
         byte[] bb = new byte[CHUNK_SIZE];
-        byte[] lastbb = new byte[(int) matches[matches.length - 1].length()];
-        System.out.println(matches[2]);
-        System.out.print(lastbb.length);
+//        System.out.println(matches.length);
+        int lastSegSize = (int) matches[matches.length - 1].length();
+        byte[] lastbb = new byte[lastSegSize];
+//        System.out.println(matches[2]);
+//        System.out.print(lastbb.length);
         byte[] tb = new byte[(int) (CHUNK_SIZE * (matches.length - 1) + matches[matches.length - 1].length())];
 
         try {
@@ -95,7 +98,32 @@ public class FileSegmentService {
             System.out.println(ex.getMessage());
         }
 
-        storeByteArrayToFile(tb, filename + ".merge");
+        storeByteArrayToFile(tb, directory + "/" +filename + ".merge");
 
     }
+    
+    
+    public static void insertSegmentsToFile(final String directory, final String filename, ArrayList<String> fileChunks) throws Exception {
+        if (fileChunks.isEmpty())
+            return;
+        
+        File file = new File(directory + "/" + filename);
+        byte [] bb = new byte[(int)file.length()];
+        try {
+            for (int i = 0; i < fileChunks.size(); i++) {
+                byte [] newbb = new byte[fileChunks.get(i).length()];
+                FileInputStream fin = new FileInputStream(fileChunks.get(i));
+                fin.read(newbb);
+                int index = Integer.parseInt(fileChunks.get(i).substring(fileChunks.get(i).length() - 4, fileChunks.get(i).length()));
+                System.out.println(index);
+                System.arraycopy(newbb, 0, bb, index * CHUNK_SIZE, newbb.length);
+                fin.close();
+            }
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());            
+        }
+        storeByteArrayToFile(bb, directory + "/" +filename + ".insert");
+        
+    }
+    
 }
