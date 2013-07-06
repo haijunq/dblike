@@ -39,7 +39,7 @@ public class FileChunkService {
             bb.flip();
             // save the part of the file into a chunk
             bytes = bb.array();
-            storeByteArrayToFile(bytes, filename + ".part" + String.format("%04d", i));
+            storeByteArrayToFile(bytes, filename + ".part." + String.format("%04d", i));
             bb.clear();
         }
         fc.read(lastbb);
@@ -69,7 +69,7 @@ public class FileChunkService {
 
         File[] matches = dir.listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name) {
-                return name.startsWith(filename + ".part");
+                return name.startsWith(filename + ".part.");
             }
         });
 

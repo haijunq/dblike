@@ -6,7 +6,9 @@ package dblike.service;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * This singleton class supplies service of MD5 hashcode generation.
@@ -15,7 +17,7 @@ import java.security.MessageDigest;
  */
 public final class MD5Service {
     private static MD5Service md5Service = null;
-    private final int MD5_BLOCK_SIZE = 1024;
+    private static final int MD5_BLOCK_SIZE = 1024;
     
     private MD5Service() { 
     }
@@ -24,7 +26,7 @@ public final class MD5Service {
      * Get an instance object of the MD5 class.
      * @return 
      */
-    public MD5Service getInstance() {
+    public static MD5Service getInstance() {
         if (md5Service == null) {
             md5Service = new MD5Service(); 
         }
@@ -37,8 +39,8 @@ public final class MD5Service {
      * @return checksum of the file
      * @throws Exception "file no found exception"
      */
-    private String getMD5Checksum(final String filename) throws Exception {
-        byte [] digest = this.getMD5HashByte(filename);
+    public static String getMD5Checksum(final String filename) throws Exception {
+        byte [] digest = getMD5HashByte(filename);
 
         //convert the checksum to String
         String checksum = "";
@@ -54,7 +56,7 @@ public final class MD5Service {
      * @return byte array of the checksum
      * @throws Exception "file no found exception
      */
-    private byte [] getMD5HashByte(String filename) throws Exception {
+    private static byte [] getMD5HashByte(String filename) throws Exception {
         InputStream fis = new FileInputStream(filename);
         byte [] buffer = new byte[MD5_BLOCK_SIZE];
         MessageDigest complete = MessageDigest.getInstance("MD5");
@@ -69,5 +71,19 @@ public final class MD5Service {
         } while (numRead != -1);
         fis.close();
         return complete.digest();
+    }
+    
+    public static String getMD5HashCode(final String password) {
+        String md5 = "";
+        if (password.isEmpty())
+            return md5; 
+        try {
+            MessageDigest mDigest = MessageDigest.getInstance("MD5");
+            mDigest.update(password.getBytes(), 0, password.length());
+            md5 = new BigInteger(1, mDigest.digest()).toString(16); 
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }        
+        return md5;
     }
 }
