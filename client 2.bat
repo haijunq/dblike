@@ -1,1 +1,1 @@
- java -classpath ./bin -Djava.rmi.server.codebase=file:./bin/ dblike.client.ClientStartAnother
+java -classpath ./build/classes -Djava.rmi.server.codebase=file:./build/classes/ dblike.client.ClientStartAnother
