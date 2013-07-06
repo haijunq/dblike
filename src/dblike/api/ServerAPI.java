@@ -1,12 +1,10 @@
 package dblike.api;
 
-
-
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-import dblike.api.ClientAPI;
+import dblike.server.User;
 import java.rmi.*;
 
 /**
@@ -15,9 +13,13 @@ import java.rmi.*;
  */
 public interface ServerAPI extends Remote {
 
-    public void addClient(ClientAPI client, String message) throws RemoteException;
+    public void addClient(String clientID, String deviceID, String clientIP, int clientPort) throws RemoteException;
 
-    public void removeClient(ClientAPI client, String message) throws RemoteException;
+    public boolean removeClient(String userID, String userIP) throws RemoteException;
 
-    public void talk(ClientAPI client, String message) throws RemoteException;
+    public User searchClientbyID(String userID, String userIP) throws RemoteException;
+
+    public void callClient(String userID, String userIP, String content) throws RemoteException;
+
+    public void displayClient(User target, String message) throws RemoteException;
 }
