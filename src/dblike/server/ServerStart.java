@@ -6,6 +6,8 @@ package dblike.server;
  */
 import dblike.api.ClientAPI;
 import dblike.api.ServerAPI;
+import dblike.service.InternetUtil;
+import java.net.InetAddress;
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -21,7 +23,7 @@ public class ServerStart {
 
     private static final int PORT = 1099;
     private static Registry registry;
-    private static ArrayList<User> UserList= new ArrayList<User>();
+    private static ArrayList<User> UserList = new ArrayList<User>();
 
     /**
      * @return the UserList
@@ -39,16 +41,19 @@ public class ServerStart {
 
     public static void main(String args[]) {
         try {
-            ServerImp server = new ServerImp(); 
+            ServerImp server = new ServerImp();
             ServerAPI serverStub = (ServerAPI) UnicastRemoteObject.exportObject(server, 0);
-            System.out.println("Server start at " + PORT);
+            System.out.println("----------");
+            System.out.println(InternetUtil.getIPList());
+            System.out.println("----------");
+            System.out.println("Server start at " + InternetUtil.getMyIPInfo() + ":" + PORT);
             registry = LocateRegistry.createRegistry(PORT);
-            String serverBind="serverUtility";
+            String serverBind = "serverUtility";
             registry.bind(serverBind, serverStub);
-            System.out.println("Yijing bind: "+serverBind);
-            System.out.println("Server ready"); 
+            System.out.println("Already bind: " + "[" + serverBind + "]");
+            System.out.println("Server ready");
         } catch (Exception e) {
-            System.out.println(e); 
+            System.out.println(e);
         }
     }
 }
