@@ -52,9 +52,9 @@ public class ServerImp implements ServerAPI {
             throws RemoteException {
         System.out.println("Add " + clientID + " " + deviceID + " " + clientIP);
         if (searchClientbyID(clientID, clientIP) == null) {
-//            for (int i = 0; i < ClientList.size(); i++) {
-//                talk(ClientList.get(i).getUserID(), ClientList.get(i).getUserIP(), "\n" + clientID + "in\n");
-//            }
+            for (int i = 0; i < ClientList.size(); i++) {
+                displayClient(ClientList.get(i), "Add " + clientID + " " + deviceID + " " + clientIP);
+            }
             ClientList.add(new User(clientID, deviceID, clientIP, clientPort));
         }
     }
