@@ -22,13 +22,13 @@ public class InternetUtil {
         try {
             InetAddress[] ipInfo;
             InetAddress ipChecker;
-            String displayIP = "";
+            String displayIP = "Network Devices List:\n";
             ipChecker = InetAddress.getLocalHost();
             ipInfo = InetAddress.getLocalHost().getAllByName(ipChecker.getHostName());
             for (int i = 0; i < ipInfo.length; i++) {
                 displayIP += (ipInfo[i].getHostName() + ": " + ipInfo[i].getHostAddress());
-                if(i!=ipInfo.length-1){
-                    displayIP +="\n";
+                if (i != ipInfo.length - 1) {
+                    displayIP += "\n";
                 }
             }
             return displayIP;
@@ -38,7 +38,7 @@ public class InternetUtil {
         return "Failed to get ip";
     }
 
-    public static String getMyIPInfo( ) {
+    public static String getMyIPInfo() {
         try {
             InetAddress ipInfo = InetAddress.getLocalHost();
             return (ipInfo.getHostAddress());

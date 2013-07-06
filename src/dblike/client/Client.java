@@ -1,7 +1,7 @@
 package dblike.client;
 
 import dblike.api.ServerAPI;
-import dblike.server.User;
+import dblike.server.ActiveClient;
 import java.rmi.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;

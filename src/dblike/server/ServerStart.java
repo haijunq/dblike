@@ -23,21 +23,16 @@ public class ServerStart {
 
     private static final int PORT = 1099;
     private static Registry registry;
-    private static ArrayList<User> UserList = new ArrayList<User>();
+    private static ArrayList<ActiveClient> ActiveClientList = new ArrayList<ActiveClient>();
 
     /**
-     * @return the UserList
+     * @return the ActiveClientList
      */
-    public static ArrayList<User> getUserList() {
-        return UserList;
+    public static ArrayList<ActiveClient> getActiveClientList() {
+        return ActiveClientList;
     }
 
-    /**
-     * @param aUserList the UserList to set
-     */
-    public static void setUserList(ArrayList<User> aUserList) {
-        UserList = aUserList;
-    }
+    
 
     public static void main(String args[]) {
         try {
