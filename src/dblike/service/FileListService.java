@@ -13,15 +13,37 @@ import java.util.Hashtable;
  */
 public final class FileListService {
 
-    private static Hashtable<String, byte[]> fileHashTable = null;
-
-    private FileListService() {
-    }
-
+    private static Hashtable<String, FileInfo> fileHashTable ;
+    
+   
 //    public FileListService getInstance() {
 //        if (fileHashTable == null) {
 //            fileHashTable = new Hashtable<String, byte []>();
 //        }
 //        return fileHashTable;
 //    }
+
+    public FileListService() {
+    }
+
+    public static Hashtable<String, FileInfo> getFileHashTable() {
+        return fileHashTable;
+    }
+
+    public static void setFileHashTable(Hashtable<String, FileInfo> fileHashTable) {
+        FileListService.fileHashTable = fileHashTable;
+    }
+
+    public FileInfo getFileInfoByFileName(String fileName) {
+        
+        if (fileHashTable.containsKey(fileName))
+            return fileHashTable.get(fileName);
+        else
+            return null;
+    }
+    
+    @Override
+    public String toString() {
+        return "FileListService{" + '}';
+    }
 }
