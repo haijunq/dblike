@@ -125,10 +125,13 @@ public class Client extends Frame implements ClientAPI, ActionListener {
         this.add(logout);
         
         try {
-            UnicastRemoteObject.exportObject(this);
+            System.out.println("haha");
+            ClientAPI clientAPI = (ClientAPI) UnicastRemoteObject.exportObject(this, 0);
+            System.out.println("hehe");
         } catch (RemoteException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent arg0) {
                 System.exit(1);

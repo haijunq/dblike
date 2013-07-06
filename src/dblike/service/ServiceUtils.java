@@ -15,6 +15,6 @@ public class ServiceUtils {
     public static String SFTP_USERNAME = "ec2-user";
     public static String SFTP_PASSWORD = "";
     //public static String SFTP_PRIVATE_KEY = "E:\\Dropbox\\Course\\CICS525\\dblike\\misc\\CICS525-G5.ppk";
-    public static String SFTP_PRIVATE_KEY = "/Users/jingboyu/Dropbox/UBC/CICS525/dblike/misc/CICS525-G5.ppk";
+    public static String SFTP_PRIVATE_KEY = "CICS525-G5.ppk";
     
 }
