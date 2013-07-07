@@ -14,12 +14,12 @@ import java.util.logging.Logger;
  *
  * @author wenhanwu
  */
-public class ActiveClientListener implements Runnable {
+public class ClientListenerServer implements Runnable {
 
     private ArrayList<ActiveClient> list;
 
-    public ActiveClientListener() {
-        this.list = ActiveClientList.getActiveClientList();
+    public ClientListenerServer() {
+        this.list = ActiveClientListServer.getActiveClientList();
     }
 
     public void run() {
@@ -37,7 +37,7 @@ public class ActiveClientListener implements Runnable {
             try {
                 Thread.sleep(timeout);
             } catch (InterruptedException ex) {
-                Logger.getLogger(ActiveClientListener.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ClientListenerServer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 

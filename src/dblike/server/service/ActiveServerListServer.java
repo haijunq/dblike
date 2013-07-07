@@ -11,7 +11,7 @@ import java.util.ArrayList;
  *
  * @author wenhanwu
  */
-public class ActiveServerList {
+public class ActiveServerListServer {
     
     private static ArrayList<ActiveServer> ActiveServerList = new ArrayList<ActiveServer>();
 }

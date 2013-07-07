@@ -8,6 +8,6 @@ package dblike.server.service;
  *
  * @author wenhanwu
  */
-public class ActiveServerListener {
+public class ServerListenerServer {
     
 }

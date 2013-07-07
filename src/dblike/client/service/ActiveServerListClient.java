@@ -8,6 +8,6 @@ package dblike.client.service;
  *
  * @author wenhanwu
  */
-public class ActiveServerList {
+public class ActiveServerListClient {
     
 }
