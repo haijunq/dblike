@@ -17,4 +17,9 @@ public class ClientImp implements ClientAPI {
     public void showMessage(String message) throws RemoteException {
         System.out.println(message); 
     }
+
+    @Override
+    public boolean beatFromServer(String serverIP, int port) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

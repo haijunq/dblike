@@ -7,6 +7,7 @@ package dblike.server;
 import dblike.api.ClientAPI;
 import dblike.api.ServerAPI;
 import dblike.server.service.ActiveClientListServer;
+import dblike.server.service.ActiveServerListServer;
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -29,15 +30,15 @@ public class ServerImp implements ServerAPI {
     }
 
     @Override
-    public ActiveClient searchClientbyID(String clientID, String deviceID)
+    public int checkClientbyID(String clientID, String deviceID)
             throws RemoteException {
-        return ActiveClientListServer.searchClientbyID(clientID, deviceID);
+        return (ActiveClientListServer.checkClientbyID(clientID, deviceID));
     }
 
     @Override
     public void callClient(String clientID, String deviceID, String content)
             throws RemoteException {
-        ActiveClient clientTemp = searchClientbyID(clientID, deviceID);
+        ActiveClient clientTemp = ActiveClientListServer.searchClientbyID(clientID, deviceID);
         displayClient(clientTemp, content);
 
     }
@@ -60,7 +61,7 @@ public class ServerImp implements ServerAPI {
         lookup(target);
         client.showMessage(message);
     }
-    
+
     public void lookup(ActiveClient target) throws RemoteException {
         registry = LocateRegistry.getRegistry(target.getClientIP(), target.getPort());
         try {
@@ -72,5 +73,21 @@ public class ServerImp implements ServerAPI {
             Logger.getLogger(ServerImp.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    @Override
+    public int checkServerByIP_Port(String serverIP, int port) throws RemoteException {
+        return ActiveServerListServer.checkServerByIP_Port(serverIP, port);
+    }
+
+    @Override
+    public boolean beatFromServer(String serverIP, int port) throws RemoteException {
+        return ActiveServerListServer.beatTheServer(serverIP, port);
+
+    }
+
+    @Override
+    public boolean beatFromClient(String clientID, String deviceID) throws RemoteException {
+        return ActiveClientListServer.beatTheClient(clientID, deviceID);
     }
 }

@@ -39,6 +39,15 @@ public class ActiveClientListServer {
         return null;
     }
 
+    public static int checkClientbyID(String clientID, String deviceID) {
+        for (int i = 0; i < ActiveClientList.size(); ++i) {
+            if (ActiveClientList.get(i).getClientID().equals(clientID) && ActiveClientList.get(i).getDeviceID().equals(deviceID)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public static boolean removeClient(String clientID, String deviceID) {
         if (searchClientbyID(clientID, deviceID) == null) {
             return false;
@@ -55,6 +64,16 @@ public class ActiveClientListServer {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public static boolean beatTheClient(String clientID, String deviceID) {
+        int position =checkClientbyID(clientID, deviceID);
+        if (position == -1) {
+            return false;
+        } else {
+            ActiveClientList.get(position).setStatus(1);
+            return true;
         }
     }
 }

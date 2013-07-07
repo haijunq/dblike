@@ -16,24 +16,32 @@ import java.util.logging.Logger;
  */
 public class ClientListenerServer implements Runnable {
 
-    private ArrayList<ActiveClient> list;
+    private ArrayList<ActiveClient> ActiveClientList;
 
     public ClientListenerServer() {
-        this.list = ActiveClientListServer.getActiveClientList();
+        this.ActiveClientList = ActiveClientListServer.getActiveClientList();
+    }
+
+    public boolean checkAllClient() {
+        boolean flag = true;
+        for (int i = 0; i < ActiveClientList.size() - 1; i++) {
+            ActiveClient aClient = ActiveClientList.get(i);
+            if (aClient.getStatus() == 1) {
+                aClient.setStatus(0);
+            } else {
+                String clientLabel = aClient.getClientID() + aClient.getDeviceID();
+                ActiveClientListServer.removeClient(aClient.getClientID(), aClient.getDeviceID());
+                System.out.println(clientLabel + " not available");
+                flag = false;
+            }
+        }
+        return flag;
     }
 
     public void run() {
         int timeout = InternetUtil.getTIMEOUT() * 1000;
         while (true) {
-            for (int i = 0; i < list.size() - 1; i++) {
-                ActiveClient aClient = list.get(i);
-                if (aClient.getStatus() == 1) {
-                    String clientLabel = aClient.getClientID() + aClient.getDeviceID();
-                    System.out.println(clientLabel + " is alive");
-                    aClient.setStatus(0);
-                } else {
-                }
-            }
+            checkAllClient();
             try {
                 Thread.sleep(timeout);
             } catch (InterruptedException ex) {

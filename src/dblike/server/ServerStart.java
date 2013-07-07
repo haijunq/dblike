@@ -21,20 +21,57 @@ import java.util.List;
  */
 public class ServerStart {
 
+    private static String serverIP;
     private static final int PORT = 1099;
     private static Registry registry;
+
+    /**
+     * @return the serverIP
+     */
+    public static String getServerIP() {
+        return serverIP;
+    }
+
+    /**
+     * @param aServerIP the serverIP to set
+     */
+    public static void setServerIP(String aServerIP) {
+        serverIP = aServerIP;
+    }
+
+    /**
+     * @return the PORT
+     */
+    public static int getPORT() {
+        return PORT;
+    }
+
+    /**
+     * @return the registry
+     */
+    public static Registry getRegistry() {
+        return registry;
+    }
+
+    /**
+     * @param aRegistry the registry to set
+     */
+    public static void setRegistry(Registry aRegistry) {
+        registry = aRegistry;
+    }
 
     public static void main(String args[]) {
         try {
             ServerImp server = new ServerImp();
+            setServerIP(InternetUtil.getMyIPInfo());
             ServerAPI serverStub = (ServerAPI) UnicastRemoteObject.exportObject(server, 0);
             System.out.println("----------");
             System.out.println(InternetUtil.getIPList());
             System.out.println("----------");
-            System.out.println("Server start at " + InternetUtil.getMyIPInfo() + ":" + PORT);
-            registry = LocateRegistry.createRegistry(PORT);
+            System.out.println("Server start at " + getServerIP() + ":" + getPORT());
+            setRegistry(LocateRegistry.createRegistry(getPORT()));
             String serverBind = "serverUtility";
-            registry.bind(serverBind, serverStub);
+            getRegistry().bind(serverBind, serverStub);
             System.out.println("Already bind: " + "[" + serverBind + "]");
             System.out.println("Server ready");
         } catch (Exception e) {

@@ -18,7 +18,15 @@ import java.util.logging.Logger;
  */
 public class InternetUtil {
 
-    private static final int TIMEOUT = 10;
+    private static int TIMEOUT = 10;
+    private static int BEATINTERVAL = 5;
+
+    /**
+     * @return the BEATINTERVAL
+     */
+    public static int getBEATINTERVAL() {
+        return BEATINTERVAL;
+    }
 
     /**
      * @return the TIMEOUT
