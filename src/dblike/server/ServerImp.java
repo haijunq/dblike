@@ -6,6 +6,7 @@ package dblike.server;
  */
 import dblike.api.ClientAPI;
 import dblike.api.ServerAPI;
+import dblike.server.service.ActiveClientList;
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -24,8 +25,7 @@ public class ServerImp implements ServerAPI {
     private Registry registry;
 
     public ServerImp() {
-        ClientList = ServerStart.getActiveClientList();
-
+        ClientList = ActiveClientList.getActiveClientList();
     }
 
     @Override

@@ -23,16 +23,6 @@ public class ServerStart {
 
     private static final int PORT = 1099;
     private static Registry registry;
-    private static ArrayList<ActiveClient> ActiveClientList = new ArrayList<ActiveClient>();
-
-    /**
-     * @return the ActiveClientList
-     */
-    public static ArrayList<ActiveClient> getActiveClientList() {
-        return ActiveClientList;
-    }
-
-    
 
     public static void main(String args[]) {
         try {
