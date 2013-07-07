@@ -91,6 +91,6 @@ public class ActiveClient {
         this.deviceID = aDeviceID;
         this.clientIP = aClientIP;
         this.port = aPort;
-        this.status = 0;
+        this.status = 1;
     }
 }

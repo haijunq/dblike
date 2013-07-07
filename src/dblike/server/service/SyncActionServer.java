@@ -32,8 +32,8 @@ public class SyncActionServer implements Runnable {
     private ServerAPI server = null;
 
     public SyncActionServer() {
-        this.ActiveClientList = ActiveClientListServer.getActiveClientList();
-        this.ActiveServerList = ActiveServerListServer.getActiveServerList();
+        SyncActionServer.ActiveClientList = ActiveClientListServer.getActiveClientList();
+        SyncActionServer.ActiveServerList = ActiveServerListServer.getActiveServerList();
     }
 
     public boolean lookupClient(ActiveClient target) throws RemoteException {
@@ -65,40 +65,57 @@ public class SyncActionServer implements Runnable {
         return true;
     }
 
-    public boolean beatAllClient() {
+    public boolean beatForAllClient() {
         boolean flag = true;
-        for (int i = 0; i < ActiveClientList.size() - 1; i++) {
+        for (int i = 0; i < ActiveClientList.size(); i++) {
+            ActiveClient aClient = ActiveClientList.get(i);
+            String clientLabel = aClient.getClientID() + aClient.getDeviceID();
             try {
-                ActiveClient aClient = ActiveClientList.get(i);
                 if (lookupClient(aClient) == false) {
-                    String clientLabel = aClient.getClientID() + aClient.getDeviceID();
-                    ActiveClientListServer.removeClient(aClient.getClientID(), aClient.getDeviceID());
-                    System.out.println(clientLabel + " not available");
+                    System.out.println("Failed to look up " + clientLabel);
                 } else {
                     client.beatFromServer(ServerStart.getServerIP(), ServerStart.getPORT());
                 }
             } catch (RemoteException ex) {
-                Logger.getLogger(SyncActionServer.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Someting wrong with this client..." + clientLabel);
             }
 
         }
         return flag;
     }
 
-    public boolean beatAllServer() {
+//    public boolean beatForAllServer() {
+//        boolean flag = true;
+//        for (int i = 0; i < ActiveServerList.size() ; i++) {
+//            try {
+//                ActiveServer aServer = ActiveServerList.get(i);
+//                if (lookupServer(aServer) == false) {
+//                    String serverLabel = aServer.getServerIP() + aServer.getPort();
+//                    ActiveServerListServer.removeServer(aServer.getServerIP(), aServer.getPort());
+//                    System.out.println(serverLabel + " not available");
+//                } else {
+//                    server.beatFromServer(ServerStart.getServerIP(), ServerStart.getPORT());
+//                }
+//            } catch (RemoteException ex) {
+//                Logger.getLogger(SyncActionServer.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//
+//        }
+//        return flag;
+//    }
+    public boolean beatForAllServer() {
         boolean flag = true;
-        for (int i = 0; i < ActiveServerList.size() - 1; i++) {
+        for (int i = 0; i < ActiveServerList.size(); i++) {
+            ActiveServer aServer = ActiveServerList.get(i);
+            String serverLabel = aServer.getServerIP() + aServer.getPort();
             try {
-                ActiveServer aServer = ActiveServerList.get(i);
                 if (lookupServer(aServer) == false) {
-                    String serverLabel = aServer.getServerIP() + aServer.getPort();
-                    ActiveServerListServer.removeServer(aServer.getServerIP(), aServer.getPort());
-                    System.out.println(serverLabel + " not available");
+                    System.out.println("Failed to look up " + serverLabel);
                 } else {
                     server.beatFromServer(ServerStart.getServerIP(), ServerStart.getPORT());
                 }
             } catch (RemoteException ex) {
-                Logger.getLogger(SyncActionServer.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Someting wrong with this server..." + serverLabel);
             }
 
         }
@@ -108,7 +125,8 @@ public class SyncActionServer implements Runnable {
     public void run() {
         int timeout = InternetUtil.getBEATINTERVAL() * 1000;
         while (true) {
-            beatAllClient();
+            beatForAllClient();
+            beatForAllServer();
             try {
                 Thread.sleep(timeout);
             } catch (InterruptedException ex) {

@@ -24,12 +24,12 @@ public class ServerListenerServer implements Runnable {
 
     public boolean checkAllServer() {
         boolean flag = true;
-        for (int i = 0; i < ActiveServerList.size() - 1; i++) {
+        for (int i = 0; i < ActiveServerList.size(); i++) {
             ActiveServer aServer = ActiveServerList.get(i);
             if (aServer.getStatus() == 1) {
                 aServer.setStatus(0);
             } else {
-                String serverLabel = aServer.getServerIP() + aServer.getPort();
+                String serverLabel = aServer.getServerIP() +":"+ aServer.getPort();
                 ActiveServerListServer.removeServer(aServer.getServerIP(), aServer.getPort());
                 System.out.println(serverLabel + " not available");
                 flag = false;

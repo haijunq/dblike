@@ -5,6 +5,7 @@
 package dblike.client;
 
 import dblike.api.ClientAPI;
+import dblike.client.service.ActiveServerListClient;
 import java.rmi.RemoteException;
 
 /**
@@ -20,6 +21,6 @@ public class ClientImp implements ClientAPI {
 
     @Override
     public boolean beatFromServer(String serverIP, int port) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return ActiveServerListClient.beatTheServer(serverIP, port);
     }
 }

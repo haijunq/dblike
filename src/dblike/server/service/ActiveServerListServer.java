@@ -60,7 +60,7 @@ public class ActiveServerListServer {
         if (searchServerByIP_Port(serverIP, port) == null) {
             String serverID=serverIP;
             ActiveServerList.add(new ActiveServer(serverID, serverIP, port));
-            System.out.println("Server [" + serverID + " " + serverIP + ":" + port + "] Added~!!!");
+            System.out.println("Server [" + " " + serverIP + ":" + port + "] Added~!!!");
             return true;
         } else {
             return false;
