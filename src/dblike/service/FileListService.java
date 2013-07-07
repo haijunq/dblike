@@ -14,7 +14,8 @@ import java.util.Hashtable;
 public final class FileListService {
 
     private String pathname;
-    private static Hashtable<String, FileInfo> fileHashTable ;
+    private Hashtable<String, FileInfo> fileHashTable ; 
+    //every user needs a FileListService object, so I removed "static"
     
    
 //    public FileListService getInstance() {
@@ -26,14 +27,15 @@ public final class FileListService {
 
     public FileListService(String pathname) {
         this.pathname = pathname;
+        fileHashTable = new Hashtable<>();
     }
 
-    public static Hashtable<String, FileInfo> getFileHashTable() {
-        return fileHashTable;
+    public Hashtable<String, FileInfo> getFileHashTable() {
+        return this.fileHashTable;
     }
 
-    public static void setFileHashTable(Hashtable<String, FileInfo> fileHashTable) {
-        FileListService.fileHashTable = fileHashTable;
+    public void setFileHashTable(Hashtable<String, FileInfo> fileHashTable) {
+        this.fileHashTable = fileHashTable;
     }
 
     public FileInfo getFileInfoByFileName(String fileName) {
@@ -48,4 +50,18 @@ public final class FileListService {
     public String toString() {
         return "FileListService{" + '}';
     }
+    
+    public void addNewFileInfo(FileInfo newFileInfo) {
+        this.fileHashTable.put(newFileInfo.getFileName(), newFileInfo);
+    } 
+    
+    public void updateFileInfo(FileInfo newFileInfo) {
+        this.fileHashTable.put(newFileInfo.getFileName(), newFileInfo);        
+    }
+    
+    public void removeFileInfo(String fileName) {
+        this.fileHashTable.remove(fileName);
+    }
+    
+    
 }

@@ -15,7 +15,7 @@ public class ClientAuthentication {
     protected final String ERROR_MESSAGE = "Invalid username or password. Please try again.";
     
     public ClientAuthentication() {
-        
+        //need to call server side UserListXMLReader() to do the authentication
     }
     
 //    public boolean authenticate(ServerAPI serverAPI, String username, String password) {

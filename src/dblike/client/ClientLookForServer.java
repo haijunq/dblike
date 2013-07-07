@@ -10,7 +10,7 @@ package dblike.client;
  */
 public class ClientLookForServer {
     private static final String [] serverIPs = {
-        "23.21.10.103", "", ""
+        "23.23.129.169", "", ""
     };
     
     public static String selectServer() {
