@@ -83,7 +83,7 @@ public class MD5ServiceTest {
     @Test
     public void testGetMD5HashCode() {
         System.out.println("getMD5HashCode");
-        String password = "helloworld";
+        String password = "password";
 //        String expResult = "";
         String result = MD5Service.getInstance().getMD5HashCode(password);
 //        assertEquals(expResult, result);
