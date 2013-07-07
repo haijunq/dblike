@@ -13,7 +13,7 @@ import java.rmi.*;
  */
 public interface ServerAPI extends Remote {
 
-    public void addClient(String clientID, String deviceID, String clientIP, int clientPort) throws RemoteException;
+    public boolean addClient(String clientID, String deviceID, String clientIP, int clientPort) throws RemoteException;
 
     public boolean removeClient(String clientID, String clientIP) throws RemoteException;
 
