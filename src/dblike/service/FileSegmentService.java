@@ -10,7 +10,9 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 /**
  *
@@ -21,10 +23,10 @@ public class FileSegmentService {
     private static final int CHUNK_SIZE = 4096;
 
     /**
-     * 
+     *
      * @param directory
      * @param filename
-     * @throws Exception 
+     * @throws Exception
      */
     public static void splitFileToSegments(final String directory, final String filename) throws Exception {
         File file = new File(directory + "/" + filename);
@@ -58,10 +60,11 @@ public class FileSegmentService {
     }
 
     /**
-     * This is a private method for other service methods. 
+     * This is a private method for other service methods.
+     *
      * @param bytesToSave
      * @param path
-     * @throws Exception 
+     * @throws Exception
      */
     private static void storeByteArrayToFile(byte[] bytesToSave, String path)
             throws Exception {
@@ -76,10 +79,10 @@ public class FileSegmentService {
     }
 
     /**
-     * 
+     *
      * @param directory
      * @param filename
-     * @throws Exception 
+     * @throws Exception
      */
     public static void mergeByteArrayToSingleFile(final String directory, final String filename)
             throws Exception {
@@ -115,26 +118,27 @@ public class FileSegmentService {
             System.out.println(ex.getMessage());
         }
 
-        storeByteArrayToFile(tb, directory + "/" +filename + ".merge");
+        storeByteArrayToFile(tb, directory + "/" + filename + ".merge");
 
     }
-    
+
     /**
-     * 
+     *
      * @param directory
      * @param filename
      * @param fileChunks
-     * @throws Exception 
+     * @throws Exception
      */
     public static void insertSegmentsToFile(final String directory, final String filename, ArrayList<String> fileChunks) throws Exception {
-        if (fileChunks.isEmpty())
+        if (fileChunks.isEmpty()) {
             return;
-        
+        }
+
         File file = new File(directory + "/" + filename);
-        byte [] bb = new byte[(int)file.length()];
+        byte[] bb = new byte[(int) file.length()];
         try {
             for (int i = 0; i < fileChunks.size(); i++) {
-                byte [] newbb = new byte[fileChunks.get(i).length()];
+                byte[] newbb = new byte[fileChunks.get(i).length()];
                 FileInputStream fin = new FileInputStream(fileChunks.get(i));
                 fin.read(newbb);
                 int index = Integer.parseInt(fileChunks.get(i).substring(fileChunks.get(i).length() - 4, fileChunks.get(i).length()));
@@ -143,10 +147,11 @@ public class FileSegmentService {
                 fin.close();
             }
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());            
+            System.out.println(ex.getMessage());
         }
-        storeByteArrayToFile(bb, directory + "/" +filename + ".insert");
-        
+        storeByteArrayToFile(bb, directory + "/" + filename + ".insert");
+
     }
-    
+
+   
 }

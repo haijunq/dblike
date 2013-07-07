@@ -46,7 +46,7 @@ public class UserListXMLReaderTest {
 //        boolean expResult = false;
         UserListXMLReader.loadUserListFromXML();
         System.out.println(UserListXMLReader.getValidUserList());
-        System.out.println(UserListXMLReader.isValidUser("haijun", MD5Service.getInstance().getMD5HashCode("password")));
+        System.out.println(UserListXMLReader.isValidUser("haijun", MD5Service.getInstance().getMD5FromString("password")));
 //        assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
