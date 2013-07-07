@@ -14,6 +14,7 @@ public class ActiveClient {
     private String deviceID;
     private String clientIP;
     private int port;
+    private int status;
 
     /**
      * @return the clientID
@@ -70,13 +71,26 @@ public class ActiveClient {
     public void setPort(int port) {
         this.port = port;
     }
- 
- 
+
+    /**
+     * @return the status
+     */
+    public int getStatus() {
+        return status;
+    }
+
+    /**
+     * @param status the status to set
+     */
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
     public ActiveClient(String aClientID, String aDeviceID, String aClientIP, int aPort) {
         this.clientID = aClientID;
         this.deviceID = aDeviceID;
         this.clientIP = aClientIP;
         this.port = aPort;
+        this.status = 0;
     }
 }

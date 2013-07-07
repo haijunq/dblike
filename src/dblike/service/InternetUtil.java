@@ -18,6 +18,15 @@ import java.util.logging.Logger;
  */
 public class InternetUtil {
 
+    private static final int TIMEOUT = 10;
+
+    /**
+     * @return the TIMEOUT
+     */
+    public static int getTIMEOUT() {
+        return TIMEOUT;
+    }
+
     public static String getIPList() {
         try {
             InetAddress[] ipInfo;
