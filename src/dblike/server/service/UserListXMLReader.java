@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package dblike.server;
+package dblike.server.service;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
