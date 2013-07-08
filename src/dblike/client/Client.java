@@ -1,6 +1,7 @@
 package dblike.client;
 
 import dblike.api.ServerAPI;
+import dblike.client.service.ActiveServerListClient;
 import dblike.server.ActiveClient;
 import java.rmi.*;
 import java.util.logging.Level;
@@ -153,6 +154,8 @@ public class Client extends Frame implements ActionListener {
             setLoginStatus(1);
             setUserID(userIDTF.getText().trim());
             server.addClient(clientID, deviceID, clientIP, clientPort);
+            ActiveServerListClient.addServer(serverIP, serverPort);
+            ClientStart.startThread();
         } catch (Exception e) {
         }
     }
@@ -162,7 +165,7 @@ public class Client extends Frame implements ActionListener {
             if (server == null) {
                 return;
             }
-            server.removeClient(getUserID(), host);
+            server.removeClient(getUserID(), deviceID );
             server = null;
         } catch (Exception e) {
         }

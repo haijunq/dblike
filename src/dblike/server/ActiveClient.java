@@ -4,6 +4,8 @@
  */
 package dblike.server;
 
+import dblike.service.InternetUtil;
+
 /**
  *
  * @author wenhanwu
@@ -91,6 +93,6 @@ public class ActiveClient {
         this.deviceID = aDeviceID;
         this.clientIP = aClientIP;
         this.port = aPort;
-        this.status = 0;
+        this.status = InternetUtil.getOK();
     }
 }

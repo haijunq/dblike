@@ -5,6 +5,7 @@
 package dblike.server.service;
 
 import dblike.server.ActiveServer;
+import dblike.service.InternetUtil;
 import java.util.ArrayList;
 
 /**
@@ -60,7 +61,7 @@ public class ActiveServerListServer {
         if (searchServerByIP_Port(serverIP, port) == null) {
             String serverID=serverIP;
             ActiveServerList.add(new ActiveServer(serverID, serverIP, port));
-            System.out.println("Server [" + serverID + " " + serverIP + ":" + port + "] Added~!!!");
+            System.out.println("Server [" + " " + serverIP + ":" + port + "] Added~!!!");
             return true;
         } else {
             return false;
@@ -72,7 +73,7 @@ public class ActiveServerListServer {
         if (position == -1) {
             return false;
         } else {
-            ActiveServerList.get(position).setStatus(1);
+            ActiveServerList.get(position).setStatus(InternetUtil.getOK());
             return true;
         }
     }

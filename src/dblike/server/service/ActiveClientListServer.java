@@ -5,6 +5,7 @@
 package dblike.server.service;
 
 import dblike.server.ActiveClient;
+import dblike.service.InternetUtil;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
@@ -72,7 +73,7 @@ public class ActiveClientListServer {
         if (position == -1) {
             return false;
         } else {
-            ActiveClientList.get(position).setStatus(1);
+            ActiveClientList.get(position).setStatus(InternetUtil.getOK());
             return true;
         }
     }

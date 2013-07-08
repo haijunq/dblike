@@ -15,13 +15,13 @@ public interface ServerAPI extends Remote {
 
     public boolean addClient(String clientID, String deviceID, String clientIP, int clientPort) throws RemoteException;
 
-    public boolean removeClient(String clientID, String clientIP) throws RemoteException;
+    public boolean removeClient(String clientID, String deviceID) throws RemoteException;
 
-    public int checkClientbyID(String clientID, String clientIP) throws RemoteException;
+    public int checkClientbyID(String clientID, String deviceID) throws RemoteException;
 
     public int checkServerByIP_Port(String serverIP, int port) throws RemoteException;
 
-    public void callClient(String clientID, String clientIP, String content) throws RemoteException;
+    public void callClient(String clientID, String deviceID, String content) throws RemoteException;
 
     public void displayClient(ActiveClient target, String message) throws RemoteException;
 

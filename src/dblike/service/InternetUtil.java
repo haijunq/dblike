@@ -18,8 +18,23 @@ import java.util.logging.Logger;
  */
 public class InternetUtil {
 
-    private static int TIMEOUT = 10;
-    private static int BEATINTERVAL = 5;
+    private static int TIMEOUT = 3;
+    private static int BEATINTERVAL = 1;
+    private static int OK = 5;
+
+    /**
+     * @return the OK
+     */
+    public static int getOK() {
+        return OK;
+    }
+
+    /**
+     * @param aOK the OK to set
+     */
+    public static void setOK(int aOK) {
+        OK = aOK;
+    }
 
     /**
      * @return the BEATINTERVAL

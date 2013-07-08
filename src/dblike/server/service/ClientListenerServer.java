@@ -24,29 +24,41 @@ public class ClientListenerServer implements Runnable {
 
     public boolean checkAllClient() {
         boolean flag = true;
-        for (int i = 0; i < ActiveClientList.size() - 1; i++) {
+        System.out.println("-----c-----"); 
+        for (int i = 0; i < ActiveClientList.size(); i++) {
+            flag = true;
             ActiveClient aClient = ActiveClientList.get(i);
-            if (aClient.getStatus() == 1) {
+            String serverLabel = aClient.getClientID() + ":" + aClient.getDeviceID() + "---> " + aClient.getStatus();
+            System.out.println(serverLabel);
+            if (aClient.getStatus() == InternetUtil.getOK()) {
                 aClient.setStatus(0);
             } else {
-                String clientLabel = aClient.getClientID() + aClient.getDeviceID();
-                ActiveClientListServer.removeClient(aClient.getClientID(), aClient.getDeviceID());
-                System.out.println(clientLabel + " not available");
-                flag = false;
+                if (aClient.getStatus() == 0) {
+                    ActiveClientListServer.removeClient(aClient.getClientID(), aClient.getDeviceID());
+                    flag=false;
+                } else {
+                    aClient.setStatus(aClient.getStatus() - 1);
+                }
             }
         }
+        System.out.println("-----c-----");
         return flag;
     }
 
+    public void waitForAWhile(int timeOut) {
+        try {
+            Thread.sleep(timeOut * 1000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ClientListenerServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
     public void run() {
-        int timeout = InternetUtil.getTIMEOUT() * 1000;
         while (true) {
+            System.out.println("in run" + ActiveClientList.size());
             checkAllClient();
-            try {
-                Thread.sleep(timeout);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(ClientListenerServer.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            waitForAWhile(InternetUtil.getTIMEOUT());
         }
 
     }
