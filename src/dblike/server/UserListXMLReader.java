@@ -33,6 +33,7 @@ public class UserListXMLReader {
      * @return 
      */
     public static boolean isValidUser(String username, String password) {
+        getValidUserList();
         if (validUserList.isEmpty()) {
             return false;
         }
@@ -40,6 +41,7 @@ public class UserListXMLReader {
     }
 
     public static Hashtable<String, String> getValidUserList() {
+        loadUserListFromXML();
         return validUserList;
     }
     

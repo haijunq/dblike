@@ -110,6 +110,11 @@ public class FileInfo {
         return "FileInfo{" + "version=" + version + ", timestamp=" + timestamp + ", fileSize=" + fileSize + ", fileHashCode=" + fileHashCode + '}';
     }
 
+    /**
+     * 
+     * @param anotherFileInfo
+     * @return 
+     */
     public ArrayList<FileInfo> compareByHashCode(FileInfo anotherFileInfo) {
         ArrayList<FileInfo> diff = new ArrayList<>();
         diff.add(new FileInfo(this));
