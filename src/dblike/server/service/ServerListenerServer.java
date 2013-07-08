@@ -31,13 +31,16 @@ public class ServerListenerServer implements Runnable {
             String serverLabel = aServer.getServerIP() + ":" + aServer.getPort() + "---> " + aServer.getStatus();
             System.out.println(serverLabel);
             if (aServer.getStatus() == InternetUtil.getOK()) {
-                aServer.setStatus(0);
+                //aServer.setStatus(0);
+                System.out.println("OK");
             } else {
                 if (aServer.getStatus() == 0) {
                     ActiveServerListServer.removeServer(aServer.getServerIP(), aServer.getPort());
                     flag=false;
                 } else {
-                    aServer.setStatus(aServer.getStatus() - 1);
+                    System.out.println("decrese!!!!!!!!");
+                    int temp=aServer.getStatus() - 1;
+                    aServer.setStatus(temp);
                 }
             }
         }
@@ -55,8 +58,7 @@ public class ServerListenerServer implements Runnable {
     }
 
     public void run() {
-        while (true) {
-            System.out.println("in run" + ActiveServerList.size());
+        while (true) { 
             checkAllServer();
             waitForAWhile(InternetUtil.getTIMEOUT());
         }

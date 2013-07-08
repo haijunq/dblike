@@ -88,6 +88,7 @@ public class ActiveClient {
         this.status = status;
     }
 
+
     public ActiveClient(String aClientID, String aDeviceID, String aClientIP, int aPort) {
         this.clientID = aClientID;
         this.deviceID = aDeviceID;

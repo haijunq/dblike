@@ -66,7 +66,9 @@ public class ServerStart {
     public static void main(String args[]) {
         try {
             ServerImp server = new ServerImp();
-            setServerIP(InternetUtil.getMyIPInfo());
+            
+            //setServerIP(InternetUtil.getMyIPInfo());
+            setServerIP("127.0.0.1");
             ServerAPI serverStub = (ServerAPI) UnicastRemoteObject.exportObject(server, 0);
             System.out.println("----------");
             System.out.println(InternetUtil.getIPList());
