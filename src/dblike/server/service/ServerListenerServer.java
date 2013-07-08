@@ -24,29 +24,41 @@ public class ServerListenerServer implements Runnable {
 
     public boolean checkAllServer() {
         boolean flag = true;
+        System.out.println("=====s=====");
         for (int i = 0; i < ActiveServerList.size(); i++) {
+            flag = true;
             ActiveServer aServer = ActiveServerList.get(i);
-            if (aServer.getStatus() == 1) {
+            String serverLabel = aServer.getServerIP() + ":" + aServer.getPort() + "---> " + aServer.getStatus();
+            System.out.println(serverLabel);
+            if (aServer.getStatus() == InternetUtil.getOK()) {
                 aServer.setStatus(0);
             } else {
-                String serverLabel = aServer.getServerIP() +":"+ aServer.getPort();
-                ActiveServerListServer.removeServer(aServer.getServerIP(), aServer.getPort());
-                System.out.println(serverLabel + " not available");
-                flag = false;
+                if (aServer.getStatus() == 0) {
+                    ActiveServerListServer.removeServer(aServer.getServerIP(), aServer.getPort());
+                    flag=false;
+                } else {
+                    aServer.setStatus(aServer.getStatus() - 1);
+                }
             }
         }
+        System.out.println("=====s=====");
         return flag;
     }
 
+    public void waitForAWhile(int timeOut) {
+        try {
+            Thread.sleep(timeOut * 1000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ServerListenerServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
     public void run() {
-        int timeout = InternetUtil.getTIMEOUT() * 1000;
         while (true) {
-            checkAllServer(); 
-            try { 
-                Thread.sleep(timeout);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(ServerListenerServer.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            System.out.println("in run" + ActiveServerList.size());
+            checkAllServer();
+            waitForAWhile(InternetUtil.getTIMEOUT());
         }
 
     }

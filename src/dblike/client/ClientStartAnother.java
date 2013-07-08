@@ -19,12 +19,40 @@ import java.rmi.server.UnicastRemoteObject;
 public class ClientStartAnother {
 
     private static Registry registry;
-    private static String clientID = "001";
+    private static String clientID = "002";
     private static String deviceID = "pc";
     private static String clientIP = "127.0.0.1";
     private static int clientPort = 1122;
     private static String serverIP = "127.0.0.1";
     private static int serverPort = 1099;
+
+    /**
+     * @return the clientID
+     */
+    public static String getClientID() {
+        return clientID;
+    }
+
+    /**
+     * @param aClientID the clientID to set
+     */
+    public static void setClientID(String aClientID) {
+        clientID = aClientID;
+    }
+
+    /**
+     * @return the deviceID
+     */
+    public static String getDeviceID() {
+        return deviceID;
+    }
+
+    /**
+     * @param aDeviceID the deviceID to set
+     */
+    public static void setDeviceID(String aDeviceID) {
+        deviceID = aDeviceID;
+    }
 
     /**
      * @return the serverIP
@@ -75,11 +103,11 @@ public class ClientStartAnother {
             System.out.println("Client start at " + clientIP + ":" + clientPort);
             System.out.println("Will connect to server " + getServerIP() + ":" + getServerPort());
             registry = LocateRegistry.createRegistry(clientPort);
-            String clientBind = "clientUtility" + clientID + deviceID + clientIP + clientPort;
+            String clientBind = "clientUtility" + getClientID() + getDeviceID() + clientIP + clientPort;
             registry.bind(clientBind, clientStub);
             System.out.println("Already bind: " + "[" + clientBind + "]");
             System.out.println("Client ready");
-            Client aClient = new Client(clientID, deviceID, clientIP, clientPort, getServerIP(), getServerPort());
+            Client aClient = new Client(getClientID(), getDeviceID(), clientIP, clientPort, getServerIP(), getServerPort());
 
         } catch (Exception ex) {
             System.out.println(ex);

@@ -5,6 +5,7 @@
 package dblike.client.service;
 
 import dblike.client.ActiveServer;
+import dblike.service.InternetUtil;
 import java.util.ArrayList;
 
 /**
@@ -75,7 +76,7 @@ public class ActiveServerListClient {
         if (position == -1) {
             return false;
         } else {
-            ActiveServerList.get(position).setStatus(1);
+            ActiveServerList.get(position).setStatus(InternetUtil.getOK());
             return true;
         }
     }

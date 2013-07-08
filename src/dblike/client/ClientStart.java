@@ -19,7 +19,7 @@ import java.rmi.server.UnicastRemoteObject;
 public class ClientStart {
 
     private static Registry registry;
-    private static String clientID = "1";
+    private static String clientID = "001";
     private static String deviceID = "iphone";
     private static String clientIP= "127.0.0.1";
     private static int clientPort = 7860;

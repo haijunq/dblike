@@ -25,15 +25,27 @@ public class ServerListenerClient implements Runnable {
     public boolean checkAllServer() {
         boolean flag = true;
         for (int i = 0; i < ActiveServerList.size(); i++) {
+
+
+            flag = true;
             ActiveServer aServer = ActiveServerList.get(i);
-            if (aServer.getStatus() == 1) {
+            String serverLabel = aServer.getServerIP() + ":" + aServer.getPort() + "---> " + aServer.getStatus();
+            System.out.println(serverLabel);
+            if (aServer.getStatus() == InternetUtil.getOK()) {
                 aServer.setStatus(0);
             } else {
-                String serverLabel = aServer.getServerIP() +":"+ aServer.getPort();
-                ActiveServerListClient.removeServer(aServer.getServerIP(), aServer.getPort());
-                System.out.println(serverLabel + " not available");
-                flag = false;
+                if (aServer.getStatus() == 0) {
+                    ActiveServerListClient.removeServer(aServer.getServerIP(), aServer.getPort());
+                    System.out.println("Server down!!!-- " + aServer.getServerIP() + ":" + aServer.getPort());
+                    flag = false;
+                } else {
+                    aServer.setStatus(aServer.getStatus() - 1);
+                }
             }
+
+
+
+
         }
         return flag;
     }

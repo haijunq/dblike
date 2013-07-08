@@ -5,6 +5,7 @@
 package dblike.client;
 
 import dblike.server.*;
+import dblike.service.InternetUtil;
 
 /**
  *
@@ -77,6 +78,6 @@ public class ActiveServer {
         this.serverID = aServerID;
         this.serverIP = aClientIP;
         this.port = aPort;
-        this.status = 1;
+        this.status = InternetUtil.getOK();
     }
 }
