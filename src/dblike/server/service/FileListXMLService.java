@@ -2,7 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package dblike.service;
+package dblike.server.service;
+
+import dblike.service.FileInfo;
 
 /**
  *
@@ -10,6 +12,7 @@ package dblike.service;
  */
 public class FileListXMLService {
     
+            
     public static void saveFileListToXML(FileListService filelist) {
         //todo save and load the fileList from and to XML 
     }
