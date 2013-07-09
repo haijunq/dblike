@@ -8,6 +8,8 @@ import dblike.api.ClientAPI;
 import dblike.api.ServerAPI;
 import dblike.server.service.ActiveClientListServer;
 import dblike.server.service.ActiveServerListServer;
+import dblike.service.FileInfo;
+import dblike.service.FileListXMLService;
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -89,5 +91,10 @@ public class ServerImp implements ServerAPI {
     @Override
     public boolean beatFromClient(String clientID, String deviceID) throws RemoteException {
         return ActiveClientListServer.beatTheClient(clientID, deviceID);
+    }
+    
+    public FileInfo getFileInfoFromServer(String serverIP, int port, String userName, String directory, String fileName) {
+        FileListXMLService.loadFileListFromXML();
+        return FileListXMLService.getFileInfo(userName, directory, fileName);
     }
 }

@@ -17,4 +17,9 @@ public class FileListXMLService {
     public static void loadFileListFromXML() {
         
     }
+    
+    public static FileInfo getFileInfo(String userName, String directory, String fileName) // to do
+    {
+        return new FileInfo(); 
+    }
 }

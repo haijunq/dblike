@@ -5,6 +5,7 @@ package dblike.api;
  * and open the template in the editor.
  */
 import dblike.server.ActiveClient;
+import dblike.service.FileInfo;
 import java.rmi.*;
 
 /**
@@ -26,6 +27,8 @@ public interface ServerAPI extends Remote {
     public void displayClient(ActiveClient target, String message) throws RemoteException;
 
     public boolean beatFromServer(String serverIP, int port) throws RemoteException;
-
+    
     public boolean beatFromClient(String clientID, String deviceID) throws RemoteException;
+    
+    public FileInfo getFileInfoFromServer(String serverIP, int port, String userName, String directory, String fileName) throws RemoteException;
 }
