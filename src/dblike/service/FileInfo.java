@@ -23,6 +23,7 @@ public class FileInfo {
     private Hashtable<String, String> fileHashCode;
 
     public FileInfo() {
+        this.fileHashCode = new Hashtable<>();
     }
 
     public FileInfo(FileInfo fileInfo) {
@@ -34,7 +35,7 @@ public class FileInfo {
         this.fileHashCode = fileInfo.getFileHashCode();
     }
 
-    public FileInfo(int version, String deviceID, String fileName,  String timestamp, long fileSize, Hashtable<String, String> fileHashCode) {
+    public FileInfo(int version, String deviceID, String fileName, String timestamp, long fileSize, Hashtable<String, String> fileHashCode) {
         this.version = version;
         this.deviceID = deviceID;
         this.fileName = fileName;
@@ -112,12 +113,10 @@ public class FileInfo {
         return "FileInfo{" + "version=" + version + ", deviceID=" + deviceID + ", fileName=" + fileName + ", timestamp=" + timestamp + ", fileSize=" + fileSize + ", fileHashCode=" + fileHashCode + '}';
     }
 
-    
-    
     /**
-     * 
+     *
      * @param anotherFileInfo
-     * @return 
+     * @return
      */
     public ArrayList<FileInfo> compareByHashCode(FileInfo anotherFileInfo) {
         ArrayList<FileInfo> diff = new ArrayList<>();
@@ -145,4 +144,5 @@ public class FileInfo {
         }
         return diff;
     }
+
 }

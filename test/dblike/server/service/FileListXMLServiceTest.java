@@ -70,7 +70,6 @@ public class FileListXMLServiceTest {
     public void testLoadFileListFromXML() {
         System.out.println("loadFileListFromXML");
         String username = "haijun";
-//        FileListService expResult = null;
         FileListService r = FileListXMLService.loadFileListFromXML(username);
         System.out.println(r.getPathname());
         System.out.println(r.getFileHashTable().get("file1"));

@@ -34,7 +34,6 @@ import org.xml.sax.SAXException;
 public class FileListXMLService {
 
     public static void saveFileListToXML(FileListService filelist) {
-        //todo save and load the fileListXML from and to XML 
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -42,7 +41,7 @@ public class FileListXMLService {
             Document fileListXML = docBuilder.newDocument();
             Element rootElement = fileListXML.createElement("fileList");
             fileListXML.appendChild(rootElement);
-//Start to write data to file
+
             Element pathnameElement = fileListXML.createElement("pathname");
             pathnameElement.appendChild(fileListXML.createTextNode(filelist.getPathname()));
             rootElement.appendChild(pathnameElement);
