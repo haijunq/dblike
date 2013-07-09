@@ -34,8 +34,10 @@ public class FileInfo {
         this.fileHashCode = fileInfo.getFileHashCode();
     }
 
-    public FileInfo(int version, String timestamp, long fileSize, Hashtable<String, String> fileHashCode) {
+    public FileInfo(int version, String deviceID, String fileName,  String timestamp, long fileSize, Hashtable<String, String> fileHashCode) {
         this.version = version;
+        this.deviceID = deviceID;
+        this.fileName = fileName;
         this.timestamp = timestamp;
         this.fileSize = fileSize;
         this.fileHashCode = fileHashCode;
@@ -107,9 +109,11 @@ public class FileInfo {
 
     @Override
     public String toString() {
-        return "FileInfo{" + "version=" + version + ", timestamp=" + timestamp + ", fileSize=" + fileSize + ", fileHashCode=" + fileHashCode + '}';
+        return "FileInfo{" + "version=" + version + ", deviceID=" + deviceID + ", fileName=" + fileName + ", timestamp=" + timestamp + ", fileSize=" + fileSize + ", fileHashCode=" + fileHashCode + '}';
     }
 
+    
+    
     /**
      * 
      * @param anotherFileInfo

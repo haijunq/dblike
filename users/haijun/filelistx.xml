@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fileList>
+    <pathname>./users/haijun/</pathname>
+    <fileInfo filename="file1">
+        <version>1</version>
+        <deviceID>phone</deviceID>
+        <fileName>file1</fileName>
+        <timestamp>12:00am</timestamp>
+        <fileSize>3000</fileSize>
+        <fileHashCode>
+            <fileChunkHashCode fileChunkName="file2.part.0000">1usafsa6dfds6akljk</fileChunkHashCode>
+            <fileChunkHashCode fileChunkName="file1.part.0000">1u48901u59431u5890</fileChunkHashCode>
+        </fileHashCode>
+    </fileInfo>
+    <fileInfo filename="file2">
+        <version>1</version>
+        <deviceID>pc</deviceID>
+        <fileName>file2</fileName>
+        <timestamp>12:03am</timestamp>
+        <fileSize>4000</fileSize>
+        <fileHashCode>
+            <fileChunkHashCode fileChunkName="file2.part.0000">1usaadffdfds6aklji</fileChunkHashCode>
+            <fileChunkHashCode fileChunkName="file1.part.0000">1u48901u59431u589i</fileChunkHashCode>
+        </fileHashCode>
+    </fileInfo>
+</fileList>

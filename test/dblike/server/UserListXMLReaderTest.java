@@ -4,6 +4,7 @@
  */
 package dblike.server;
 
+import dblike.server.service.UserListXMLReader;
 import dblike.service.MD5Service;
 import org.junit.After;
 import org.junit.AfterClass;

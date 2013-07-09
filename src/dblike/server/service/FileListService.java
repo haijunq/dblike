@@ -14,9 +14,8 @@ import java.util.Hashtable;
  */
 public final class FileListService {
 
-    private String pathname;
+    private String pathname; //username
     private Hashtable<String, FileInfo> fileHashTable ; 
-    //every user needs a FileListService object, so I removed "static"
     
    
 //    public FileListService getInstance() {
@@ -26,8 +25,26 @@ public final class FileListService {
 //        return fileHashTable;
 //    }
 
-    public FileListService(String pathname) {
+    
+    //every user needs a FileListService object, so I removed "static"
+//        if (fileHashTable == null) {
+//            fileHashTable = new Hashtable<String, byte []>();
+//        }
+//        return fileHashTable;
+//    }
+
+    
+    public String getPathname() {
+        return pathname;
+    }
+
+    public void setPathname(String pathname) {
         this.pathname = pathname;
+    }
+
+    
+    public FileListService(String username) {
+        this.pathname = "./users/" + username + "/";
         fileHashTable = new Hashtable<>();
     }
 
