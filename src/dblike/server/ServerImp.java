@@ -9,7 +9,7 @@ import dblike.api.ServerAPI;
 import dblike.server.service.ActiveClientListServer;
 import dblike.server.service.ActiveServerListServer;
 import dblike.service.FileInfo;
-import dblike.service.FileListXMLService;
+import dblike.server.service.FileListXMLService;
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
