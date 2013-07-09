@@ -32,15 +32,15 @@ public class ServerListenerClient implements Runnable {
             if (aServer.getStatus() == InternetUtil.getOK()) {
                 //aServer.setStatus(0);
                 System.out.println("OK");
+                aServer.setStatus(aServer.getStatus() - 1);
             } else {
+                aServer.setStatus(aServer.getStatus() - 1);
                 if (aServer.getStatus() == 0) {
                     ActiveServerListClient.removeServer(aServer.getServerIP(), aServer.getPort());
                     System.out.println("Server down!!!-- " + aServer.getServerIP() + ":" + aServer.getPort());
                     flag = false;
                 } else {
-                    System.out.println("decrese!!!!!!!!");
-                    int temp = aServer.getStatus() - 1;
-                    aServer.setStatus(temp);
+                    System.out.println("still have some...");
                 }
             }
         }

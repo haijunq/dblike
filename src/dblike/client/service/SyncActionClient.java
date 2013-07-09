@@ -21,11 +21,71 @@ import java.util.logging.Logger;
  *
  * @author wenhanwu
  */
-public class SyncActionClient  implements Runnable{
+public class SyncActionClient implements Runnable {
 
     private static ArrayList<ActiveServer> ActiveServerList;
     private Registry registry;
     private ServerAPI server = null;
+    private String clientID;
+    private String deviceID;
+    private String serverIP;
+    private int serverPort;
+
+    /**
+     * @return the serverIP
+     */
+    public String getServerIP() {
+        return serverIP;
+    }
+
+    /**
+     * @param serverIP the serverIP to set
+     */
+    public void setServerIP(String serverIP) {
+        this.serverIP = serverIP;
+    }
+
+    /**
+     * @return the serverPort
+     */
+    public int getServerPort() {
+        return serverPort;
+    }
+
+    /**
+     * @param serverPort the serverPort to set
+     */
+    public void setServerPort(int serverPort) {
+        this.serverPort = serverPort;
+    }
+
+    /**
+     * @return the clientID
+     */
+    public String getClientID() {
+        return clientID;
+    }
+
+    /**
+     * @param clientID the clientID to set
+     */
+    public void setClientID(String clientID) {
+        this.clientID = clientID;
+    }
+
+    /**
+     * @return the deviceID
+     */
+    public String getDeviceID() {
+        return deviceID;
+    }
+
+    /**
+     * @param deviceID the deviceID to set
+     */
+    public void setDeviceID(String deviceID) {
+        this.deviceID = deviceID;
+    }
 
     public SyncActionClient() {
         SyncActionClient.ActiveServerList = ActiveServerListClient.getActiveServerList();
@@ -49,7 +109,7 @@ public class SyncActionClient  implements Runnable{
         boolean flag = true;
         String serverLabel = target.getServerIP() + target.getPort();
         try {
-            server.beatFromClient(ClientStart.getClientID(), ClientStart.getDeviceID());
+            server.beatFromClient(clientID, deviceID);
         } catch (RemoteException ex) {
             System.out.println("Someting wrong with this server..." + serverLabel);
         }
@@ -58,8 +118,8 @@ public class SyncActionClient  implements Runnable{
 
     public void run() {
         int timeout = InternetUtil.getBEATINTERVAL() * 1000;
-        ActiveServer target = ActiveServerListClient.searchServerByIP_Port(ClientStart.getServerIP(), ClientStart.getServerPort());
-            System.out.println("Will look up for--->"+target.getServerIP()+":"+target.getPort());
+        ActiveServer target = ActiveServerListClient.searchServerByIP_Port(serverIP, serverPort);
+        System.out.println("Will look up for--->" + target.getServerIP() + ":" + target.getPort());
         try {
             lookupServer(target);
         } catch (RemoteException ex) {
