@@ -2,6 +2,8 @@ package dblike.client;
 
 import dblike.api.ServerAPI;
 import dblike.client.service.ActiveServerListClient;
+import dblike.client.service.ServerListenerClient;
+import dblike.client.service.SyncActionClient;
 import dblike.server.ActiveClient;
 import java.rmi.*;
 import java.util.logging.Level;
@@ -88,6 +90,22 @@ public class Client extends Frame implements ActionListener {
         this.loginStatus = loginStatus;
     }
 
+    public static void startThread(String clientID, String deviceID, String serverIP, int serverPort) {
+
+        //New thread to listen to heartbeat from all servers
+        ServerListenerClient serverListener = new ServerListenerClient();
+        Thread sLThread = new Thread(serverListener);
+        sLThread.start();
+        //New thread to send heartbeat to others, broadcast
+        SyncActionClient sync = new SyncActionClient();
+        sync.setClientID(clientID);
+        sync.setDeviceID(deviceID);
+        sync.setServerIP(serverIP);
+        sync.setServerPort(serverPort);
+        Thread syncThread = new Thread(sync);
+        syncThread.start();
+    }
+
     public Client(String aClientID, String aDeviceID, String aClientIP, int aClientPort, String aServerIP, int aServerPort) {
         super(aClientID);
         try {
@@ -136,7 +154,7 @@ public class Client extends Frame implements ActionListener {
 
             logout = new Button("Logout");
             logout.addActionListener(this);
-            this.add(logout); 
+            this.add(logout);
             registry = LocateRegistry.getRegistry(serverIP, serverPort);
         } catch (RemoteException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
@@ -155,7 +173,7 @@ public class Client extends Frame implements ActionListener {
             setUserID(userIDTF.getText().trim());
             server.addClient(clientID, deviceID, clientIP, clientPort);
             ActiveServerListClient.addServer(serverIP, serverPort);
-            ClientStart.startThread();
+            startThread(clientID, deviceID, serverIP, serverPort);
         } catch (Exception e) {
         }
     }
@@ -165,7 +183,7 @@ public class Client extends Frame implements ActionListener {
             if (server == null) {
                 return;
             }
-            server.removeClient(getUserID(), deviceID );
+            server.removeClient(getUserID(), deviceID);
             server = null;
         } catch (Exception e) {
         }
@@ -173,7 +191,7 @@ public class Client extends Frame implements ActionListener {
 
     private void act() {
         try {
-             server.callClient(clientID, deviceID, "Client!!!");
+            server.callClient(clientID, deviceID, "Client!!!");
         } catch (RemoteException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }

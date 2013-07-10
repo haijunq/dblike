@@ -82,21 +82,7 @@ public class ClientStart {
         serverPort = aServerPort;
     }
 
-    public static void startThread() {
-
-        //New thread to listen to heartbeat from all servers
-        ServerListenerClient serverListener = new ServerListenerClient();
-        Thread sLThread = new Thread(serverListener);
-        sLThread.start();
-        //New thread to send heartbeat to others, broadcast
-        SyncActionClient sync = new SyncActionClient();
-        sync.setClientID(clientID);
-        sync.setDeviceID(deviceID);
-        sync.setServerIP(serverIP);
-        sync.setServerPort(serverPort);
-        Thread syncThread = new Thread(sync);
-        syncThread.start();
-    }
+   
 
     public static void main(String args[]) {
         try {
