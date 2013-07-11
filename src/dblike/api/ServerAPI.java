@@ -31,4 +31,6 @@ public interface ServerAPI extends Remote {
     public boolean beatFromClient(String clientID, String deviceID) throws RemoteException;
     
     public FileInfo getFileInfoFromServer(String serverIP, int port, String userName, String directory, String fileName) throws RemoteException;
+    
+    public void setFileInfoToServer(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) throws RemoteException;
 }

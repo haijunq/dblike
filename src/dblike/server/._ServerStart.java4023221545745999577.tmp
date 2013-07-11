@@ -7,7 +7,6 @@ package dblike.server;
 import dblike.api.ClientAPI;
 import dblike.api.ServerAPI;
 import dblike.server.service.ClientListenerServer;
-import dblike.server.service.FileSyncServerService;
 import dblike.server.service.ServerListenerServer;
 import dblike.server.service.SyncActionServer;
 import dblike.service.InternetUtil;
@@ -92,13 +91,6 @@ public class ServerStart {
             SyncActionServer sync = new SyncActionServer();
             Thread syncThread = new Thread(sync);
             syncThread.start();
-            
-            // new thread to synchronize files
-            String directory = "E:\\Dropbox\\Course\\CICS525\\dblike\\test\\";
-            FileSyncServerService fileSyncServer = new FileSyncServerService(directory);
-            Thread fileSyncServerThread = new Thread(fileSyncServer);
-            fileSyncServerThread.start();
-            
         } catch (Exception e) {
             System.out.println(e);
         }

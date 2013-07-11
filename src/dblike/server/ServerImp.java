@@ -94,7 +94,10 @@ public class ServerImp implements ServerAPI {
     }
     
     public FileInfo getFileInfoFromServer(String serverIP, int port, String userName, String directory, String fileName) {
-        FileListXMLService.loadFileListFromXML();
         return FileListXMLService.getFileInfo(userName, directory, fileName);
+    }
+    
+    public void setFileInfoToServer(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) {
+        FileListXMLService.setFileInfo(userName, directory, fileName, fileInfo);
     }
 }

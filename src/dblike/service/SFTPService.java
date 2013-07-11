@@ -35,7 +35,7 @@ public class SFTPService {
      * @param pwd
      * @param privateKey
      */
-    public SFTPService (String sftpHost, int sftpPort, String userName, String pwd, String privateKey){
+    public SFTPService (String sftpHost, int sftpPort, String userName, String pwd, String privateKey) {
 
         this.sftpHost = sftpHost;
         this.sftpPort = sftpPort;

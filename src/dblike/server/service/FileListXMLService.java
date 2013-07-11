@@ -164,4 +164,9 @@ public class FileListXMLService {
     {
         return new FileInfo();
     }
+    
+    public static void setFileInfo(String userName, String directory, String fileName, FileInfo fileInfo) // to do
+    {
+        ;
+    }
 }
