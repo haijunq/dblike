@@ -4,8 +4,10 @@
  */
 package dblike.client;
 
+import dblike.api.ServerAPI;
 import dblike.server.*;
 import dblike.service.InternetUtil;
+import java.rmi.registry.Registry;
 
 /**
  *
@@ -17,6 +19,36 @@ public class ActiveServer {
     private String serverIP;
     private int port;
     private int status;
+    private Registry registry;
+    private ServerAPI serverAPI = null;
+
+    /**
+     * @return the registry
+     */
+    public Registry getRegistry() {
+        return registry;
+    }
+
+    /**
+     * @param registry the registry to set
+     */
+    public void setRegistry(Registry registry) {
+        this.registry = registry;
+    }
+
+    /**
+     * @return the serverAPI
+     */
+    public ServerAPI getServerAPI() {
+        return serverAPI;
+    }
+
+    /**
+     * @param serverAPI the serverAPI to set
+     */
+    public void setServerAPI(ServerAPI serverAPI) {
+        this.serverAPI = serverAPI;
+    }
 
     /**
      * @return the serverID

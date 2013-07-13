@@ -33,6 +33,8 @@ public class Client extends Frame implements ActionListener {
     private int clientPort;
     private String serverIP;
     private int serverPort;
+    static Thread sLThread;
+    static Thread syncThread;
 
     /**
      * @return the userParam
@@ -90,11 +92,10 @@ public class Client extends Frame implements ActionListener {
         this.loginStatus = loginStatus;
     }
 
-    public static void startThread(String clientID, String deviceID, String serverIP, int serverPort) {
-
+    public static void startThread(String clientID, String deviceID, String serverIP, int serverPort) { 
         //New thread to listen to heartbeat from all servers
         ServerListenerClient serverListener = new ServerListenerClient();
-        Thread sLThread = new Thread(serverListener);
+        sLThread = new Thread(serverListener);
         sLThread.start();
         //New thread to send heartbeat to others, broadcast
         SyncActionClient sync = new SyncActionClient();
@@ -102,7 +103,7 @@ public class Client extends Frame implements ActionListener {
         sync.setDeviceID(deviceID);
         sync.setServerIP(serverIP);
         sync.setServerPort(serverPort);
-        Thread syncThread = new Thread(sync);
+        syncThread = new Thread(sync);
         syncThread.start();
     }
 
@@ -175,6 +176,7 @@ public class Client extends Frame implements ActionListener {
             ActiveServerListClient.addServer(serverIP, serverPort);
             startThread(clientID, deviceID, serverIP, serverPort);
         } catch (Exception e) {
+            System.out.println(e);
         }
     }
 
@@ -219,11 +221,15 @@ public class Client extends Frame implements ActionListener {
 
     public void lookup() {
         try {
+            System.out.println("registry is; -->" + registry);
+            System.out.println("before lookup");
             server = (ServerAPI) registry.lookup("serverUtility");
+            System.out.println("after lookup");
+            System.out.println("server is; -->" + server);
         } catch (RemoteException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex);
         } catch (NotBoundException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex);
         }
 
     }

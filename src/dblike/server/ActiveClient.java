@@ -4,7 +4,9 @@
  */
 package dblike.server;
 
+import dblike.api.ClientAPI;
 import dblike.service.InternetUtil;
+import java.rmi.registry.Registry;
 
 /**
  *
@@ -17,6 +19,36 @@ public class ActiveClient {
     private String clientIP;
     private int port;
     private int status;
+    private Registry registry;
+    private ClientAPI clientAPI = null;
+
+    /**
+     * @return the registry
+     */
+    public Registry getRegistry() {
+        return registry;
+    }
+
+    /**
+     * @param registry the registry to set
+     */
+    public void setRegistry(Registry registry) {
+        this.registry = registry;
+    }
+
+    /**
+     * @return the clientAPI
+     */
+    public ClientAPI getClientAPI() {
+        return clientAPI;
+    }
+
+    /**
+     * @param clientAPI the clientAPI to set
+     */
+    public void setClientAPI(ClientAPI clientAPI) {
+        this.clientAPI = clientAPI;
+    }
 
     /**
      * @return the clientID
