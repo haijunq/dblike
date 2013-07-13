@@ -99,9 +99,7 @@ public class ClientStartAnother {
     }
 
     public static void main(String args[]) {
-        try {
-            clientIP = InternetUtil.getMyIPInfo();
-            clientIP = "127.0.0.1";
+        try { 
             ClientImp client = new ClientImp();
             ClientAPI clientStub = (ClientAPI) UnicastRemoteObject.exportObject(client, 0);
             System.out.println("Client start at " + clientIP + ":" + clientPort);

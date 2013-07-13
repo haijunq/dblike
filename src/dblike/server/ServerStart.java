@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class ServerStart {
 
-    private static String serverIP;
+    private static String serverIP = "127.0.0.1";
     private static final int PORT = 1099;
     private static Registry registry;
 
@@ -67,9 +67,6 @@ public class ServerStart {
     public static void main(String args[]) {
         try {
             ServerImp server = new ServerImp();
-            
-            //setServerIP(InternetUtil.getMyIPInfo());
-            setServerIP("127.0.0.1");
             ServerAPI serverStub = (ServerAPI) UnicastRemoteObject.exportObject(server, 0);
             System.out.println("----------");
             System.out.println(InternetUtil.getIPList());
@@ -92,13 +89,13 @@ public class ServerStart {
             SyncActionServer sync = new SyncActionServer();
             Thread syncThread = new Thread(sync);
             syncThread.start();
-            
+
             // new thread to synchronize files
             String directory = "E:\\Dropbox\\Course\\CICS525\\dblike\\test\\";
             FileSyncServerService fileSyncServer = new FileSyncServerService(directory);
             Thread fileSyncServerThread = new Thread(fileSyncServer);
             fileSyncServerThread.start();
-            
+
         } catch (Exception e) {
             System.out.println(e);
         }
