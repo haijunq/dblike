@@ -25,7 +25,8 @@ import java.util.List;
  */
 public class ServerStart {
 
-    private static String serverIP = "23.23.129.199";
+    //private static String serverIP = "23.23.129.199";
+    private static String serverIP = "127.0.0.1";
     private static final int PORT = 1099;
     private static Registry registry;
 

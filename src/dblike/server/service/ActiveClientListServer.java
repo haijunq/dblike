@@ -7,7 +7,7 @@ package dblike.server.service;
 import dblike.server.ActiveClient;
 import dblike.service.InternetUtil;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
+import java.util.Vector;
 
 /**
  *
@@ -15,19 +15,19 @@ import java.util.ArrayList;
  */
 public class ActiveClientListServer {
 
-    private static ArrayList<ActiveClient> ActiveClientList = new ArrayList<ActiveClient>();
+    private static Vector<ActiveClient> ActiveClientList = new Vector<ActiveClient>();
 
     /**
      * @return the ActiveClientListServer
      */
-    public static ArrayList<ActiveClient> getActiveClientList() {
+    public static Vector<ActiveClient> getActiveClientList() {
         return ActiveClientList;
     }
 
     /**
      * @param aActiveClientList the ActiveClientListServer to set
      */
-    public static void setActiveClientList(ArrayList<ActiveClient> aActiveClientList) {
+    public static void setActiveClientList(Vector<ActiveClient> aActiveClientList) {
         ActiveClientList = aActiveClientList;
     }
 

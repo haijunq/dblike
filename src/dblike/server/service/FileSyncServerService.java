@@ -33,6 +33,7 @@ import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -120,12 +121,12 @@ public class FileSyncServerService implements Runnable {
     public void syncCreateFile(String userName, String directory, String fileName) throws JSchException, RemoteException, SftpException
     {
         // sync create file with active servers
-        ArrayList<ActiveServer> activeServerList = ActiveServerListServer.getActiveServerList();
+        Vector<ActiveServer> activeServerList = ActiveServerListServer.getActiveServerList();
         for (ActiveServer activeServer : activeServerList)
             syncCreateFileWithServer(userName, directory, fileName, activeServer);
         
         // sync create file with active clients
-        ArrayList<ActiveClient> activeClientList = ActiveClientListServer.getActiveClientList();
+        Vector<ActiveClient> activeClientList = ActiveClientListServer.getActiveClientList();
         for (ActiveClient activeClient : activeClientList)
             syncCreateFileWithClient(userName, directory, fileName, activeClient);
     }

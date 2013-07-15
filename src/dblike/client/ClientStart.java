@@ -23,7 +23,8 @@ public class ClientStart {
     private static String deviceID = "iphone";
     private static String clientIP = "127.0.0.1";
     private static int clientPort = 7860;
-    private static String serverIP = "23.23.129.199";
+    //private static String serverIP = "23.23.129.199";
+    private static String serverIP = "127.0.0.1";
     private static int serverPort = 1099;
 
     /**

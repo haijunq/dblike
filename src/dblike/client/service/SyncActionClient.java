@@ -13,7 +13,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  */
 public class SyncActionClient implements Runnable {
 
-    private static ArrayList<ActiveServer> ActiveServerList; 
+    private static Vector<ActiveServer> ActiveServerList; 
     private String clientID;
     private String deviceID;
     private String serverIP;
