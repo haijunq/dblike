@@ -13,7 +13,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,9 +23,7 @@ import java.util.logging.Logger;
  */
 public class SyncActionClient implements Runnable {
 
-    private static ArrayList<ActiveServer> ActiveServerList;
-    private Registry registry;
-    private ServerAPI server = null;
+    private static Vector<ActiveServer> ActiveServerList; 
     private String clientID;
     private String deviceID;
     private String serverIP;
@@ -93,8 +91,8 @@ public class SyncActionClient implements Runnable {
 
     public boolean lookupServer(ActiveServer target) throws RemoteException {
         try {
-            registry = LocateRegistry.getRegistry(target.getServerIP(), target.getPort());
-            server = (ServerAPI) registry.lookup("serverUtility");
+            target.setRegistry(LocateRegistry.getRegistry(target.getServerIP(), target.getPort()));
+            target.setServerAPI((ServerAPI) (target.getRegistry()).lookup("serverUtility"));
         } catch (NotBoundException ex) {
             Logger.getLogger(SyncActionClient.class.getName()).log(Level.SEVERE, null, ex);
             return false;
@@ -109,7 +107,7 @@ public class SyncActionClient implements Runnable {
         boolean flag = true;
         String serverLabel = target.getServerIP() + target.getPort();
         try {
-            server.beatFromClient(clientID, deviceID);
+            target.getServerAPI().beatFromClient(clientID, deviceID);
         } catch (RemoteException ex) {
             System.out.println("Someting wrong with this server..." + serverLabel);
         }

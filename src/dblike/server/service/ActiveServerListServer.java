@@ -6,7 +6,7 @@ package dblike.server.service;
 
 import dblike.server.ActiveServer;
 import dblike.service.InternetUtil;
-import java.util.ArrayList;
+import java.util.Vector;
 
 /**
  *
@@ -14,19 +14,19 @@ import java.util.ArrayList;
  */
 public class ActiveServerListServer {
 
-    private static ArrayList<ActiveServer> ActiveServerList = new ArrayList<ActiveServer>();
+    private static Vector<ActiveServer> ActiveServerList = new Vector<ActiveServer>();
 
     /**
      * @return the ActiveServerList
      */
-    public static ArrayList<ActiveServer> getActiveServerList() {
+    public static Vector<ActiveServer> getActiveServerList() {
         return ActiveServerList;
     }
 
     /**
      * @param aActiveServerList the ActiveServerList to set
      */
-    public static void setActiveServerList(ArrayList<ActiveServer> aActiveServerList) {
+    public static void setActiveServerList(Vector<ActiveServer> aActiveServerList) {
         ActiveServerList = aActiveServerList;
     }
 

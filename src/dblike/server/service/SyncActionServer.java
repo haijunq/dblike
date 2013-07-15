@@ -15,7 +15,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,11 +25,8 @@ import java.util.logging.Logger;
  */
 public class SyncActionServer implements Runnable {
 
-    private static ArrayList<ActiveClient> ActiveClientList;
-    private static ArrayList<ActiveServer> ActiveServerList;
-    private Registry registry;
-    private ClientAPI client = null;
-    private ServerAPI server = null;
+    private static Vector<ActiveClient> ActiveClientList;
+    private static Vector<ActiveServer> ActiveServerList;
 
     public SyncActionServer() {
         SyncActionServer.ActiveClientList = ActiveClientListServer.getActiveClientList();
@@ -38,9 +35,9 @@ public class SyncActionServer implements Runnable {
 
     public boolean lookupClient(ActiveClient target) throws RemoteException {
         try {
-            registry = LocateRegistry.getRegistry(target.getClientIP(), target.getPort());
+            target.setRegistry(LocateRegistry.getRegistry(target.getClientIP(), target.getPort()));
             String lookupClient = "clientUtility" + target.getClientID() + target.getDeviceID() + target.getClientIP() + target.getPort();
-            client = (ClientAPI) registry.lookup(lookupClient);
+            target.setClientAPI((ClientAPI) (target.getRegistry()).lookup(lookupClient));
         } catch (NotBoundException ex) {
             Logger.getLogger(SyncActionServer.class.getName()).log(Level.SEVERE, null, ex);
             return false;
@@ -53,8 +50,8 @@ public class SyncActionServer implements Runnable {
 
     public boolean lookupServer(ActiveServer target) throws RemoteException {
         try {
-            registry = LocateRegistry.getRegistry(target.getServerIP(), target.getPort());
-            server = (ServerAPI) registry.lookup("serverUtility");
+            target.setRegistry(LocateRegistry.getRegistry(target.getServerIP(), target.getPort()));
+            target.setServerAPI((ServerAPI) (target.getRegistry()).lookup("serverUtility"));
         } catch (NotBoundException ex) {
             Logger.getLogger(SyncActionServer.class.getName()).log(Level.SEVERE, null, ex);
             return false;
@@ -74,7 +71,7 @@ public class SyncActionServer implements Runnable {
                 if (lookupClient(aClient) == false) {
                     System.out.println("Failed to look up " + clientLabel);
                 } else {
-                    client.beatFromServer(ServerStart.getServerIP(), ServerStart.getPORT());
+                    aClient.getClientAPI().beatFromServer(ServerStart.getServerIP(), ServerStart.getPORT());
                 }
             } catch (RemoteException ex) {
                 System.out.println("Someting wrong with this client..." + clientLabel);
@@ -112,7 +109,7 @@ public class SyncActionServer implements Runnable {
                 if (lookupServer(aServer) == false) {
                     System.out.println("Failed to look up " + serverLabel);
                 } else {
-                    server.beatFromServer(ServerStart.getServerIP(), ServerStart.getPORT());
+                    aServer.getServerAPI().beatFromServer(ServerStart.getServerIP(), ServerStart.getPORT());
                 }
             } catch (RemoteException ex) {
                 System.out.println("Someting wrong with this server..." + serverLabel);

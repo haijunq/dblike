@@ -23,6 +23,7 @@ public class ClientStart {
     private static String deviceID = "iphone";
     private static String clientIP = "127.0.0.1";
     private static int clientPort = 7860;
+    //private static String serverIP = "23.23.129.199";
     private static String serverIP = "127.0.0.1";
     private static int serverPort = 1099;
 
@@ -82,12 +83,8 @@ public class ClientStart {
         serverPort = aServerPort;
     }
 
-   
-
     public static void main(String args[]) {
         try {
-            clientIP = InternetUtil.getMyIPInfo();
-            clientIP = "127.0.0.1";
             ClientImp client = new ClientImp();
             ClientAPI clientStub = (ClientAPI) UnicastRemoteObject.exportObject(client, 0);
             System.out.println("Client start at " + clientIP + ":" + clientPort);

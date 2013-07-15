@@ -6,7 +6,7 @@ package dblike.server.service;
 
 import dblike.server.ActiveServer;
 import dblike.service.InternetUtil;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  */
 public class ServerListenerServer implements Runnable {
 
-    private ArrayList<ActiveServer> ActiveServerList;
+    private Vector<ActiveServer> ActiveServerList;
 
     public ServerListenerServer() {
         this.ActiveServerList = ActiveServerListServer.getActiveServerList();

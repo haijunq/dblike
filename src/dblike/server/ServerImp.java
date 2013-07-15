@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  */
 public class ServerImp implements ServerAPI {
 
-    private ArrayList<ActiveClient> ClientList = null;
+    private Vector<ActiveClient> ClientList = null;
     private ClientAPI client = null;
     private Registry registry;
 
