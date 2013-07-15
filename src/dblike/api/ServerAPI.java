@@ -27,10 +27,12 @@ public interface ServerAPI extends Remote {
     public void displayClient(ActiveClient target, String message) throws RemoteException;
 
     public boolean beatFromServer(String serverIP, int port) throws RemoteException;
-    
+
     public boolean beatFromClient(String clientID, String deviceID) throws RemoteException;
-    
+
     public FileInfo getFileInfoFromServer(String serverIP, int port, String userName, String directory, String fileName) throws RemoteException;
-    
+
     public void setFileInfoToServer(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) throws RemoteException;
+
+    public boolean validateUser(String userID, String hashedPassword) throws RemoteException;
 }
