@@ -6,6 +6,7 @@ package dblike.service;
 
 import dblike.server.service.FileListService;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -155,4 +156,17 @@ public class FileInfoService {
         }
         return fileinfo;
     }
+    
+    public static FileInfo getFileinfoByFilename(String directory, String filename) throws Exception {
+        FileInfo fileInfo = new FileInfo();
+        File file = new File(directory+ "/" + filename);
+        if (file.exists()) {
+            
+        } else {
+            
+        }
+        
+        return fileInfo;
+    }
+   
 }
