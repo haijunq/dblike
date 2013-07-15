@@ -112,10 +112,10 @@ public class ServerImp implements ServerAPI {
     // to do
     public void setFileInfoToClient(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) {
         FileListXMLService.setFileInfo(userName, directory, fileName, fileInfo);
-    }
+    } 
     
     @Override
     public boolean validateUser(String userID, String hashedPassword) throws RemoteException {
         return UserListXMLReader.isValidUser(userID, hashedPassword);
-    }
+    } 
 }
