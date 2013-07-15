@@ -4,25 +4,20 @@ import dblike.api.ServerAPI;
 import dblike.client.service.ActiveServerListClient;
 import dblike.client.service.ServerListenerClient;
 import dblike.client.service.SyncActionClient;
-import dblike.server.ActiveClient;
 import java.rmi.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.awt.*;
-import java.awt.event.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.Scanner;
 
 /**
  *
  * @author wenhanwu
  */
-public class Client extends Frame implements ActionListener {
+public class Client {
 
     private ServerAPI server = null;
-    private TextField serverPath, userIDTF, passwordTF, noticeTF;
-    private TextArea displayArea;
-    private Button login, logout, act;
     private String userParam, userID, password;
     private int loginStatus;
     private static String host;
@@ -92,7 +87,29 @@ public class Client extends Frame implements ActionListener {
         this.loginStatus = loginStatus;
     }
 
-    public static void startThread(String clientID, String deviceID, String serverIP, int serverPort) { 
+    public void inputNamePassword() {
+        Scanner scanUN = new Scanner(System.in);
+        System.out.println("Username:");
+        do {
+            String userInput = scanUN.nextLine();
+            try {
+                setUserID(userInput);
+                if (getUserID().equals("")) {
+                    System.out.println("Username cannot be null.");
+                } else {
+                    break;
+                }
+            } catch (Exception e) {
+                System.err.println("Client exception: " + e.toString());
+                e.printStackTrace();
+            }
+        } while (true);
+        System.out.println("Password:");
+        Scanner scanPW = new Scanner(System.in);
+        setPassword(scanPW.nextLine());
+    }
+
+    public static void startThread(String clientID, String deviceID, String serverIP, int serverPort) {
         //New thread to listen to heartbeat from all servers
         ServerListenerClient serverListener = new ServerListenerClient();
         sLThread = new Thread(serverListener);
@@ -108,7 +125,6 @@ public class Client extends Frame implements ActionListener {
     }
 
     public Client(String aClientID, String aDeviceID, String aClientIP, int aClientPort, String aServerIP, int aServerPort) {
-        super(aClientID);
         try {
             this.clientID = aClientID;
             this.deviceID = aDeviceID;
@@ -117,67 +133,52 @@ public class Client extends Frame implements ActionListener {
             this.serverIP = aServerIP;
             this.serverPort = aServerPort;
             loginStatus = 0;
-            this.setLayout(new FlowLayout(FlowLayout.LEFT));
-            setBounds(100, 100, 500, 500);
 
-            this.add(new Label("Name:"));
-            userIDTF = new TextField(18);
-            this.add(userIDTF);
-            userIDTF.setText(clientID);
-            userIDTF.setEnabled(false);
-
-            this.add(new Label("Password:"));
-            passwordTF = new TextField(18);
-            this.add(passwordTF);
-            passwordTF.setText("");
-
-            this.add(new Label("Server: "));
-            serverPath = new TextField(50);
-            serverPath.setEnabled(false);
-            this.add(serverPath);
-            serverPath.setText("Local");
-
-
-            noticeTF = new TextField(50);
-            this.add(noticeTF);
-
-            act = new Button("Act");
-            act.addActionListener(this);
-            this.add(act);
-
-            displayArea = new TextArea(15, 60);
-            this.add(displayArea);
-            displayArea.setEditable(false);
-
-            login = new Button("Login");
-            login.addActionListener(this);
-            this.add(login);
-
-            logout = new Button("Logout");
-            logout.addActionListener(this);
-            this.add(logout);
             registry = LocateRegistry.getRegistry(serverIP, serverPort);
         } catch (RemoteException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
-        this.setVisible(true);
         lookup();
     }
 
     public void talk(String message) throws RemoteException {
-        displayArea.append(message + "\n");
+        System.out.println(message + "\n");
     }
 
-    private void login() {
+    public void login() {
+        boolean flag = true;
+        while (flag) {
+            try {
+                inputNamePassword();
+                if (server.validateUser(userID, password)) {
+                    flag = false;
+                    System.out.println("Login Successfully");
+                } else {
+                    System.out.println("Not a validate user, input again!");
+                }
+            } catch (RemoteException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         try {
             setLoginStatus(1);
-            setUserID(userIDTF.getText().trim());
             server.addClient(clientID, deviceID, clientIP, clientPort);
+            System.out.println("Client already added on server!");
             ActiveServerListClient.addServer(serverIP, serverPort);
+            System.out.println("Server loaded!");
             startThread(clientID, deviceID, serverIP, serverPort);
         } catch (Exception e) {
             System.out.println(e);
         }
+    }
+
+    public void promptMessage() {
+        System.out.println("--------------------------------------------------------------");
+        System.out.println(" Hi, " + clientID + " on " + deviceID);
+        System.out.println(" Client: " + clientIP + ":" + clientPort);
+        System.out.println(" Server: " + serverIP + ":" + serverPort);
+        System.out.println("--------------------------------------------------------------");
+
     }
 
     private void logout() {
@@ -199,26 +200,6 @@ public class Client extends Frame implements ActionListener {
         }
     }
 
-    @Override
-    public void actionPerformed(ActionEvent action) {
-        if (action.getSource().equals(login)) {
-            login();
-            if (getLoginStatus() == 1) {
-                login.setEnabled(false);
-                userIDTF.setEnabled(false);
-            }
-        } else if (action.getSource().equals(logout)) {
-            this.logout();
-            userIDTF.setEnabled(true);
-            passwordTF.setEnabled(true);
-            serverPath.setEnabled(true);
-            login.setEnabled(true);
-        } else if (action.getSource().equals(act)) {
-            act();
-
-        }
-    }
-
     public void lookup() {
         try {
             System.out.println("registry is; -->" + registry);
@@ -231,6 +212,5 @@ public class Client extends Frame implements ActionListener {
         } catch (NotBoundException ex) {
             System.out.println(ex);
         }
-
     }
 }

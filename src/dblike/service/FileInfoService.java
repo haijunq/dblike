@@ -31,7 +31,7 @@ import org.xml.sax.SAXException;
  *
  * @author haijun
  */
-public class FileInfoXMLService {
+public class FileInfoService {
 
     /**
      * 

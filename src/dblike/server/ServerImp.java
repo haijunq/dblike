@@ -93,15 +93,27 @@ public class ServerImp implements ServerAPI {
     public boolean beatFromClient(String clientID, String deviceID) throws RemoteException {
         return ActiveClientListServer.beatTheClient(clientID, deviceID);
     }
-
+    
+    // to do
     public FileInfo getFileInfoFromServer(String serverIP, int port, String userName, String directory, String fileName) {
         return FileListXMLService.getFileInfo(userName, directory, fileName);
     }
-
+    
+    // to do
     public void setFileInfoToServer(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) {
         FileListXMLService.setFileInfo(userName, directory, fileName, fileInfo);
     }
-
+    
+    // to do 
+    public FileInfo getFileInfoFromClient(String serverIP, int port, String userName, String directory, String fileName) {
+        return FileListXMLService.getFileInfo(userName, directory, fileName);
+    }
+    
+    // to do
+    public void setFileInfoToClient(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) {
+        FileListXMLService.setFileInfo(userName, directory, fileName, fileInfo);
+    }
+    
     @Override
     public boolean validateUser(String userID, String hashedPassword) throws RemoteException {
         return UserListXMLReader.isValidUser(userID, hashedPassword);

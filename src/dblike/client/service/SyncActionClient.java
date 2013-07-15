@@ -5,17 +5,13 @@
 package dblike.client.service;
 
 import dblike.api.ServerAPI;
-import dblike.client.ActiveServer;
-import dblike.client.ClientStart;
+import dblike.client.ActiveServer; 
 import dblike.service.InternetUtil;
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
+import java.rmi.registry.LocateRegistry; 
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -94,10 +90,10 @@ public class SyncActionClient implements Runnable {
             target.setRegistry(LocateRegistry.getRegistry(target.getServerIP(), target.getPort()));
             target.setServerAPI((ServerAPI) (target.getRegistry()).lookup("serverUtility"));
         } catch (NotBoundException ex) {
-            Logger.getLogger(SyncActionClient.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex);
             return false;
         } catch (AccessException ex) {
-            Logger.getLogger(SyncActionClient.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex);
             return false;
         }
         return true;
@@ -116,19 +112,18 @@ public class SyncActionClient implements Runnable {
 
     public void run() {
         int timeout = InternetUtil.getBEATINTERVAL() * 1000;
-        ActiveServer target = ActiveServerListClient.searchServerByIP_Port(serverIP, serverPort);
-        System.out.println("Will look up for--->" + target.getServerIP() + ":" + target.getPort());
+        ActiveServer target = ActiveServerListClient.searchServerByIP_Port(serverIP, serverPort); 
         try {
             lookupServer(target);
         } catch (RemoteException ex) {
-            Logger.getLogger(SyncActionClient.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex);
         }
         while (true) {
             beatForServer(target);
             try {
                 Thread.sleep(timeout);
             } catch (InterruptedException ex) {
-                Logger.getLogger(SyncActionClient.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex);
             }
 
         }

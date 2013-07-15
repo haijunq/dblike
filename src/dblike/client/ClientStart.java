@@ -5,9 +5,6 @@
 package dblike.client;
 
 import dblike.api.ClientAPI;
-import dblike.client.service.ServerListenerClient;
-import dblike.client.service.SyncActionClient;
-import dblike.service.InternetUtil;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
@@ -21,10 +18,10 @@ public class ClientStart {
     private static Registry registry;
     private static String clientID = "001";
     private static String deviceID = "iphone";
-    private static String clientIP = "127.0.0.1";
+    private static String clientIP = "128.189.70.99";
     private static int clientPort = 7860;
-    //private static String serverIP = "23.23.129.199";
-    private static String serverIP = "127.0.0.1";
+    private static String serverIP = "23.23.129.199";
+    //private static String serverIP = "127.0.0.1";
     private static int serverPort = 1099;
 
     /**
@@ -95,7 +92,7 @@ public class ClientStart {
             System.out.println("Already bind: " + "[" + clientBind + "]");
             System.out.println("Client ready");
             Client aClient = new Client(getClientID(), getDeviceID(), clientIP, clientPort, getServerIP(), getServerPort());
-
+            aClient.login();
         } catch (Exception ex) {
             System.out.println(ex);
         }

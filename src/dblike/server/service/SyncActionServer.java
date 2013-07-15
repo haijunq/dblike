@@ -39,10 +39,10 @@ public class SyncActionServer implements Runnable {
             String lookupClient = "clientUtility" + target.getClientID() + target.getDeviceID() + target.getClientIP() + target.getPort();
             target.setClientAPI((ClientAPI) (target.getRegistry()).lookup(lookupClient));
         } catch (NotBoundException ex) {
-            Logger.getLogger(SyncActionServer.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex);
             return false;
         } catch (AccessException ex) {
-            Logger.getLogger(SyncActionServer.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex);
             return false;
         }
         return true;
@@ -53,16 +53,17 @@ public class SyncActionServer implements Runnable {
             target.setRegistry(LocateRegistry.getRegistry(target.getServerIP(), target.getPort()));
             target.setServerAPI((ServerAPI) (target.getRegistry()).lookup("serverUtility"));
         } catch (NotBoundException ex) {
-            Logger.getLogger(SyncActionServer.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex);
             return false;
         } catch (AccessException ex) {
-            Logger.getLogger(SyncActionServer.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex);
             return false;
         }
         return true;
     }
 
     public boolean beatForAllClient() {
+        System.out.println("in beatForAllClient, has "+ActiveClientList.size()+" in total");
         boolean flag = true;
         for (int i = 0; i < ActiveClientList.size(); i++) {
             ActiveClient aClient = ActiveClientList.get(i);
@@ -71,10 +72,11 @@ public class SyncActionServer implements Runnable {
                 if (lookupClient(aClient) == false) {
                     System.out.println("Failed to look up " + clientLabel);
                 } else {
+                    System.out.println("registry is: "+aClient.getRegistry());
                     aClient.getClientAPI().beatFromServer(ServerStart.getServerIP(), ServerStart.getPORT());
                 }
             } catch (RemoteException ex) {
-                System.out.println("Someting wrong with this client..." + clientLabel);
+                System.out.println("exp for: "+ex);
             }
 
         }
@@ -127,7 +129,7 @@ public class SyncActionServer implements Runnable {
             try {
                 Thread.sleep(timeout);
             } catch (InterruptedException ex) {
-                Logger.getLogger(ClientListenerServer.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println(ex);
             }
         }
 
