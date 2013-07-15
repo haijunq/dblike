@@ -17,9 +17,9 @@ import static org.junit.Assert.*;
  *
  * @author haijun
  */
-public class FileInfoXMLServiceTest {
+public class FileInfoServiceTest {
     
-    public FileInfoXMLServiceTest() {
+    public FileInfoServiceTest() {
     }
     
     @BeforeClass
@@ -39,7 +39,7 @@ public class FileInfoXMLServiceTest {
     }
 
     /**
-     * Test of fileInfoToXMLString method, of class FileInfoXMLService.
+     * Test of fileInfoToXMLString method, of class FileInfoService.
      */
     @Test
     public void testFileInfoToXMLString() {
@@ -47,9 +47,9 @@ public class FileInfoXMLServiceTest {
         String username = "haijun";
         FileListService r = FileListXMLService.loadFileListFromXML(username);
         FileInfo fileinfo = r.getFileInfoByFileName("file2");
-        String result = FileInfoXMLService.fileInfoToXMLString(fileinfo);
+        String result = FileInfoService.fileInfoToXMLString(fileinfo);
         System.out.println(result);
-        FileInfo newfileinfo = FileInfoXMLService.parseXMLStringToFileInfo(result);
+        FileInfo newfileinfo = FileInfoService.parseXMLStringToFileInfo(result);
         System.out.println(newfileinfo);
     }
 }
