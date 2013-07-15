@@ -10,6 +10,7 @@ import dblike.server.service.ActiveClientListServer;
 import dblike.server.service.ActiveServerListServer;
 import dblike.service.FileInfo;
 import dblike.server.service.FileListXMLService;
+import dblike.server.service.UserListXMLReader;
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -92,12 +93,17 @@ public class ServerImp implements ServerAPI {
     public boolean beatFromClient(String clientID, String deviceID) throws RemoteException {
         return ActiveClientListServer.beatTheClient(clientID, deviceID);
     }
-    
+
     public FileInfo getFileInfoFromServer(String serverIP, int port, String userName, String directory, String fileName) {
         return FileListXMLService.getFileInfo(userName, directory, fileName);
     }
-    
+
     public void setFileInfoToServer(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) {
         FileListXMLService.setFileInfo(userName, directory, fileName, fileInfo);
+    }
+
+    @Override
+    public boolean validateUser(String userID, String hashedPassword) throws RemoteException {
+        return UserListXMLReader.isValidUser(userID, hashedPassword);
     }
 }
