@@ -27,6 +27,11 @@ public class SFTPService {
         
     }
     
+    public SFTPService(String host, int port){
+        this.sftpHost = host;
+        this.sftpPort = port;
+    }
+    
     /**
      *
      * @param sftpHost
@@ -36,7 +41,7 @@ public class SFTPService {
      * @param privateKey
      */
     public SFTPService (String sftpHost, int sftpPort, String userName, String pwd, String privateKey) {
-
+        
         this.sftpHost = sftpHost;
         this.sftpPort = sftpPort;
         this.userName = userName;
@@ -46,9 +51,9 @@ public class SFTPService {
     }
     
     /**
-     * 
+     *
      * @return
-     * @throws JSchException 
+     * @throws JSchException
      */
     private Session getSession() throws JSchException{
         
@@ -76,7 +81,7 @@ public class SFTPService {
         
         Channel channel = session.openChannel("sftp");
         channel.connect();
-//        System.out.println("Channel connected!");
+        //        System.out.println("Channel connected!");
         
         ChannelSftp sftpChannel = (ChannelSftp) channel;
         sftpChannel.put(sourceFile, destinationFile);
@@ -85,11 +90,11 @@ public class SFTPService {
     }
     
     /**
-     * 
+     *
      * @param sourceFile
      * @param destinationFile
      * @throws JSchException
-     * @throws SftpException 
+     * @throws SftpException
      */
     public void downloadFile(String sourceFile, String destinationFile) throws JSchException, SftpException {
         
@@ -97,7 +102,7 @@ public class SFTPService {
         
         Channel channel = session.openChannel("sftp");
         channel.connect();
-//        System.out.println("Channel connected!");
+        //        System.out.println("Channel connected!");
         
         ChannelSftp sftpChannel = (ChannelSftp) channel;
         sftpChannel.get(sourceFile, destinationFile);
