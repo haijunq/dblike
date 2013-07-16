@@ -40,7 +40,7 @@ public class ClientImp implements ClientAPI {
     
     public String getFileInfoFromClient(String serverIP, int port, String userName, String directory, String fileName) throws Exception{
         // to do 
-        return FileInfoService.fileInfoToXMLString(ClientConfig.);
+        return FileInfoService.fileInfoToXMLString(ClientConfig.getMyFileList().getFileHashTable().get(fileName));
     }
     
     public void setFileInfoToClient(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) throws Exception{
