@@ -25,6 +25,11 @@ public class SyncActionClient implements Runnable {
     private String serverIP;
     private int serverPort;
 
+    private boolean runningFlag = true;
+
+    public void setRunningFlag(boolean flag) {
+        this.runningFlag = flag;
+    }
     /**
      * @return the serverIP
      */
@@ -118,7 +123,7 @@ public class SyncActionClient implements Runnable {
         } catch (RemoteException ex) {
             System.out.println(ex);
         }
-        while (true) {
+        while (runningFlag) {
             beatForServer(target);
             try {
                 Thread.sleep(timeout);

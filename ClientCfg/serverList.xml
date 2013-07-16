@@ -1,10 +1,6 @@
 <serverList>
     <server>
-        <IP> 1.1.1.1 </IP>
-        <port>11</port>
+        <IP>127.0.0.1</IP>
+        <port>1099</port>
     </server>
-    <server>
-        <IP> 2.2.2.2 </IP>
-        <port>22</port>
-    </server>
-</serverList
+</serverList>

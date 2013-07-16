@@ -60,7 +60,6 @@ public class Client {
     public void setUserParam(String userParam) {
         this.userParam = userParam;
     }
- 
 
     /**
      * @return the password
@@ -127,50 +126,56 @@ public class Client {
         syncThread.start();
     }
 
-    public Client(String aClientID, String aDeviceID, String aClientIP, int aClientPort, String aServerIP, int aServerPort) {
-        try {
-            this.clientID = aClientID;
-            this.deviceID = aDeviceID;
-            this.clientIP = aClientIP;
-            this.clientPort = aClientPort;
-            this.serverIP = aServerIP;
-            this.serverPort = aServerPort;
-            loginStatus = 0;
-
-            registry = LocateRegistry.getRegistry(serverIP, serverPort);
-        } catch (RemoteException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        lookup();
+    public Client(String aServerIP, int aServerPort) {
+        this.serverIP = aServerIP;
+        this.serverPort = aServerPort;
+        loginStatus = 0;
     }
 
     public void talk(String message) throws RemoteException {
         System.out.println(message + "\n");
     }
 
-    public void login() {
-        boolean flag = true;
-        while (flag) {
-            try {
-                inputNamePassword();
-                if (server.validateUser(getClientID(), MD5Service.getMD5FromString(password))) {
-                    flag = false;
-                    System.out.println("Login Successfully");
-                } else {
-                    System.out.println("Not a validate user, input again!");
+    public String login() {
+        try {
+            boolean flag = true;
+
+            registry = LocateRegistry.getRegistry(serverIP, serverPort);
+            lookup();
+            while (flag) {
+                try {
+                    inputNamePassword();
+                    if (server.validateUser(getClientID(), MD5Service.getMD5FromString(password))) {
+                        flag = false;
+                        System.out.println("Login Successfully");
+                    } else {
+                        System.out.println("Not a validate user, input again!");
+                    }
+                } catch (RemoteException ex) {
+                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } catch (RemoteException ex) {
-                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } catch (RemoteException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return clientID;
+    }
+
+    public void initData() {
         try {
             setLoginStatus(1);
-            server.addClient(getClientID(), deviceID, clientIP, clientPort);
+            ClientConfig.initCurrentClient(getClientID(), "", "", "", "");
+            ClientConfig.loadCurrentUser();
+
+            this.deviceID = ClientConfig.getCurrentClient().getDeviceID();
+            this.clientIP = ClientConfig.getCurrentClient().getIp();
+            this.clientPort = Integer.parseInt(ClientConfig.getCurrentClient().getPort());
+
+            server.addClient(clientID, deviceID, clientIP, clientPort);
             System.out.println("Client already added on server!");
             ActiveServerListClient.addServer(serverIP, serverPort);
             System.out.println("Server loaded!");
-            ClientConfig.initCurrentClient(getClientID(), "", "");
-            ClientConfig.loadUserList();
+
             startThread(getClientID(), deviceID, serverIP, serverPort);
         } catch (Exception e) {
             System.out.println(e);

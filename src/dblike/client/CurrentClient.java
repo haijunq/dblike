@@ -18,6 +18,36 @@ public class CurrentClient {
     private String clientID;
     private String deviceID;
     private String folderPath;
+    private String ip;
+    private String port;
+
+    /**
+     * @return the ip
+     */
+    public String getIp() {
+        return ip;
+    }
+
+    /**
+     * @param ip the ip to set
+     */
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    /**
+     * @return the port
+     */
+    public String getPort() {
+        return port;
+    }
+
+    /**
+     * @param port the port to set
+     */
+    public void setPort(String port) {
+        this.port = port;
+    }
 
     public CurrentClient() {
     }
@@ -64,9 +94,11 @@ public class CurrentClient {
         this.deviceID = deviceID;
     }
 
-    public CurrentClient(String aClientID, String aDeviceID, String aFolderPath) {
+    public CurrentClient(String aClientID, String aDeviceID, String aFolderPath, String aIP, String aPort) {
         this.clientID = aClientID;
         this.deviceID = aDeviceID;
         this.folderPath = aFolderPath;
+        this.ip = aIP;
+        this.port = aPort;
     }
 }
