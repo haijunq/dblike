@@ -4,6 +4,7 @@
  */
 package dblike.client.service;
 
+import dblike.client.ActiveServer;
 import dblike.client.CurrentClient;
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Hashtable;
 import java.util.Scanner;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
@@ -36,23 +38,54 @@ import org.xml.sax.SAXException;
 public class ClientConfig {
 
     private static CurrentClient currentClient = new CurrentClient();
+    private static Vector<ActiveServer> ServerList = new Vector<ActiveServer>();
 
-    public static void initCurrentClient(String aClientID, String aDeviceID, String aFolderPath) {
-        currentClient.setClientID(aClientID);
-        currentClient.setDeviceID(aDeviceID);
-        currentClient.setFolderPath(aFolderPath);
+    /**
+     * @return the currentClient
+     */
+    public static CurrentClient getCurrentClient() {
+        return currentClient;
+    }
+
+    /**
+     * @param aCurrentClient the currentClient to set
+     */
+    public static void setCurrentClient(CurrentClient aCurrentClient) {
+        currentClient = aCurrentClient;
+    }
+
+    /**
+     * @return the ServerList
+     */
+    public static Vector<ActiveServer> getServerList() {
+        return ServerList;
+    }
+
+    /**
+     * @param aServerList the ServerList to set
+     */
+    public static void setServerList(Vector<ActiveServer> aServerList) {
+        ServerList = aServerList;
+    }
+
+    public static void initCurrentClient(String aClientID, String aDeviceID, String aFolderPath, String aIP, String aPort) {
+        getCurrentClient().setClientID(aClientID);
+        getCurrentClient().setDeviceID(aDeviceID);
+        getCurrentClient().setFolderPath(aFolderPath);
+        getCurrentClient().setIp(aIP);
+        getCurrentClient().setPort(aPort);
     }
 
     /**
      *
      * @return
      */
-    public static boolean loadUserList() {
+    public static boolean loadCurrentUser() {
         DocumentBuilderFactory domfac = DocumentBuilderFactory.newInstance();
         try {
             DocumentBuilder dombuilder = domfac.newDocumentBuilder();
-            System.out.println("ClientCfg/users/" + currentClient.getClientID() + "/user.xml");
-            InputStream fis = new FileInputStream("ClientCfg/users/" + currentClient.getClientID() + "/user.xml");
+            System.out.println("ClientCfg/users/" + getCurrentClient().getClientID() + "/user.xml");
+            InputStream fis = new FileInputStream("ClientCfg/users/" + getCurrentClient().getClientID() + "/user.xml");
             System.out.println(fis);
             Document doc = dombuilder.parse(fis);
             Element root = doc.getDocumentElement();
@@ -61,6 +94,8 @@ public class ClientConfig {
                 String username = "";
                 String folderPath = "";
                 String deviceID = "";
+                String ip = "";
+                String port = "";
                 for (Node node = user; node != null; node = node.getNextSibling()) {
                     if (node.getNodeType() == Node.ELEMENT_NODE) {
                         if (node.getNodeName().equals("username")) {
@@ -87,10 +122,18 @@ public class ClientConfig {
                                 node.getFirstChild().setNodeValue(folderPath);
                             }
                         }
+                        
+                        if (node.getNodeName().equals("IP")) {
+                            ip = node.getFirstChild().getNodeValue(); 
+                        }
+                        
+                        if (node.getNodeName().equals("port")) {
+                            port = node.getFirstChild().getNodeValue(); 
+                        }
                     }
                 }
 
-                initCurrentClient(username, deviceID, folderPath);
+                initCurrentClient(username, deviceID, folderPath, ip, port);
 
                 TransformerFactory transformerFactory = TransformerFactory.newInstance();
                 Transformer transformer = null;
@@ -100,11 +143,71 @@ public class ClientConfig {
                     Logger.getLogger(ClientConfig.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 DOMSource source = new DOMSource(doc);
-                StreamResult result = new StreamResult(new File("ClientCfg/users/" + currentClient.getClientID() + "/user.xml"));
+                StreamResult result = new StreamResult(new File("ClientCfg/users/" + getCurrentClient().getClientID() + "/user.xml"));
                 try {
                     transformer.transform(source, result);
                 } catch (TransformerException ex) {
                     Logger.getLogger(ClientConfig.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                return true;
+            } else {
+                return false;
+            }
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+            return false;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        } catch (SAXException e) {
+            e.printStackTrace();
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public static boolean loadServerList() {
+        DocumentBuilderFactory domfac = DocumentBuilderFactory.newInstance();
+        try {
+            DocumentBuilder dombuilder = domfac.newDocumentBuilder();
+            InputStream fis = new FileInputStream("ClientCfg/serverList.xml");
+            Document doc = dombuilder.parse(fis);
+            Element root = doc.getDocumentElement();
+            NodeList users = root.getChildNodes();
+            if (users != null) {
+                for (int i = 0; i < users.getLength(); i++) {
+                    Node user = users.item(i);
+                    if (user.getNodeType() == Node.ELEMENT_NODE) {
+                        int checker = 0;
+                        String ip = "";
+                        String port = "";
+                        for (Node node = user.getFirstChild(); node != null; node = node.getNextSibling()) {
+                            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                                if (node.getNodeName().equals("IP")) {
+                                    ip = node.getFirstChild().getNodeValue();
+                                    ++checker;
+                                }
+                                if (node.getNodeName().equals("port")) {
+                                    port = node.getFirstChild().getNodeValue();
+                                    ++checker;
+                                }
+                            }
+                            if (checker == 2) {
+                                String serverID = ip;
+                                getServerList().add(new ActiveServer(serverID, ip, Integer.parseInt(port)));
+                                checker = 0;
+                            }
+                        }
+                    }
+                }
+                for (int i = 0; i < getServerList().size(); ++i) {
+                    System.out.println(getServerList().get(i).getServerIP() + ":" + getServerList().get(i).getPort());
                 }
                 return true;
             } else {

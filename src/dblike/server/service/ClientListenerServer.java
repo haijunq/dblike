@@ -16,6 +16,11 @@ import java.util.logging.Logger;
  */
 public class ClientListenerServer implements Runnable {
 
+    private boolean runningFlag = true;
+
+    public void setRunningFlag(boolean flag) {
+        this.runningFlag = flag;
+    }
     private Vector<ActiveClient> ActiveClientList;
 
     public ClientListenerServer() {
@@ -58,7 +63,7 @@ public class ClientListenerServer implements Runnable {
     }
 
     public void run() {
-        while (true) {
+        while (runningFlag) {
             checkAllClient();
             waitForAWhile(InternetUtil.getTIMEOUT());
         }
