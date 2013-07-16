@@ -97,14 +97,22 @@ public class FileInfo {
         return new DateTime(this.timestamp).isAfter(new DateTime(timestamp));
     }
 
-    public boolean isVersionNewer(int version) {
-        if (this.version < version) {
-            return true;
+    /**
+     * Check version number.
+     *
+     * @param version
+     * @return 0 if equal, 1 if newer, 2 if older
+     */
+    public int isVersionNewer(int version) {
+        if (this.version == version) {
+            return 0;
+        } else if (this.version > version) {
+            return 1;
         } else {
-            return false;
+            return 2;
         }
     }
-    
+
     public boolean isSameDevice(String deviceID) {
         return this.deviceID.equals(deviceID);
     }
@@ -123,27 +131,73 @@ public class FileInfo {
         FileInfoDiff diff = new FileInfoDiff();
         FileInfo fileInfoThis = new FileInfo(this);
         FileInfo fileInfoThat = new FileInfo(anotherFileInfo);
-        
-        for (String chunkName1 : fileInfoThis.getFileHashCode().keySet()) {
-            for (String chunkName2 : fileInfoThat.getFileHashCode().keySet()) {
-                if (chunkName1.equals(chunkName2) && fileInfoThis.getFileHashCode().get(chunkName1).equals(fileInfoThat.getFileHashCode().get(chunkName2))) {
-                    fileInfoThis.getFileHashCode().remove(chunkName1);
-                    fileInfoThat.getFileHashCode().remove(chunkName2);
 
-                }
+        // if DeviceID are the same, then just check the version number to determain newer or older
+        if (fileInfoThis.isSameDevice(fileInfoThat.getDeviceID())) {
+            diff.setDeviceID(fileInfoThis.getDeviceID());
+            diff.setFlag(fileInfoThis.isVersionNewer(fileInfoThat.getVersion()));
+            if (diff.getFlag() == 0 && fileInfoThis.getFileHashCode().equals(fileInfoThat.getFileHashCode())) {
+                return diff;
             }
-        }
-
-        for (String chunkName2 : fileInfoThat.getFileHashCode().keySet()) {
+            if (diff.getFlag() == 2) {
+                return diff;
+            }
+            diff.setFileName(fileInfoThis.getFileName());
+            diff.setTimestamp(fileInfoThis.getTimestamp());
+            diff.setFileSize(fileInfoThis.getFileSize());
+            diff.setVersion(fileInfoThis.getVersion());
+            
+            if (fileInfoThis.getFileHashCode().isEmpty()) {
+                return diff;
+            }
+            
+            if (fileInfoThat.getFileHashCode().isEmpty()) {
+                diff.setFileHashCode(fileInfoThis.getFileHashCode());
+                return diff;
+            }
+            
             for (String chunkName1 : fileInfoThis.getFileHashCode().keySet()) {
-                if (chunkName1.equals(chunkName2) && fileInfoThis.getFileHashCode().get(chunkName1).equals(fileInfoThat.getFileHashCode().get(chunkName2))) {
-                    fileInfoThis.getFileHashCode().remove(chunkName1);
-                    fileInfoThat.getFileHashCode().remove(chunkName2);
-
+                for (String chunkName2 : fileInfoThat.getFileHashCode().keySet()) {
+                    if (chunkName1.equals(chunkName2) && fileInfoThis.getFileHashCode().get(chunkName1).equals(fileInfoThat.getFileHashCode().get(chunkName2))) {
+                        fileInfoThis.getFileHashCode().remove(chunkName1);
+                    }
                 }
             }
+            diff.setFileHashCode(fileInfoThis.getFileHashCode());
+            return diff;
+        } 
+        // if not the same device, then compare the version number and timestamp to determine which copy is made.
+        else {
+            if (fileInfoThis.getVersion() > fileInfoThat.getVersion()) {
+                diff.setFlag(1);
+                // use fileInfoThis
+            } else {
+                diff.setFlag(3);
+                // use fileInfoThat, rename all the entries in the FileInfo
+            }
+            return diff;
         }
-        return diff;
-    }
 
+        
+//        for (String chunkName1 : fileInfoThis.getFileHashCode().keySet()) {
+//            for (String chunkName2 : fileInfoThat.getFileHashCode().keySet()) {
+//                if (chunkName1.equals(chunkName2) && fileInfoThis.getFileHashCode().get(chunkName1).equals(fileInfoThat.getFileHashCode().get(chunkName2))) {
+//                    fileInfoThis.getFileHashCode().remove(chunkName1);
+//                    fileInfoThat.getFileHashCode().remove(chunkName2);
+//
+//                }
+//            }
+//        }
+//
+//        for (String chunkName2 : fileInfoThat.getFileHashCode().keySet()) {
+//            for (String chunkName1 : fileInfoThis.getFileHashCode().keySet()) {
+//                if (chunkName1.equals(chunkName2) && fileInfoThis.getFileHashCode().get(chunkName1).equals(fileInfoThat.getFileHashCode().get(chunkName2))) {
+//                    fileInfoThis.getFileHashCode().remove(chunkName1);
+//                    fileInfoThat.getFileHashCode().remove(chunkName2);
+//
+//                }
+//            }
+//        }
+//        return diff;
+    }
 }
