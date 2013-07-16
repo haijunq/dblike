@@ -21,6 +21,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.joda.time.DateTime;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -157,13 +158,24 @@ public class FileInfoService {
         return fileinfo;
     }
     
-    public static FileInfo getFileinfoByFilename(String directory, String filename) throws Exception {
+    public static FileInfo getFileInfoByFileName(String directory, String filename) throws Exception {
         FileInfo fileInfo = new FileInfo();
         File file = new File(directory+ "/" + filename);
         if (file.exists()) {
-            
+            // to do 
+//            fileInfo.setVersion(UserFileListService.get(UserConfig.getUsername()));
+//            fileInfo.setDeviceID(UserConfig.getDeviceID());
+            fileInfo.setFileName(filename);
+            fileInfo.setFileSize(file.length());
+            fileInfo.setTimestamp(new DateTime(file.lastModified()).toString());
+            fileInfo.setFileHashCode(MD5Service.getMD5StringTableFromSingleFile(directory, filename));
         } else {
-            
+//            fileInfo.setVersion(UserFileListService.get(UserConfig.getUsername()));
+//            fileInfo.setDeviceID(UserConfig.getDeviceID());
+            fileInfo.setFileName(filename);
+            fileInfo.setFileSize(0);
+            fileInfo.setTimestamp(new DateTime().toString());  
+            fileInfo.setFileHashCode(new Hashtable<String, String>());
         }
         
         return fileInfo;
