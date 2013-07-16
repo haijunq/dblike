@@ -109,4 +109,18 @@ public class SFTPService {
         sftpChannel.exit();
         session.disconnect();
     }
+    
+    public void deleteFile(String file) throws JSchException, SftpException
+    {
+        Session session = getSession();
+        
+        Channel channel = session.openChannel("sftp");
+        channel.connect();
+        //        System.out.println("Channel connected!");
+        
+        ChannelSftp sftpChannel = (ChannelSftp) channel;
+        sftpChannel.rm(file);
+        sftpChannel.exit();
+        session.disconnect();
+    }
 }
