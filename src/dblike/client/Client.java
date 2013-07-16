@@ -2,8 +2,10 @@ package dblike.client;
 
 import dblike.api.ServerAPI;
 import dblike.client.service.ActiveServerListClient;
+import dblike.client.service.ClientConfig;
 import dblike.client.service.ServerListenerClient;
 import dblike.client.service.SyncActionClient;
+import dblike.service.MD5Service;
 import java.rmi.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,7 +20,7 @@ import java.util.Scanner;
 public class Client {
 
     private ServerAPI server = null;
-    private String userParam, userID, password;
+    private String userParam, password;
     private int loginStatus;
     private static String host;
     private static Registry registry;
@@ -30,6 +32,20 @@ public class Client {
     private int serverPort;
     static Thread sLThread;
     static Thread syncThread;
+
+    /**
+     * @return the clientID
+     */
+    public String getClientID() {
+        return clientID;
+    }
+
+    /**
+     * @param clientID the clientID to set
+     */
+    public void setClientID(String clientID) {
+        this.clientID = clientID;
+    }
 
     /**
      * @return the userParam
@@ -44,20 +60,7 @@ public class Client {
     public void setUserParam(String userParam) {
         this.userParam = userParam;
     }
-
-    /**
-     * @return the userID
-     */
-    public String getUserID() {
-        return userID;
-    }
-
-    /**
-     * @param userID the userID to set
-     */
-    public void setUserID(String userID) {
-        this.userID = userID;
-    }
+ 
 
     /**
      * @return the password
@@ -93,8 +96,8 @@ public class Client {
         do {
             String userInput = scanUN.nextLine();
             try {
-                setUserID(userInput);
-                if (getUserID().equals("")) {
+                setClientID(userInput);
+                if (getClientID().equals("")) {
                     System.out.println("Username cannot be null.");
                 } else {
                     break;
@@ -150,7 +153,7 @@ public class Client {
         while (flag) {
             try {
                 inputNamePassword();
-                if (server.validateUser(userID, password)) {
+                if (server.validateUser(getClientID(), MD5Service.getMD5FromString(password))) {
                     flag = false;
                     System.out.println("Login Successfully");
                 } else {
@@ -162,11 +165,13 @@ public class Client {
         }
         try {
             setLoginStatus(1);
-            server.addClient(clientID, deviceID, clientIP, clientPort);
+            server.addClient(getClientID(), deviceID, clientIP, clientPort);
             System.out.println("Client already added on server!");
             ActiveServerListClient.addServer(serverIP, serverPort);
             System.out.println("Server loaded!");
-            startThread(clientID, deviceID, serverIP, serverPort);
+            ClientConfig.initCurrentClient(getClientID(), "", "");
+            ClientConfig.loadUserList();
+            startThread(getClientID(), deviceID, serverIP, serverPort);
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -174,7 +179,7 @@ public class Client {
 
     public void promptMessage() {
         System.out.println("--------------------------------------------------------------");
-        System.out.println(" Hi, " + clientID + " on " + deviceID);
+        System.out.println(" Hi, " + getClientID() + " on " + deviceID);
         System.out.println(" Client: " + clientIP + ":" + clientPort);
         System.out.println(" Server: " + serverIP + ":" + serverPort);
         System.out.println("--------------------------------------------------------------");
@@ -186,7 +191,7 @@ public class Client {
             if (server == null) {
                 return;
             }
-            server.removeClient(getUserID(), deviceID);
+            server.removeClient(getClientID(), deviceID);
             server = null;
         } catch (Exception e) {
         }
@@ -194,7 +199,7 @@ public class Client {
 
     private void act() {
         try {
-            server.callClient(clientID, deviceID, "Client!!!");
+            server.callClient(getClientID(), deviceID, "Client!!!");
         } catch (RemoteException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
