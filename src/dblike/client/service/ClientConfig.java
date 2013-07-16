@@ -43,7 +43,7 @@ public class ClientConfig {
 
     private static CurrentClient currentClient = new CurrentClient();
     private static Vector<ActiveServer> ServerList = new Vector<ActiveServer>();
-    private static FileListService myFileList;
+    private static FileListService myFileList = new FileListService();
 
     /**
      * @return the currentClient
@@ -73,6 +73,15 @@ public class ClientConfig {
         ServerList = aServerList;
     }
 
+    public static FileListService getMyFileList() {
+        return myFileList;
+    }
+
+    public static void setMyFileList(FileListService myFileList) {
+        ClientConfig.myFileList = myFileList;
+    }
+
+    
     public static void initCurrentClient(String aClientID, String aDeviceID, String aFolderPath, String aIP, String aPort) {
         getCurrentClient().setClientID(aClientID);
         getCurrentClient().setDeviceID(aDeviceID);

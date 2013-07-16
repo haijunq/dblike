@@ -6,6 +6,7 @@ package dblike.client;
 
 import dblike.api.ClientAPI;
 import dblike.client.service.ActiveServerListClient;
+import dblike.client.service.ClientConfig;
 import dblike.server.service.FileListXMLService;
 import dblike.service.FileInfo;
 import dblike.service.FileInfoService;
@@ -39,8 +40,7 @@ public class ClientImp implements ClientAPI {
     
     public String getFileInfoFromClient(String serverIP, int port, String userName, String directory, String fileName) throws Exception{
         // to do 
-//        return FileInfoService.fileInfoToXMLString(ClientConfig.getFileListService());
-        return "";
+        return FileInfoService.fileInfoToXMLString(ClientConfig.);
     }
     
     public void setFileInfoToClient(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) throws Exception{

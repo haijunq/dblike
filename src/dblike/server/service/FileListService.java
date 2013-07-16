@@ -42,6 +42,10 @@ public final class FileListService {
         this.pathname = pathname;
     }
 
+    public FileListService() {
+    }
+
+    
     
     public FileListService(String username) {
         this.pathname = "./users/" + username + "/";
