@@ -37,12 +37,12 @@ public class ClientImp implements ClientAPI {
 //        FileListXMLService.setFileInfo(userName, directory, fileName, fileInfo);
 //    }
     
-    public String getFileInfoFromClient(String serverIP, int port, String userName, String directory, String fileName) {
+    public String getFileInfoFromClient(String serverIP, int port, String userName, String directory, String fileName) throws Exception{
         // to do 
         return FileInfoService.fileInfoToXMLString(new FileInfo());
     }
     
-    public void setFileInfoToClient(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) {
+    public void setFileInfoToClient(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) throws Exception{
         
         // to do
     }
