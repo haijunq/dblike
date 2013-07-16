@@ -8,6 +8,5 @@ package dblike.client.service;
  *
  * @author wenhanwu
  */
-public class clientConfig {
-    
+public class clientConfig { 
 }
