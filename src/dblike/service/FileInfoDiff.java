@@ -13,6 +13,9 @@ import java.util.Hashtable;
 public class FileInfoDiff extends FileInfo{
     int flag;
 
+    public FileInfoDiff() {
+    }
+    
     public FileInfoDiff(int flag) {
         this.flag = flag;
     }

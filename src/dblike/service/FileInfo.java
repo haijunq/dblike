@@ -104,6 +104,10 @@ public class FileInfo {
             return false;
         }
     }
+    
+    public boolean isSameDevice(String deviceID) {
+        return this.deviceID.equals(deviceID);
+    }
 
     @Override
     public String toString() {
@@ -115,26 +119,26 @@ public class FileInfo {
      * @param anotherFileInfo
      * @return
      */
-    public ArrayList<FileInfo> compareByHashCode(FileInfo anotherFileInfo) {
-        ArrayList<FileInfo> diff = new ArrayList<>();
-        diff.add(new FileInfo(this));
-        diff.add(new FileInfo(anotherFileInfo));
-
-        for (String chunkName1 : diff.get(0).getFileHashCode().keySet()) {
-            for (String chunkName2 : diff.get(1).getFileHashCode().keySet()) {
-                if (chunkName1.equals(chunkName2) && diff.get(0).getFileHashCode().get(chunkName1).equals(diff.get(1).getFileHashCode().get(chunkName2))) {
-                    diff.get(0).getFileHashCode().remove(chunkName1);
-                    diff.get(1).getFileHashCode().remove(chunkName2);
+    public FileInfoDiff comparesToFileInfo(FileInfo anotherFileInfo) {
+        FileInfoDiff diff = new FileInfoDiff();
+        FileInfo fileInfoThis = new FileInfo(this);
+        FileInfo fileInfoThat = new FileInfo(anotherFileInfo);
+        
+        for (String chunkName1 : fileInfoThis.getFileHashCode().keySet()) {
+            for (String chunkName2 : fileInfoThat.getFileHashCode().keySet()) {
+                if (chunkName1.equals(chunkName2) && fileInfoThis.getFileHashCode().get(chunkName1).equals(fileInfoThat.getFileHashCode().get(chunkName2))) {
+                    fileInfoThis.getFileHashCode().remove(chunkName1);
+                    fileInfoThat.getFileHashCode().remove(chunkName2);
 
                 }
             }
         }
 
-        for (String chunkName2 : diff.get(1).getFileHashCode().keySet()) {
-            for (String chunkName1 : diff.get(0).getFileHashCode().keySet()) {
-                if (chunkName1.equals(chunkName2) && diff.get(0).getFileHashCode().get(chunkName1).equals(diff.get(1).getFileHashCode().get(chunkName2))) {
-                    diff.get(0).getFileHashCode().remove(chunkName1);
-                    diff.get(1).getFileHashCode().remove(chunkName2);
+        for (String chunkName2 : fileInfoThat.getFileHashCode().keySet()) {
+            for (String chunkName1 : fileInfoThis.getFileHashCode().keySet()) {
+                if (chunkName1.equals(chunkName2) && fileInfoThis.getFileHashCode().get(chunkName1).equals(fileInfoThat.getFileHashCode().get(chunkName2))) {
+                    fileInfoThis.getFileHashCode().remove(chunkName1);
+                    fileInfoThat.getFileHashCode().remove(chunkName2);
 
                 }
             }
