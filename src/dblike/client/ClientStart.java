@@ -6,6 +6,9 @@ package dblike.client;
 
 import dblike.api.ClientAPI;
 import dblike.client.service.ClientConfig;
+import dblike.client.service.FileSyncClientService;
+import dblike.server.service.FileSyncServerService;
+import java.io.IOException;
 import java.rmi.AccessException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
@@ -68,11 +71,17 @@ public class ClientStart {
         }
     }
 
-    public static void main(String args[]) {
+    public static void main(String args[]) throws IOException {
         ClientConfig.loadServerList();
         Client aClient = new Client(ClientConfig.getServerList().get(0).getServerIP(), ClientConfig.getServerList().get(0).getPort());
         clientID=aClient.login();
         aClient.initData();
         bindForClient();
+        
+        // new thread to synchronize files 
+        String directory = "E:\\Dropbox\\Course\\CICS525\\dblike\\test\\";
+        FileSyncClientService fileSyncServer = new FileSyncClientService(directory);
+        Thread fileSyncServerThread = new Thread(fileSyncServer);
+        fileSyncServerThread.start();
     }
 }
