@@ -1,6 +1,5 @@
-
-    <user>
-        <username> wenhan </username>
-        <deviceID>pc</deviceID>
-        <folderPath>c:/www</folderPath> 
-    </user> 
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><user>
+    <username>wenhan</username>
+	<deviceID>iphone</deviceID>
+	<folderPath>c:/abc</folderPath> 
+</user>

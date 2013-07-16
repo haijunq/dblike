@@ -6,7 +6,19 @@ package dblike.client.service;
 
 import dblike.client.ActiveServer;
 import dblike.service.InternetUtil;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Vector;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -36,8 +48,8 @@ public class ActiveServerListClient {
                 return ActiveServerList.get(i);
             }
         }
-        
-        System.out.println(ActiveServerList.size()+"not found!!!!!!!!!!"+serverIP+port);
+
+        System.out.println(ActiveServerList.size() + "not found!!!!!!!!!!" + serverIP + port);
         return null;
     }
 
@@ -80,4 +92,5 @@ public class ActiveServerListClient {
             return true;
         }
     }
+
 }
