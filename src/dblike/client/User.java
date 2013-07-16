@@ -16,9 +16,7 @@ import java.rmi.registry.Registry;
 public class User {
 
     private String clientID;
-    private String deviceID;
-    private String clientIP;
-    private int port;
+    private String deviceID; 
     private String folderPath;
 
     /**
@@ -62,40 +60,11 @@ public class User {
     public void setDeviceID(String deviceID) {
         this.deviceID = deviceID;
     }
+ 
 
-    /**
-     * @return the clientIP
-     */
-    public String getClientIP() {
-        return clientIP;
-    }
-
-    /**
-     * @param clientIP the clientIP to set
-     */
-    public void setClientIP(String clientIP) {
-        this.clientIP = clientIP;
-    }
-
-    /**
-     * @return the port
-     */
-    public int getPort() {
-        return port;
-    }
-
-    /**
-     * @param port the port to set
-     */
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    public User(String aClientID, String aDeviceID, String aClientIP, int aPort, String aFolderPath) {
+    public User(String aClientID, String aDeviceID, String aFolderPath) {
         this.clientID = aClientID;
-        this.deviceID = aDeviceID;
-        this.clientIP = aClientIP;
-        this.port = aPort;
+        this.deviceID = aDeviceID; 
         this.folderPath = aFolderPath;
     }
 }
