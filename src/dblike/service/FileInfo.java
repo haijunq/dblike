@@ -8,6 +8,7 @@ import dblike.util.Utils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
+import org.joda.time.DateTime;
 
 /**
  *
@@ -92,15 +93,11 @@ public class FileInfo {
         this.fileHashCode = fileHashCode;
     }
 
-    public boolean compareByTime(Date date) {
-        if (Utils.convertTimeFromString(timestamp).before(date)) {
-            return true;
-        } else {
-            return false;
-        }
+    public boolean isTimestampNewer(String timestamp) {
+        return new DateTime(this.timestamp).isAfter(new DateTime(timestamp));
     }
 
-    public boolean compareByVersion(int version) {
+    public boolean isVersionNewer(int version) {
         if (this.version < version) {
             return true;
         } else {
