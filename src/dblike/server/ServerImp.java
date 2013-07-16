@@ -10,7 +10,9 @@ import dblike.server.service.ActiveClientListServer;
 import dblike.server.service.ActiveServerListServer;
 import dblike.service.FileInfo;
 import dblike.server.service.FileListXMLService;
+import dblike.server.service.FileSyncServerService;
 import dblike.server.service.UserListXMLReader;
+import dblike.service.FileInfoService;
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -95,24 +97,24 @@ public class ServerImp implements ServerAPI {
     }
     
     // to do
-    public FileInfo getFileInfoFromServer(String serverIP, int port, String userName, String directory, String fileName) {
-        return FileListXMLService.getFileInfo(userName, directory, fileName);
+    public String getFileInfoFromServer(String serverIP, int port, String userName, String directory, String fileName) {
+        return FileInfoService.fileInfoToXMLString(FileSyncServerService.fileListHashtable.get(userName).getFileInfoByFileName(fileName));
     }
     
     // to do
     public void setFileInfoToServer(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) {
-        FileListXMLService.setFileInfo(userName, directory, fileName, fileInfo);
+        FileSyncServerService.fileListHashtable.get(userName).addNewFileInfo(fileInfo);
     }
     
-    // to do 
-    public FileInfo getFileInfoFromClient(String serverIP, int port, String userName, String directory, String fileName) {
-        return FileListXMLService.getFileInfo(userName, directory, fileName);
-    }
-    
-    // to do
-    public void setFileInfoToClient(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) {
-        FileListXMLService.setFileInfo(userName, directory, fileName, fileInfo);
-    } 
+//    // to do 
+//    public FileInfo getFileInfoFromClient(String serverIP, int port, String userName, String directory, String fileName) {
+//        return FileListXMLService.getFileInfo(userName, directory, fileName);
+//    }
+//    
+//    // to do
+//    public void setFileInfoToClient(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) {
+//        FileListXMLService.setFileInfo(userName, directory, fileName, fileInfo);
+//    } 
     
     @Override
     public boolean validateUser(String userID, String hashedPassword) throws RemoteException {
