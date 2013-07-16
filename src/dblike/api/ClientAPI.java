@@ -19,7 +19,13 @@ public interface ClientAPI extends Remote {
     
     public boolean beatFromServer(String serverIP, int port) throws RemoteException;
     
-    public FileInfo getFileInfoFromServer(String serverIP, int port, String userName, String directory, String fileName) throws RemoteException;
+//    public FileInfo getFileInfoFromServer(String serverIP, int port, String userName, String directory, String fileName) throws RemoteException;
+//    
+//    public void setFileInfoToServer(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) throws RemoteException;
+
+    // to do 
+    public String getFileInfoFromClient(String serverIP, int port, String userName, String directory, String fileName) ;  
     
-    public void setFileInfoToServer(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) throws RemoteException;
+    // to do
+    public void setFileInfoToClient(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo);  
 }
