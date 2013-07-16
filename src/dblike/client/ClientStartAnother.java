@@ -110,7 +110,7 @@ public class ClientStartAnother {
             registry.bind(clientBind, clientStub);
             System.out.println("Already bind: " + "[" + clientBind + "]");
             System.out.println("Client ready");
-            Client aClient = new Client(getClientID(), getDeviceID(), clientIP, clientPort, getServerIP(), getServerPort());
+            //Client aClient = new Client(getClientID(), getDeviceID(), clientIP, clientPort, getServerIP(), getServerPort());
 
         } catch (Exception ex) {
             System.out.println(ex);

@@ -5,9 +5,15 @@
 package dblike.client;
 
 import dblike.api.ClientAPI;
+import dblike.client.service.ClientConfig;
+import java.rmi.AccessException;
+import java.rmi.AlreadyBoundException;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -38,63 +44,35 @@ public class ClientStart {
         clientID = aClientID;
     }
 
-    /**
-     * @return the deviceID
-     */
-    public static String getDeviceID() {
-        return deviceID;
-    }
+    public static void bindForClient() {
+        try {
+            System.out.println("Client start at " + ClientConfig.getCurrentClient().getIp() + ":" + ClientConfig.getCurrentClient().getPort());
+            System.out.println("Will connect to server " + ClientConfig.getServerList().get(0).getServerIP() + ":" + ClientConfig.getServerList().get(0).getPort());
 
-    /**
-     * @param aDeviceID the deviceID to set
-     */
-    public static void setDeviceID(String aDeviceID) {
-        deviceID = aDeviceID;
-    }
-
-    /**
-     * @return the serverIP
-     */
-    public static String getServerIP() {
-        return serverIP;
-    }
-
-    /**
-     * @param aServerIP the serverIP to set
-     */
-    public static void setServerIP(String aServerIP) {
-        serverIP = aServerIP;
-    }
-
-    /**
-     * @return the serverPort
-     */
-    public static int getServerPort() {
-        return serverPort;
-    }
-
-    /**
-     * @param aServerPort the serverPort to set
-     */
-    public static void setServerPort(int aServerPort) {
-        serverPort = aServerPort;
+            ClientImp client = new ClientImp();
+            ClientAPI clientStub = (ClientAPI) UnicastRemoteObject.exportObject(client, 0);
+            int cPort = Integer.parseInt(ClientConfig.getCurrentClient().getPort());
+            registry = LocateRegistry.createRegistry(cPort);
+            String clientBind = "clientUtility" + getClientID() + ClientConfig.getCurrentClient().getDeviceID() + ClientConfig.getCurrentClient().getIp() + ClientConfig.getCurrentClient().getPort();
+            try {
+                registry.bind(clientBind, clientStub);
+            } catch (AlreadyBoundException ex) {
+                Logger.getLogger(ClientStart.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (AccessException ex) {
+                Logger.getLogger(ClientStart.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            System.out.println("Already bind: " + "[" + clientBind + "]");
+            System.out.println("Client ready");
+        } catch (RemoteException ex) {
+            Logger.getLogger(ClientStart.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public static void main(String args[]) {
-        try {
-            ClientImp client = new ClientImp();
-            ClientAPI clientStub = (ClientAPI) UnicastRemoteObject.exportObject(client, 0);
-            System.out.println("Client start at " + clientIP + ":" + clientPort);
-            System.out.println("Will connect to server " + getServerIP() + ":" + getServerPort());
-            registry = LocateRegistry.createRegistry(clientPort);
-            String clientBind = "clientUtility" + getClientID() + getDeviceID() + clientIP + clientPort;
-            registry.bind(clientBind, clientStub);
-            System.out.println("Already bind: " + "[" + clientBind + "]");
-            System.out.println("Client ready");
-            Client aClient = new Client(getClientID(), getDeviceID(), clientIP, clientPort, getServerIP(), getServerPort());
-            aClient.login();
-        } catch (Exception ex) {
-            System.out.println(ex);
-        }
+        ClientConfig.loadServerList();
+        Client aClient = new Client(ClientConfig.getServerList().get(0).getServerIP(), ClientConfig.getServerList().get(0).getPort());
+        clientID=aClient.login();
+        aClient.initData();
+        bindForClient();
     }
 }

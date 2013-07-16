@@ -28,6 +28,11 @@ public class SyncActionServer implements Runnable {
     private static Vector<ActiveClient> ActiveClientList;
     private static Vector<ActiveServer> ActiveServerList;
 
+    private boolean runningFlag = true;
+
+    public void setRunningFlag(boolean flag) {
+        this.runningFlag = flag;
+    }
     public SyncActionServer() {
         SyncActionServer.ActiveClientList = ActiveClientListServer.getActiveClientList();
         SyncActionServer.ActiveServerList = ActiveServerListServer.getActiveServerList();
@@ -123,7 +128,7 @@ public class SyncActionServer implements Runnable {
 
     public void run() {
         int timeout = InternetUtil.getBEATINTERVAL() * 1000;
-        while (true) {
+        while (runningFlag) {
             beatForAllClient();
             beatForAllServer();
             try {

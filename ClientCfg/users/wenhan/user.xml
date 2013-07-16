@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><user>
     <username>wenhan</username>
 	<deviceID>iphone</deviceID>
-	<folderPath>c:/abc</folderPath> 
+	<folderPath>c:/abc</folderPath>
+    <IP>127.0.0.1</IP>
+    <port>2906</port>
 </user>
