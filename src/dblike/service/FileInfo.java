@@ -132,6 +132,15 @@ public class FileInfo {
         FileInfo fileInfoThis = new FileInfo(this);
         FileInfo fileInfoThat = new FileInfo(anotherFileInfo);
 
+        // if FileInfoThat 's version is 0, meaning there is no such file on the other side, then 
+        // return FileInfoThis because it's a newer version.
+        if (fileInfoThat.getVersion() == 0) {
+            diff = new FileInfoDiff(1, fileInfoThis);
+            return diff;
+        }
+
+        // if fileInfoThat's version is not 0, and its hashcode table is empty, meaning the file on the other side was deleted      
+
         // if DeviceID are the same, then just check the version number to determain newer or older
         if (fileInfoThis.isSameDevice(fileInfoThat.getDeviceID())) {
             diff.setDeviceID(fileInfoThis.getDeviceID());
@@ -142,43 +151,115 @@ public class FileInfo {
             if (diff.getFlag() == 2) {
                 return diff;
             }
+
+            // else diff.flag = 1, meaning local version is newer.
             diff.setFileName(fileInfoThis.getFileName());
             diff.setTimestamp(fileInfoThis.getTimestamp());
             diff.setFileSize(fileInfoThis.getFileSize());
             diff.setVersion(fileInfoThis.getVersion());
-            
+
+
+            // empty meaning the local file is deleted.
             if (fileInfoThis.getFileHashCode().isEmpty()) {
                 return diff;
             }
-            
+
+            // empty meaning the remote file is deleted.
             if (fileInfoThat.getFileHashCode().isEmpty()) {
                 diff.setFileHashCode(fileInfoThis.getFileHashCode());
                 return diff;
             }
-            
+
+            // else, remove the identical chunks with fileInfoThat from fileInfoThis
             for (String chunkName1 : fileInfoThis.getFileHashCode().keySet()) {
                 for (String chunkName2 : fileInfoThat.getFileHashCode().keySet()) {
                     if (chunkName1.equals(chunkName2) && fileInfoThis.getFileHashCode().get(chunkName1).equals(fileInfoThat.getFileHashCode().get(chunkName2))) {
-                        fileInfoThis.getFileHashCode().remove(chunkName1);
+//                        fileInfoThis.getFileHashCode().remove(chunkName1);
+                        continue;
                     }
+                    diff.getFileHashCode().put(chunkName1, fileInfoThis.getFileHashCode().get(chunkName1));
                 }
             }
-            diff.setFileHashCode(fileInfoThis.getFileHashCode());
+//            diff.setFileHashCode(fileInfoThis.getFileHashCode());
             return diff;
-        } 
-        // if not the same device, then compare the version number and timestamp to determine which copy is made.
+        } // if not the same device, then compare the version number and timestamp to determine which copy is made.
         else {
+            // local version newer, return data in fileInfoThis
             if (fileInfoThis.getVersion() > fileInfoThat.getVersion()) {
                 diff.setFlag(1);
                 // use fileInfoThis
-            } else {
-                diff.setFlag(3);
+                diff.setVersion(fileInfoThis.getVersion());
+                diff.setFileName(fileInfoThis.getFileName());
+                diff.setDeviceID(fileInfoThis.getDeviceID());
+                diff.setFileSize(fileInfoThis.getFileSize());
+                diff.setTimestamp(fileInfoThis.getTimestamp());
+
+                // empty meaning the local file is deleted.
+                if (fileInfoThis.getFileHashCode().isEmpty()) {
+                    return diff;
+                }
+
+                // empty meaning the remote file is deleted.
+                if (fileInfoThat.getFileHashCode().isEmpty()) {
+                    diff.setFileHashCode(fileInfoThis.getFileHashCode());
+                    return diff;
+                }
+
+                // else return the difference
+                for (String chunkName1 : fileInfoThis.getFileHashCode().keySet()) {
+                    for (String chunkName2 : fileInfoThat.getFileHashCode().keySet()) {
+                        if (chunkName1.equals(chunkName2) && fileInfoThis.getFileHashCode().get(chunkName1).equals(fileInfoThat.getFileHashCode().get(chunkName2))) {
+//                            fileInfoThis.getFileHashCode().remove(chunkName1);
+                            continue;
+                        }
+                        diff.getFileHashCode().put(chunkName1, fileInfoThis.getFileHashCode().get(chunkName1));
+                    }
+                }
+
+//                diff.setFileHashCode(fileInfoThis.getFileHashCode());
+                return diff;
+            } // if not newer, then make a seperate copy
+            else {
+                // if this is empty, meaning local file is deleted, then set local version as 0
+                if (fileInfoThis.getFileHashCode().isEmpty()) {
+                    fileInfoThis.setVersion(0);
+                    diff = new FileInfoDiff(2, fileInfoThis);
+                    return diff;
+                }
+                // if that is empty, meaning remote file is deleted, then 
+                if (fileInfoThat.getFileHashCode().isEmpty()) {
+                    diff.setFlag(1);
+                    diff.setVersion(fileInfoThat.getVersion()); // get the larger version number
+                    diff.setFileName(fileInfoThis.getFileName());
+                    diff.setTimestamp(fileInfoThis.getTimestamp());
+                    diff.setDeviceID(fileInfoThis.getDeviceID());
+                    diff.setFileSize(fileInfoThis.getFileSize());
+                    diff.setFileHashCode(fileInfoThis.getFileHashCode());
+                    return diff;
+                }
+
+                // if both not empty, then make a conflict copy by changing the newer 
+                if (fileInfoThis.isTimestampNewer(fileInfoThat.getTimestamp())) {
+                System.out.println("here");
+                    String conflict = "conflicted_copy_from_" + fileInfoThis.getDeviceID();
+                    diff.setFlag(1);
+                    diff.setVersion(fileInfoThis.getVersion());
+                    diff.setTimestamp(fileInfoThis.getTimestamp());
+                    diff.setDeviceID(fileInfoThis.getDeviceID());
+                    diff.setFileSize(fileInfoThis.getFileSize());
+                    diff.setFileName(conflict + fileInfoThis.getFileName());
+                    diff.getFileHashCode().clear();
+                    for (String key : fileInfoThis.getFileHashCode().keySet()) {
+                        diff.getFileHashCode().put(conflict + key, fileInfoThis.getFileHashCode().get(key));
+                    }
+                    return diff;
+                }
                 // use fileInfoThat, rename all the entries in the FileInfo
             }
             return diff;
         }
 
-        
+
 //        for (String chunkName1 : fileInfoThis.getFileHashCode().keySet()) {
 //            for (String chunkName2 : fileInfoThat.getFileHashCode().keySet()) {
 //                if (chunkName1.equals(chunkName2) && fileInfoThis.getFileHashCode().get(chunkName1).equals(fileInfoThat.getFileHashCode().get(chunkName2))) {

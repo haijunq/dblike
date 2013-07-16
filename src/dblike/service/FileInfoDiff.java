@@ -37,6 +37,11 @@ public class FileInfoDiff extends FileInfo{
     public void setFlag(int flag) {
         this.flag = flag;
     }
+
+    @Override
+    public String toString() {
+        return "FileInfoDiff{" + "flag=" + flag + "," + super.toString()+ '}';
+    }
     
     
 }
