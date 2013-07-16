@@ -39,11 +39,20 @@ public class ClientImp implements ClientAPI {
     
     public String getFileInfoFromClient(String serverIP, int port, String userName, String directory, String fileName) throws Exception{
         // to do 
-        return FileInfoService.fileInfoToXMLString(new FileInfo());
+//        return FileInfoService.fileInfoToXMLString(ClientConfig.getFileListService());
+        return "";
     }
     
     public void setFileInfoToClient(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) throws Exception{
+//        ClientConfig.getFileListService().get(userName);
+        // to do need to know where is the FileListService
+    }
+    
+    public void downloadFileFromServer(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) throws Exception {
         
-        // to do
+    }
+    
+    public void deleteClientFileByServer(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) throws Exception {
+        
     }
 }

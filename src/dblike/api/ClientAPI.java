@@ -28,4 +28,8 @@ public interface ClientAPI extends Remote {
     
     // to do
     public void setFileInfoToClient(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) throws Exception;  
+    
+    public void downloadFileFromServer(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) throws Exception;
+    
+    public void deleteClientFileByServer(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) throws Exception;
 }
