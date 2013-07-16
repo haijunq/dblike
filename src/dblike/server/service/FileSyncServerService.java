@@ -6,6 +6,7 @@ package dblike.server.service;
 
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
+import dblike.api.ClientAPI;
 import dblike.api.ServerAPI;
 import dblike.server.ActiveClient;
 import dblike.server.ActiveServer;
@@ -43,7 +44,7 @@ import java.util.logging.Logger;
  */
 public class FileSyncServerService implements Runnable {
     
-    private Hashtable<String, FileListService> fileListHashtable;
+    public static Hashtable<String, FileListService> fileListHashtable;
     private final WatchService watchService;
     private final Path directory;
     
@@ -71,46 +72,25 @@ public class FileSyncServerService implements Runnable {
         System.out.println("Registered watchService on " + directory);
     }
     
-    public ServerAPI getServerAPI(ActiveServer activeServer) throws RemoteException
+    /**
+     * 
+     * @param userName
+     * @param directory
+     * @param fileName
+     * @param activeServer
+     * @throws JSchException
+     * @throws SftpException 
+     */
+    public void uploadCreatedFileToServer(String userName, String directory, String fileName, ActiveServer activeServer) throws JSchException, SftpException
     {
-        Registry registry = null;
-        ServerAPI server = null;
-        try {
-            registry = LocateRegistry.getRegistry(activeServer.getServerIP(), activeServer.getPort());
-            server = (ServerAPI) registry.lookup("serverUtility");
-        } catch (NotBoundException ex) {
-            Logger.getLogger(SyncActionServer.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (AccessException ex) {
-            Logger.getLogger(SyncActionServer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return server;
-    }
-    
-    public ServerAPI getClientAPI(ActiveClient activeClient) throws RemoteException
-    {
-        Registry registry = null;
-        ServerAPI server = null;
-        try {
-            registry = LocateRegistry.getRegistry(activeClient.getClientIP(), activeClient.getPort());
-            server = (ServerAPI) registry.lookup("serverUtility");
-        } catch (NotBoundException ex) {
-            Logger.getLogger(SyncActionServer.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (AccessException ex) {
-            Logger.getLogger(SyncActionServer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return server;
-    }
-    
-    public void uploadCreateFileToServer(String userName, String directory, String fileName, ActiveServer activeServer) throws JSchException, SftpException
-    {
-        SFTPService sftpService = new SFTPService();
-        sftpService.uploadFile(userName + "/" + directory + "/" + fileName, "./" + userName + "/" + directory + "/" + fileName);
+//        SFTPService sftpService = new SFTPService(activeServer.getServerIP(), activeServer.getPort(), );
+//        sftpService.uploadFile(userName + "/" + directory + "/" + fileName, "./" + userName + "/" + directory + "/" + fileName);
     }
     
     public void updateFileInfoToServer(String userName, String directory, String fileName, ActiveServer activeServer) throws RemoteException
     {
         // get fileinfo from server
-        ServerAPI server = getServerAPI(activeServer);
+        ServerAPI server = activeServer.getServerAPI();
         server.setFileInfoToServer(activeServer.getServerIP(), activeServer.getPort(), userName, directory, fileName,
                 fileListHashtable.get(userName).getFileInfoByFileName(fileName));
     }
@@ -124,7 +104,7 @@ public class FileSyncServerService implements Runnable {
     public void updateFileInfoToClient(String userName, String directory, String fileName, ActiveClient activeClient) throws RemoteException
     {
         // get fileinfo from server
-        ServerAPI server = getClientAPI(activeClient);
+        ServerAPI server = activeClient.
         server.setFileInfoToServer(activeClient.getClientIP(), activeClient.getPort(), userName, directory, fileName,
                 fileListHashtable.get(userName).getFileInfoByFileName(fileName));
     }
@@ -132,7 +112,7 @@ public class FileSyncServerService implements Runnable {
     public void syncCreatedFileWithServer(String userName, String directory, String fileName, ActiveServer activeServer) throws RemoteException, JSchException, SftpException
     {
         // get fileinfo from server
-        ServerAPI server = getServerAPI(activeServer);
+        ServerAPI server = activeServer.getServerAPI();
         FileInfo fileInfo = server.getFileInfoFromServer(activeServer.getServerIP(), activeServer.getPort(), userName, directory, fileName);
         ArrayList<FileInfo> diff = fileListHashtable.get(userName).getFileInfoByFileName(fileName).compareByHashCode(fileInfo);
         if (diff.isEmpty()) // not found then upload files
@@ -142,10 +122,10 @@ public class FileSyncServerService implements Runnable {
         }
     }
     
-    public void syncCreatedFileWithClient(String userName, String directory, String fileName, ActiveClient activeClient) throws RemoteException, JSchException, SftpException
+    public void syncCreatedFileWithClient(String directory, String fileName, ActiveClient activeClient) throws RemoteException, JSchException, SftpException
     {
-        ServerAPI server = getClientAPI(activeClient);
-        FileInfo fileInfo = server.getFileInfoFromServer(activeClient.getClientIP(), activeClient.getPort(), userName, directory, fileName);
+        ClientAPI client = activeClient.getClientAPI();
+        FileInfo fileInfo = client.getFileInfoFromClient(activeClient.getClientIP(), activeClient.getPort(), userName, directory, fileName);
         ArrayList<FileInfo> diff = fileListHashtable.get(userName).getFileInfoByFileName(fileName).compareByHashCode(fileInfo);
         if (diff.isEmpty()) // not found then upload files
         {
@@ -159,14 +139,18 @@ public class FileSyncServerService implements Runnable {
         // sync create file with active servers
         Vector<ActiveServer> activeServerList = ActiveServerListServer.getActiveServerList();
         for (ActiveServer activeServer : activeServerList)
+        {
             syncCreatedFileWithServer(userName, directory, fileName, activeServer);
+        }
         
         // sync create file with active clients
         Vector<ActiveClient> activeClientList = ActiveClientListServer.getActiveClientList();
         for (ActiveClient activeClient : activeClientList)
-            syncCreatedFileWithClient(userName, directory, fileName, activeClient);
+        {
+            if (activeClient.getClientID().equals(userName))
+                syncCreatedFileWithClient(directory, fileName, activeClient);
+        }
     }
-    
     
     public void watchFile() throws IOException, JSchException, RemoteException, SftpException {
         
@@ -190,9 +174,9 @@ public class FileSyncServerService implements Runnable {
                 String contentType = Files.probeContentType(child);
                 
                 if (e.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
-                    String userName = directory.getName(directory.getNameCount()-2).toString();
-                    String directoryName = directory.getName(directory.getNameCount()-1).toString();
-                    syncCreatedFile(userName, directoryName, fileName.toString());
+                    String userName = directory.getName(directory.getNameCount()-1).toString();
+                    //String directoryName = directory.getName(directory.getNameCount()-1).toString();
+                    syncCreatedFile(userName, "", fileName.toString());
                     System.out.println("directory: " + directory.getParent() + " file was created: " + child + " contentType: " + contentType);
                 } else if (e.kind() == StandardWatchEventKinds.ENTRY_MODIFY) {
                     System.out.println("file was modified: " + fileName + " contentType: " + contentType);
