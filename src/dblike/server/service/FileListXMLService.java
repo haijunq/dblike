@@ -4,6 +4,7 @@
  */
 package dblike.server.service;
 
+import dblike.server.ServerStart;
 import dblike.service.FileInfo;
 import dblike.server.service.FileListService;
 import java.io.File;
@@ -64,7 +65,7 @@ public class FileListXMLService {
 
                 Element fileSizeElement = fileListXML.createElement("fileSize");
                 fileInfoElement.appendChild(fileSizeElement);
-                
+
                 Element fileHashCodeElement = fileListXML.createElement("fileHashCode");
                 fileInfoElement.appendChild(fileHashCodeElement);
                 Element fileChunkHashCodeElement = fileListXML.createElement("fileChunkHashCode");
@@ -212,6 +213,57 @@ public class FileListXMLService {
 
 
         return filelist;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public static boolean loadServerInfo() {
+        DocumentBuilderFactory domfac = DocumentBuilderFactory.newInstance();
+        try {
+            DocumentBuilder dombuilder = domfac.newDocumentBuilder();
+            InputStream fis = new FileInputStream("ServerCfg/serverInfo.xml");
+            System.out.println(fis);
+            Document doc = dombuilder.parse(fis);
+            Element root = doc.getDocumentElement();
+            Node user = root.getFirstChild();
+            if (user != null) {
+                String id = "";
+                String ip = "";
+                String port = "";
+                for (Node node = user; node != null; node = node.getNextSibling()) {
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+
+                        if (node.getNodeName().equals("IP")) {
+                            ip = node.getFirstChild().getNodeValue();
+                        }
+
+                        if (node.getNodeName().equals("port")) {
+                            port = node.getFirstChild().getNodeValue();
+                        }
+                    }
+                }
+                ServerStart.setServerIP(ip);
+                ServerStart.setPORT(Integer.parseInt(port));
+
+                return true;
+            } else {
+                return false;
+            }
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+            return false;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        } catch (SAXException e) {
+            e.printStackTrace();
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public static FileInfo getFileInfo(String userName, String directory, String fileName) // to do
