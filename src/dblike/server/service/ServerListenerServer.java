@@ -5,10 +5,23 @@
 package dblike.server.service;
 
 import dblike.server.ActiveServer;
+import dblike.server.ServerStart;
 import dblike.service.InternetUtil;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -45,13 +58,14 @@ public class ServerListenerServer implements Runnable {
                     ActiveServerListServer.removeServer(aServer.getServerIP(), aServer.getPort());
                     flag = false;
                 } else {
-                    System.out.println("still have some...");
+                    System.out.println("Cannot reach...");
                 }
             }
         }
         System.out.println("=====s=====");
         return flag;
     }
+
 
     public void waitForAWhile(int timeOut) {
         try {
@@ -63,6 +77,7 @@ public class ServerListenerServer implements Runnable {
     }
 
     public void run() {
+        ActiveServerListServer.loadServerList();
         while (runningFlag) {
             checkAllServer();
             waitForAWhile(InternetUtil.getTIMEOUT());

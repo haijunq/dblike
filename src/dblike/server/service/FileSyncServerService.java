@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import java.nio.file.Path;
 import java.nio.file.StandardWatchEventKinds;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
@@ -46,13 +47,15 @@ import java.util.logging.Logger;
  *
  * @author JingboYu
  */
-public class FileSyncServerService implements Runnable {
+public class FileSyncServerService extends WatchDirectoryService implements Runnable {
     
     public static Hashtable<String, FileListService> fileListHashtable;
     private final WatchService watchService;
     private final Path directory;
     
-    public FileSyncServerService(String directory) throws IOException {
+    public FileSyncServerService(Path dir, boolean recursive, String directory) throws IOException {
+        
+        super(dir, recursive);
         
         // load a list of users
         Hashtable<String, String> userList = UserListXMLReader.getValidUserList();
@@ -148,7 +151,7 @@ public class FileSyncServerService implements Runnable {
     {
         // get fileinfo from server
         ServerAPI server = activeServer.getServerAPI();
-        server.setFileInfoToServer(activeServer.getServerIP(), activeServer.getPort(), userName, directory, fileName, FileInfoService.fileInfoToXMLString(fileInfo));
+        server.setFileInfoToServer(activeServer.getServerIP(), activeServer.getPort(), userName, directory, fileName, fileInfo.toString());
     }
     
     /**
@@ -395,55 +398,76 @@ public class FileSyncServerService implements Runnable {
         }
     }
     
-    
-    
     /**
-     *
-     * @throws IOException
-     * @throws JSchException
-     * @throws RemoteException
-     * @throws SftpException
+     * 
      */
-    public void watchFile() throws IOException, JSchException, RemoteException, SftpException, Exception {
+    public void watchDir() {
         
-        while (true) {
-            
+        for (;;) {
+
+            // wait for key to be signalled
             WatchKey key;
             try {
-                key = watchService.take();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                key = watcher.take();
+            } catch (InterruptedException x) {
                 return;
             }
-            
-            for (WatchEvent<?> e : key.pollEvents()) {
-                
-                @SuppressWarnings("unchecked")
-                        WatchEvent<Path> event = (WatchEvent<Path>) e;
-                
-                // get userName, directoryName, and fileName
-                String userName = directory.getName(directory.getNameCount()-1).toString();
-                String directoryName = "";
-                String fileName = directory.getName(directory.getNameCount()).toString();
-                
-                if (e.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
-                    syncCreatedFile(userName, directoryName, fileName);
-                    System.out.println("directory: " + directory.getParent() + " file was created: " + fileName);
-                } else if (e.kind() == StandardWatchEventKinds.ENTRY_MODIFY) {
-                    syncModifiedFile(userName, directoryName, fileName);
-                    System.out.println("file was modified: " + fileName);
-                } else if (e.kind() == StandardWatchEventKinds.ENTRY_DELETE) {
-                    syncDeletedFile(userName, directoryName, fileName);
-                    System.out.println("file was deleted: " + fileName);
-                } else if (e.kind() == StandardWatchEventKinds.OVERFLOW) {
-                    System.out.println("overflow occurred");
+
+            Path dir = keys.get(key);
+            if (dir == null) {
+                System.err.println("WatchKey not recognized!!");
+                continue;
+            }
+
+            for (WatchEvent<?> event: key.pollEvents()) {
+                WatchEvent.Kind kind = event.kind();
+
+                // TBD - provide example of how OVERFLOW event is handled
+                if (kind == OVERFLOW) {
                     continue;
                 }
-                
-                boolean valid = key.reset();
-                if (!valid) {
-                    System.out.println("object no longer registered");
-                    break;
+                else if (kind == ENTRY_CREATE) {
+                    //do something;
+                }
+                else if (kind == ENTRY_MODIFY) {
+                    
+                }
+                else if (kind == ENTRY_DELETE) {
+                    
+                }
+                else {
+                    System.out.println("ERROR: un-registered event!"); // never reach here!
+                }
+                    
+                // Context for directory entry event is the file name of entry
+                WatchEvent<Path> ev = cast(event);
+                Path name = ev.context();
+                Path child = dir.resolve(name);
+
+                // print out event
+                System.out.format("%s: %s\n", event.kind().name(), child);
+
+                // if directory is created, and watching recursively, then
+                // register it and its sub-directories
+                if (recursive && (kind == ENTRY_CREATE)) {
+                    try {
+                        if (Files.isDirectory(child, NOFOLLOW_LINKS)) {
+                            registerAll(child);
+                        }
+                    } catch (IOException x) {
+                        // ignore to keep sample readbale
+                    }
+                }
+            }
+
+            // reset key and remove from set if directory no longer accessible
+            boolean valid = key.reset();
+            if (!valid) {
+                keys.remove(key);
+
+                // all directories are inaccessible
+                if (keys.isEmpty()) {
+//                    break;
                 }
             }
         }
@@ -454,16 +478,6 @@ public class FileSyncServerService implements Runnable {
      */
     @Override
     public void run() {
-        try {
-            watchFile();
-        } catch (IOException ex) {
-            Logger.getLogger(FileSyncServerService.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JSchException ex) {
-            Logger.getLogger(FileSyncServerService.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SftpException ex) {
-            Logger.getLogger(FileSyncServerService.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
-            Logger.getLogger(FileSyncServerService.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            watchDir();
     }
 }

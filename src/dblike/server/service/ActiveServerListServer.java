@@ -5,8 +5,21 @@
 package dblike.server.service;
 
 import dblike.server.ActiveServer;
+import dblike.server.ServerStart;
 import dblike.service.InternetUtil;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Vector;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -75,6 +88,67 @@ public class ActiveServerListServer {
         } else {
             ActiveServerList.get(position).setStatus(InternetUtil.getOK());
             return true;
+        }
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public static boolean loadServerList() {
+        DocumentBuilderFactory domfac = DocumentBuilderFactory.newInstance();
+        try {
+            DocumentBuilder dombuilder = domfac.newDocumentBuilder();
+            InputStream fis = new FileInputStream("ServerCfg/serverList.xml");
+            Document doc = dombuilder.parse(fis);
+            Element root = doc.getDocumentElement();
+            NodeList users = root.getChildNodes();
+            if (users != null) {
+                for (int i = 0; i < users.getLength(); i++) {
+                    Node user = users.item(i);
+                    if (user.getNodeType() == Node.ELEMENT_NODE) {
+                        int checker = 0;
+                        String ip = "";
+                        String port = "";
+                        for (Node node = user.getFirstChild(); node != null; node = node.getNextSibling()) {
+                            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                                if (node.getNodeName().equals("IP")) {
+                                    ip = node.getFirstChild().getNodeValue();
+                                    ++checker;
+                                }
+                                if (node.getNodeName().equals("port")) {
+                                    port = node.getFirstChild().getNodeValue();
+                                    ++checker;
+                                }
+                            }
+                            if (checker == 2 && ip != ServerStart.getServerIP() && Integer.parseInt(port) != ServerStart.getPORT()) {
+                                String serverID = ip;
+                                addServer(ip, Integer.parseInt(port));
+                                checker = 0;
+                            }
+                        }
+                    }
+                }
+                System.out.println("Loaded the server:");
+                for (int i = 0; i < ActiveServerList.size(); ++i) {
+                    System.out.println(ActiveServerList.get(i).getServerIP() + ":" + ActiveServerList.get(i).getPort());
+                }
+                return true;
+            } else {
+                return false;
+            }
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+            return false;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        } catch (SAXException e) {
+            e.printStackTrace();
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

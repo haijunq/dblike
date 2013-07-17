@@ -27,6 +27,10 @@ public class SFTPService {
         
     }
     
+    public SFTPService(String host) {
+        this.sftpHost = host;
+    }
+    
     public SFTPService(String host, int port){
         this.sftpHost = host;
         this.sftpPort = port;
@@ -124,7 +128,65 @@ public class SFTPService {
         session.disconnect();
     }
     
-    public void listFiles(String directory) throws JSchException, SftpException {
+    /**
+     *
+     * @param sourceFile
+     * @param destinationFile
+     * @return
+     * @throws JSchException
+     * @throws SftpException
+     */
+    public void uploadFile(String sourceFile, String destinationFile, String curLocalDir, String curRemoteDir) throws JSchException, SftpException{
         
+        Session session = getSession();
+        
+        Channel channel = session.openChannel("sftp");
+        channel.connect();
+        //        System.out.println("Channel connected!");
+        
+        ChannelSftp sftpChannel = (ChannelSftp) channel;
+        sftpChannel.cd(curRemoteDir);
+        sftpChannel.lcd(curLocalDir);
+        sftpChannel.put(sourceFile, destinationFile);
+        sftpChannel.exit();
+        session.disconnect();
+    }
+    
+    /**
+     *
+     * @param sourceFile
+     * @param destinationFile
+     * @throws JSchException
+     * @throws SftpException
+     */
+    public void downloadFile(String sourceFile, String destinationFile, String curLocalDir, String curRemoteDir) throws JSchException, SftpException {
+        
+        Session session = getSession();
+        
+        Channel channel = session.openChannel("sftp");
+        channel.connect();
+        //        System.out.println("Channel connected!");
+        
+        ChannelSftp sftpChannel = (ChannelSftp) channel;
+        sftpChannel.cd(curRemoteDir);
+        sftpChannel.lcd(curLocalDir);
+        sftpChannel.get(sourceFile, destinationFile);
+        sftpChannel.exit();
+        session.disconnect();
+    }
+    
+    public void deleteFile(String file, String curRemoteDir) throws JSchException, SftpException
+    {
+        Session session = getSession();
+        
+        Channel channel = session.openChannel("sftp");
+        channel.connect();
+        //        System.out.println("Channel connected!");
+        
+        ChannelSftp sftpChannel = (ChannelSftp) channel;
+        sftpChannel.cd(curRemoteDir);
+        sftpChannel.rm(file);
+        sftpChannel.exit();
+        session.disconnect();
     }
 }
