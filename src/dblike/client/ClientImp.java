@@ -40,19 +40,21 @@ public class ClientImp implements ClientAPI {
     
     public String getFileInfoFromClient(String serverIP, int port, String userName, String directory, String fileName) throws Exception{
         // to do 
-        return FileInfoService.fileInfoToXMLString(ClientConfig.getMyFileList().getFileHashTable().get(fileName));
+        if (ClientConfig.getMyFileList().getFileHashTable().containsKey(fileName))
+            return FileInfoService.fileInfoToXMLString(ClientConfig.getMyFileList().getFileHashTable().get(fileName));
+        else 
+            return FileInfoService.fileInfoToXMLString(new FileInfo());
     }
     
-    public void setFileInfoToClient(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) throws Exception{
-//        ClientConfig.getFileListService().get(userName);
-        // to do need to know where is the FileListService
+    public void setFileInfoToClient(String serverIP, int port, String userName, String directory, String fileName, String fileInfoXML) throws Exception{
+         ClientConfig.getMyFileList().getFileHashTable().put(fileName, FileInfoService.parseXMLStringToFileInfo(fileInfoXML));
     }
     
-    public void downloadFileFromServer(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) throws Exception {
+    public void downloadFileFromServer(String serverIP, int port, String userName, String directory, String fileName, String fileInfoXML) throws Exception {
         
     }
     
-    public void deleteClientFileByServer(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) throws Exception {
+    public void deleteClientFileByServer(String serverIP, int port, String userName, String directory, String fileName, String fileInfoXML) throws Exception {
         
     }
 }

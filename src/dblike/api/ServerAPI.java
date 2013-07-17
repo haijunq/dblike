@@ -32,13 +32,11 @@ public interface ServerAPI extends Remote {
 
     public String getFileInfoFromServer(String serverIP, int port, String userName, String directory, String fileName) throws RemoteException;
 
-    public void setFileInfoToServer(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) throws RemoteException;
+    public void setFileInfoToServer(String serverIP, int port, String userName, String directory, String fileName, String fileInfoXML) throws RemoteException;
  
 //    public FileInfo getFileInfoFromClient(String serverIP, int port, String userName, String directory, String fileName) throws RemoteException;
 //
 //    public void setFileInfoToClient(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) throws RemoteException;
 
     public boolean validateUser(String userID, String hashedPassword) throws RemoteException;
- 
-    
 }
