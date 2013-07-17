@@ -40,6 +40,11 @@ public class Client {
         return clientID;
     }
 
+    public ServerAPI getServer() {
+        return server;
+    }
+
+    
     /**
      * @param clientID the clientID to set
      */

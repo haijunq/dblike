@@ -162,20 +162,24 @@ public class FileInfoService {
         FileInfo fileInfo = new FileInfo();
         File file = new File(directory+ "/" + filename);
         if (file.exists()) {
-            // to do 
-//            fileInfo.setVersion(UserFileListService.get(UserConfig.getUsername()));
-//            fileInfo.setDeviceID(UserConfig.getDeviceID());
+            // this is the new file or updated file, don't know yet
+            // set version = -1, deviceID = "" because do not know 
+            fileInfo.setVersion(-1); 
+            fileInfo.setDeviceID("");
             fileInfo.setFileName(filename);
             fileInfo.setFileSize(file.length());
             fileInfo.setTimestamp(new DateTime(file.lastModified()).toString());
             fileInfo.setFileHashCode(MD5Service.getMD5StringTableFromSingleFile(directory, filename));
-        } else {
-//            fileInfo.setVersion(UserFileListService.get(UserConfig.getUsername()));
-//            fileInfo.setDeviceID(UserConfig.getDeviceID());
+        }
+        // this is a new file or a delete
+        else {
+            // this is a deleted file or never exsiting file
+            fileInfo.setVersion(-1);
+            fileInfo.setDeviceID("");
             fileInfo.setFileName(filename);
             fileInfo.setFileSize(0);
             fileInfo.setTimestamp(new DateTime().toString());  
-            fileInfo.setFileHashCode(new Hashtable<String, String>());
+            fileInfo.setFileHashCode(new Hashtable<String, String>()); // null
         }
         
         return fileInfo;

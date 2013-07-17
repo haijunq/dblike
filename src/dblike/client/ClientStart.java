@@ -46,7 +46,7 @@ public class ClientStart {
     public static void setClientID(String aClientID) {
         clientID = aClientID;
     }
-
+    
     public static void bindForClient() {
         try {
             System.out.println("Client start at " + ClientConfig.getCurrentClient().getIp() + ":" + ClientConfig.getCurrentClient().getPort());
