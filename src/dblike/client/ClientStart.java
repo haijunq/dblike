@@ -79,7 +79,7 @@ public class ClientStart {
         bindForClient();
         
         // new thread to synchronize files 
-        String directory = "E:\\Dropbox\\Course\\CICS525\\dblike\\test\\";
+        String directory = ClientConfig.getCurrentClient().getFolderPath();
         FileSyncClientService fileSyncServer = new FileSyncClientService(directory);
         Thread fileSyncServerThread = new Thread(fileSyncServer);
         fileSyncServerThread.start();
