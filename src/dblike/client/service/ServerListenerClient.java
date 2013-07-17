@@ -52,6 +52,29 @@ public class ServerListenerClient implements Runnable {
         return flag;
     }
 
+    public boolean checkCurrentServer() {
+        boolean flag = true;
+        int currentIndex = ClientConfig.getCurrentServerIndex();
+        flag = true;
+        ActiveServer aServer = ActiveServerList.get(currentIndex);
+        String serverLabel = aServer.getServerIP() + ":" + aServer.getPort() + "---> " + aServer.getStatus();
+        System.out.print(serverLabel+"---");
+        if (aServer.getStatus() == InternetUtil.getOK()) { 
+            System.out.println("OK");
+            aServer.setStatus(aServer.getStatus() - 1);
+        } else {
+            aServer.setStatus(aServer.getStatus() - 1);
+            if (aServer.getStatus() == 0) {
+                ActiveServerListClient.removeServer(aServer.getServerIP(), aServer.getPort());
+                System.out.println("Server down!!!-- " + aServer.getServerIP() + ":" + aServer.getPort());
+                flag = false;
+            } else {
+                System.out.println("Tring to reach...");
+            }
+        }
+        return flag;
+    }
+
     public void waitForAWhile(int timeOut) {
         try {
             Thread.sleep(timeOut * 1000);
@@ -63,7 +86,7 @@ public class ServerListenerClient implements Runnable {
 
     public void run() {
         while (runningFlag) {
-            checkAllServer();
+            checkCurrentServer();
             waitForAWhile(InternetUtil.getTIMEOUT());
         }
 

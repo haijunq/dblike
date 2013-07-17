@@ -42,7 +42,7 @@ import org.xml.sax.SAXException;
 public class ClientConfig {
 
     private static CurrentClient currentClient = new CurrentClient();
-    private static Vector<ActiveServer> ServerList = new Vector<ActiveServer>();
+    private static Vector<ActiveServer> ServerList = ActiveServerListClient.getActiveServerList();
     private static FileListService myFileList = new FileListService();
     private static int currentServerIndex;
 
