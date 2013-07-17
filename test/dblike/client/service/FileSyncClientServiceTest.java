@@ -280,13 +280,13 @@ public class FileSyncClientServiceTest {
     }
 
     /**
-     * Test of clearTmpDir method, of class FileSyncClientService.
+     * Test of clearTmpDirs method, of class FileSyncClientService.
      */
     @Test
     public void testClearTmpDir() throws IOException {
         System.out.println("clearTmpDir");
         FileSyncClientService f = new FileSyncClientService("./users/haijun");
-        f.clearTmpDir();
+        f.clearTmpDirs();
         // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
     }

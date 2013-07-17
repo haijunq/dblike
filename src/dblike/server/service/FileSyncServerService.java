@@ -148,7 +148,7 @@ public class FileSyncServerService implements Runnable {
     {
         // get fileinfo from server
         ServerAPI server = activeServer.getServerAPI();
-        server.setFileInfoToServer(activeServer.getServerIP(), activeServer.getPort(), userName, directory, fileName, fileInfo.toString());
+        server.setFileInfoToServer(activeServer.getServerIP(), activeServer.getPort(), userName, directory, fileName, FileInfoService.fileInfoToXMLString(fileInfo));
     }
     
     /**

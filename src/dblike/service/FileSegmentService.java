@@ -21,14 +21,19 @@ import java.util.Hashtable;
 public class FileSegmentService {
 
     private static final int CHUNK_SIZE = 4096;
-    private static final String TEMP_DIR = "./tmp/";
+    private static final String TEMP_UPDIR = "./tmp/upload";
+    private static final String TEMP_DOWNDIR = "./tmp/download";
 
     public static int getCHUNK_SIZE() {
         return CHUNK_SIZE;
     }
 
-    public static String getTEMP_DIR() {
-        return TEMP_DIR;
+    public static String getTEMP_UPDIR() {
+        return TEMP_UPDIR;
+    }
+
+    public static String getTEMP_DOWNDIR() {
+        return TEMP_DOWNDIR;
     }
 
     
@@ -90,13 +95,13 @@ public class FileSegmentService {
 
     /**
      *
-     * @param directory
+     * @param srcDir
      * @param filename
      * @throws Exception
      */
-    public static void mergeByteArrayToSingleFile(final String directory, final String filename)
+    public static void mergeByteArrayToSingleFile(String srcDir, String dstDir, final String filename)
             throws Exception {
-        File dir = new File(directory);
+        File dir = new File(srcDir);
 
         File[] matches = dir.listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name) {
@@ -128,23 +133,23 @@ public class FileSegmentService {
             System.out.println(ex.getMessage());
         }
 
-        storeByteArrayToFile(tb, directory + "/" + filename + ".merge");
+        storeByteArrayToFile(tb, dstDir + "/" + filename + ".merge");
 
     }
 
     /**
      *
-     * @param directory
+     * @param srcDir
      * @param filename
      * @param fileChunks
      * @throws Exception
      */
-    public static void insertSegmentsToFile(final String directory, final String filename, ArrayList<String> fileChunks) throws Exception {
+    public static void insertSegmentsToFile(String srcDir, String dstDir, final String filename, ArrayList<String> fileChunks) throws Exception {
         if (fileChunks.isEmpty()) {
             return;
         }
 
-        File file = new File(directory + "/" + filename);
+        File file = new File(srcDir + "/" + filename);
         byte[] bb = new byte[(int) file.length()];
         try {
             for (int i = 0; i < fileChunks.size(); i++) {
@@ -159,7 +164,7 @@ public class FileSegmentService {
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
-        storeByteArrayToFile(bb, directory + "/" + filename + ".insert");
+        storeByteArrayToFile(bb, dstDir + "/" + filename + ".insert");
 
     }
 
@@ -185,7 +190,7 @@ public class FileSegmentService {
                 bb.flip();
                 // save the part of the file into a chunk
                 bytes = bb.array();
-                storeByteArrayToFile(bytes, TEMP_DIR + fileChunkName);
+                storeByteArrayToFile(bytes, TEMP_UPDIR + fileChunkName);
             }
             bb.clear();
         }
@@ -193,7 +198,7 @@ public class FileSegmentService {
             fc.read(lastbb);
             lastbb.flip();
             bytes = lastbb.array();
-            storeByteArrayToFile(bytes, TEMP_DIR + fileChunkName);
+            storeByteArrayToFile(bytes, TEMP_UPDIR + fileChunkName);
             lastbb.clear();
         }
         fis.close();

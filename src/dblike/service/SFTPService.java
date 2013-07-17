@@ -123,4 +123,8 @@ public class SFTPService {
         sftpChannel.exit();
         session.disconnect();
     }
+    
+    public void listFiles(String directory) throws JSchException, SftpException {
+        
+    }
 }
