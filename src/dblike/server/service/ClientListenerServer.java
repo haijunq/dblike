@@ -29,14 +29,13 @@ public class ClientListenerServer implements Runnable {
 
     public boolean checkAllClient() {
         boolean flag = true;
-        System.out.println("-----c-----");
+        System.out.println("-----cccccc-----");
         for (int i = 0; i < ActiveClientList.size(); i++) {
             flag = true;
             ActiveClient aClient = ActiveClientList.get(i);
             String serverLabel = aClient.getClientID() + ":" + aClient.getDeviceID() + "---> " + aClient.getStatus();
-            System.out.println(serverLabel);
+            System.out.print(serverLabel + "---");
             if (aClient.getStatus() == InternetUtil.getOK()) {
-                //aClient.setStatus(0);
                 System.out.println("OK");
                 aClient.setStatus(aClient.getStatus() - 1);
             } else {
@@ -49,7 +48,7 @@ public class ClientListenerServer implements Runnable {
                 }
             }
         }
-        System.out.println("-----c-----");
+        System.out.println("-----cccccc-----");
         return flag;
     }
 

@@ -7,6 +7,7 @@ package dblike.server;
 import dblike.api.ClientAPI;
 import dblike.api.ServerAPI;
 import dblike.server.service.ClientListenerServer;
+import dblike.server.service.FileListXMLService;
 import dblike.server.service.FileSyncServerService;
 import dblike.server.service.ServerListenerServer;
 import dblike.server.service.SyncActionServer;
@@ -25,10 +26,16 @@ import java.util.List;
  */
 public class ServerStart {
 
-    private static String serverIP = "23.23.129.199";
-    //private static String serverIP = "127.0.0.1";
-    private static final int PORT = 1099;
+    private static String serverIP;
+    private static int PORT;
     private static Registry registry;
+
+    /**
+     * @param aPORT the PORT to set
+     */
+    public static void setPORT(int aPORT) {
+        PORT = aPORT;
+    }
 
     /**
      * @return the serverIP
@@ -67,6 +74,7 @@ public class ServerStart {
 
     public static void main(String args[]) {
         try {
+            FileListXMLService.loadServerInfo();
             ServerImp server = new ServerImp();
             ServerAPI serverStub = (ServerAPI) UnicastRemoteObject.exportObject(server, 0);
             System.out.println("----------");

@@ -112,7 +112,7 @@ public class MD5ServiceTest {
     @Test
     public void testGetMD5StringFromFile() throws Exception {
         System.out.println("getMD5StringFromFile");
-        String filename = "./users/haijun/doraemon.jpg.part.0000";
+        String filename = "./tmp/doraemon.jpg.part.0009";
 //        String expResult = "";
         String result = MD5Service.getMD5StringFromFile(filename);
         System.out.println(result);

@@ -77,4 +77,18 @@ public class FileSegmentServiceTest {
         // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
     }
+
+    /**
+     * Test of getChunkFromSingleFile method, of class FileSegmentService.
+     */
+    @Test
+    public void testGetChunkFromSingleFile() throws Exception {
+        System.out.println("getChunkFromSingleFile");
+        String directory = "./users/haijun";
+        String filename = "doraemon.jpg";
+        String fileChunkName = "doraemon.jpg.part.0009";
+        FileSegmentService.getChunkFromSingleFile(directory, filename, fileChunkName);
+        // TODO review the generated test code and remove the default call to fail.
+//        fail("The test case is a prototype.");
+    }
 }

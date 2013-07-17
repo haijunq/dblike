@@ -1,6 +1,7 @@
-
-    <user>
-        <username> nicole </username>
-        <deviceID>mac</deviceID>
-        <folderPath>c:/nnn</folderPath> 
-    </user> 
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><user>
+    <username>nicole</username>
+	<deviceID>mac</deviceID>
+	<folderPath>c:/abc</folderPath>
+    <IP>127.0.0.1</IP>
+    <port>2908</port>
+</user>

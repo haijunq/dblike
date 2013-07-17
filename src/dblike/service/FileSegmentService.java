@@ -21,7 +21,17 @@ import java.util.Hashtable;
 public class FileSegmentService {
 
     private static final int CHUNK_SIZE = 4096;
+    private static final String TEMP_DIR = "./tmp/";
 
+    public static int getCHUNK_SIZE() {
+        return CHUNK_SIZE;
+    }
+
+    public static String getTEMP_DIR() {
+        return TEMP_DIR;
+    }
+
+    
     /**
      *
      * @param directory
@@ -153,5 +163,39 @@ public class FileSegmentService {
 
     }
 
-   
+    public static void getChunkFromSingleFile(String directory, String filename, String fileChunkName) throws Exception {
+        File file = new File(directory + "/" + filename);
+        long fileSize = file.length();
+        FileInputStream fis = new FileInputStream(file);
+
+        int chunkCount = (int) fileSize / CHUNK_SIZE;
+        int lastChunkSize = (int) fileSize % CHUNK_SIZE;
+
+        FileChannel fc = fis.getChannel();
+        ByteBuffer bb = ByteBuffer.allocate(CHUNK_SIZE);
+        ByteBuffer lastbb = ByteBuffer.allocate(lastChunkSize);
+
+        int chunkNum = Integer.parseInt(fileChunkName.substring(fileChunkName.length() - 4));
+
+        byte[] bytes;
+
+        for (int i = 0; i < chunkCount; i++) {
+            fc.read(bb);
+            if (i == chunkNum) {
+                bb.flip();
+                // save the part of the file into a chunk
+                bytes = bb.array();
+                storeByteArrayToFile(bytes, TEMP_DIR + fileChunkName);
+            }
+            bb.clear();
+        }
+        if (chunkNum == chunkCount) {
+            fc.read(lastbb);
+            lastbb.flip();
+            bytes = lastbb.array();
+            storeByteArrayToFile(bytes, TEMP_DIR + fileChunkName);
+            lastbb.clear();
+        }
+        fis.close();
+    }
 }
