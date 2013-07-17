@@ -14,6 +14,6 @@ import java.io.IOException;
 public class WatchDirectoryServiceTest {
     
     public static void main(String[] args) throws IOException {
-        new WatchDirectoryService("E:\\Dropbox\\Course\\CICS525\\dblike\\misc").watchFile();
+        //new WatchDirectoryService("E:\\Dropbox\\Course\\CICS525\\dblike\\misc").watchFile();
     }
 }

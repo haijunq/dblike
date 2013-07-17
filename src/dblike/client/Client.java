@@ -175,10 +175,9 @@ public class Client {
             this.clientIP = ClientConfig.getCurrentClient().getIp();
             this.clientPort = Integer.parseInt(ClientConfig.getCurrentClient().getPort());
 
-            server.addClient(clientID, deviceID, clientIP, clientPort);
-            System.out.println("Client already added on server!");
+            server.addClient(clientID, deviceID, clientIP, clientPort); 
             ActiveServerListClient.addServer(serverIP, serverPort);
-            System.out.println("Server loaded!");
+            System.out.println("Connection built!");
 
             startThread(getClientID(), deviceID, serverIP, serverPort);
         } catch (Exception e) {
@@ -215,12 +214,8 @@ public class Client {
     }
 
     public void lookup() {
-        try {
-            System.out.println("registry is; -->" + registry);
-            System.out.println("before lookup");
+        try { 
             server = (ServerAPI) registry.lookup("serverUtility");
-            System.out.println("after lookup");
-            System.out.println("server is; -->" + server);
         } catch (RemoteException ex) {
             System.out.println(ex);
         } catch (NotBoundException ex) {

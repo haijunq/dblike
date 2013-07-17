@@ -31,12 +31,8 @@ public class ServerListenerClient implements Runnable {
         boolean flag = true;
         for (int i = 0; i < ActiveServerList.size(); i++) {
             flag = true;
-            ActiveServer aServer = ActiveServerList.get(i);
-            String serverLabel = aServer.getServerIP() + ":" + aServer.getPort() + "---> " + aServer.getStatus();
-            System.out.println(serverLabel);
-            if (aServer.getStatus() == InternetUtil.getOK()) {
-                //aServer.setStatus(0);
-                System.out.println("OK");
+            ActiveServer aServer = ActiveServerList.get(i); 
+            if (aServer.getStatus() == InternetUtil.getOK()) {  
                 aServer.setStatus(aServer.getStatus() - 1);
             } else {
                 aServer.setStatus(aServer.getStatus() - 1);
@@ -45,7 +41,7 @@ public class ServerListenerClient implements Runnable {
                     System.out.println("Server down!!!-- " + aServer.getServerIP() + ":" + aServer.getPort());
                     flag = false;
                 } else {
-                    System.out.println("still have some...");
+                    System.out.println("Connection problem, wait to see..."+ aServer.getServerIP() + ":" + aServer.getPort());
                 }
             }
         }
@@ -56,11 +52,8 @@ public class ServerListenerClient implements Runnable {
         boolean flag = true;
         int currentIndex = ClientConfig.getCurrentServerIndex();
         flag = true;
-        ActiveServer aServer = ActiveServerList.get(currentIndex);
-        String serverLabel = aServer.getServerIP() + ":" + aServer.getPort() + "---> " + aServer.getStatus();
-        System.out.print(serverLabel+"---");
-        if (aServer.getStatus() == InternetUtil.getOK()) { 
-            System.out.println("OK");
+        ActiveServer aServer = ActiveServerList.get(currentIndex); 
+        if (aServer.getStatus() == InternetUtil.getOK()) {  
             aServer.setStatus(aServer.getStatus() - 1);
         } else {
             aServer.setStatus(aServer.getStatus() - 1);
@@ -69,7 +62,7 @@ public class ServerListenerClient implements Runnable {
                 System.out.println("Server down!!!-- " + aServer.getServerIP() + ":" + aServer.getPort());
                 flag = false;
             } else {
-                System.out.println("Tring to reach...");
+                    System.out.println("Connection problem, wait to see..."+ aServer.getServerIP() + ":" + aServer.getPort());
             }
         }
         return flag;
