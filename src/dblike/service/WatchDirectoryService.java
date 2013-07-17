@@ -29,20 +29,18 @@ import java.util.Map;
  */
 public class WatchDirectoryService {
     
-    private final WatchService watcher;
-    private final Map<WatchKey,Path> keys;
-    private final boolean recursive;
-    private boolean trace = false;
-
-    @SuppressWarnings("unchecked")
-    static <T> WatchEvent<T> cast(WatchEvent<?> event) {
-        return (WatchEvent<T>)event;
-    }
-
+    protected WatchService watcher;
+    protected Map<WatchKey,Path> keys;
+    protected Path dir;
+    protected boolean recursive;
+    protected boolean trace = false;
+    
     /**
      * Creates a WatchService and registers the given directory
      */
-    WatchDirectoryService(Path dir, boolean recursive) throws IOException {
+    public WatchDirectoryService(Path dir, boolean recursive) throws IOException {
+        
+        this.dir = dir;
         this.watcher = FileSystems.getDefault().newWatchService();
         this.keys = new HashMap<WatchKey,Path>();
         this.recursive = recursive;
@@ -59,10 +57,55 @@ public class WatchDirectoryService {
         this.trace = true;
     }
     
+    public WatchService getWatcher() {
+        return watcher;
+    }
+
+    public void setWatcher(WatchService watcher) {
+        this.watcher = watcher;
+    }
+
+    public Map<WatchKey, Path> getKeys() {
+        return keys;
+    }
+
+    public void setKeys(Map<WatchKey, Path> keys) {
+        this.keys = keys;
+    }
+
+    public Path getDir() {
+        return dir;
+    }
+
+    public void setDir(Path dir) {
+        this.dir = dir;
+    }
+
+    public boolean isRecursive() {
+        return recursive;
+    }
+
+    public void setRecursive(boolean recursive) {
+        this.recursive = recursive;
+    }
+
+    public boolean isTrace() {
+        return trace;
+    }
+
+    public void setTrace(boolean trace) {
+        this.trace = trace;
+    }
+    
+    @SuppressWarnings("unchecked")
+    protected static <T> WatchEvent<T> cast(WatchEvent<?> event) {
+        return (WatchEvent<T>)event;
+    }
+        
     /**
      * Register the given directory with the WatchService
      */
-    private void register(Path dir) throws IOException {
+    protected void register(Path dir) throws IOException {
         WatchKey key = dir.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
         if (trace) {
             Path prev = keys.get(key);
@@ -81,7 +124,7 @@ public class WatchDirectoryService {
      * Register the given directory, and all its sub-directories, with the
      * WatchService.
      */
-    private void registerAll(final Path start) throws IOException {
+    protected void registerAll(final Path start) throws IOException {
         // register directory and sub-directories
         Files.walkFileTree(start, new SimpleFileVisitor<Path>() {
             @Override
@@ -97,7 +140,7 @@ public class WatchDirectoryService {
     /**
      * Process all events for keys queued to the watcher
      */
-    void processEvents() {
+    public void processEvents() {
         for (;;) {
 
             // wait for key to be signalled
@@ -150,9 +193,10 @@ public class WatchDirectoryService {
 
                 // all directories are inaccessible
                 if (keys.isEmpty()) {
-                    break;
+//                    break;
                 }
             }
         }
     }
+
 }
