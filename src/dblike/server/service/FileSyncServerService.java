@@ -148,7 +148,7 @@ public class FileSyncServerService implements Runnable {
     {
         // get fileinfo from server
         ServerAPI server = activeServer.getServerAPI();
-        server.setFileInfoToServer(activeServer.getServerIP(), activeServer.getPort(), userName, directory, fileName, fileInfo);
+        server.setFileInfoToServer(activeServer.getServerIP(), activeServer.getPort(), userName, directory, fileName, fileInfo.toString());
     }
     
     /**
@@ -164,7 +164,7 @@ public class FileSyncServerService implements Runnable {
     public void updateFileInfoToClient(String userName, String directory, String fileName, ActiveClient activeClient, FileInfo fileInfo) throws RemoteException, Exception
     {
         ClientAPI client = activeClient.getClientAPI();
-        client.setFileInfoToClient(activeClient.getClientIP(), activeClient.getPort(), userName, directory, fileName, fileInfo);
+        client.setFileInfoToClient(activeClient.getClientIP(), activeClient.getPort(), userName, directory, fileName, fileInfo.toString());
     }
     
     
