@@ -67,8 +67,7 @@ public class SyncActionServer implements Runnable {
         return true;
     }
 
-    public boolean beatForAllClient() {
-        System.out.println("in beatForAllClient, has "+ActiveClientList.size()+" in total");
+    public boolean beatForAllClient() { 
         boolean flag = true;
         for (int i = 0; i < ActiveClientList.size(); i++) {
             ActiveClient aClient = ActiveClientList.get(i);
@@ -77,8 +76,8 @@ public class SyncActionServer implements Runnable {
                 if (lookupClient(aClient) == false) {
                     System.out.println("Failed to look up " + clientLabel);
                 } else {
-                    System.out.println("registry is: "+aClient.getRegistry());
                     aClient.getClientAPI().beatFromServer(ServerStart.getServerIP(), ServerStart.getPORT());
+                    System.out.println("Beat for [Client]: "+aClient.getClientID()+" "+aClient.getDeviceID());
                 }
             } catch (RemoteException ex) {
                 System.out.println("exp for: "+ex);
@@ -117,6 +116,7 @@ public class SyncActionServer implements Runnable {
                     System.out.println("Failed to look up " + serverLabel);
                 } else {
                     aServer.getServerAPI().beatFromServer(ServerStart.getServerIP(), ServerStart.getPORT());
+                    System.out.println("Beat for [Server]: "+aServer.getServerIP()+" "+aServer.getPort());
                 }
             } catch (RemoteException ex) {
                 System.out.println("Someting wrong with this server..." + serverLabel);

@@ -25,7 +25,7 @@ public class ClientImp implements ClientAPI {
 
     @Override
     public boolean beatFromServer(String serverIP, int port) throws RemoteException {
-        return ActiveServerListClient.beatTheServer(serverIP, port);
+        return ActiveServerListClient.beatCurrentServer(serverIP, port);
     }
     
 //    // to do
