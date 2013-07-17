@@ -23,6 +23,15 @@ public class FileSegmentService {
     private static final int CHUNK_SIZE = 4096;
     private static final String TEMP_DIR = "./tmp/";
 
+    public static int getCHUNK_SIZE() {
+        return CHUNK_SIZE;
+    }
+
+    public static String getTEMP_DIR() {
+        return TEMP_DIR;
+    }
+
+    
     /**
      *
      * @param directory

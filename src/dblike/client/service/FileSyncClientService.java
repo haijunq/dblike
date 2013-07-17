@@ -13,10 +13,12 @@ import dblike.client.ActiveServer;
 import dblike.service.FileInfo;
 import dblike.service.FileInfoDiff;
 import dblike.service.FileInfoService;
+import dblike.service.FileSegmentService;
 import dblike.service.MD5Service;
 import dblike.service.SFTPService;
 import dblike.service.ServiceUtils;
 import dblike.service.WatchDirectoryService;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
@@ -77,15 +79,17 @@ public class FileSyncClientService implements Runnable {
         sftpService.uploadFile(srcFilePath, dstFilePath);
     }
 
-    public void uploadModifiedFileToServer(String userName, String directory, String fileName, ActiveServer activeServer, FileInfoDiff diff) throws JSchException, SftpException {
+    public void uploadModifiedFileToServer(String userName, String directory, String fileName, ActiveServer activeServer, FileInfoDiff diff) throws JSchException, SftpException, Exception {
 //        SFTPService sftpService = new SFTPService(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(), ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getPort());
         // to do, upload only changed slices.
         if (!diff.getFileHashCode().isEmpty()) {
             for (String fileChunkName : diff.getFileHashCode().keySet()) {
-                String srcFilePath = ClientConfig.getCurrentClient().getFolderPath() + "/" + fileChunkName;
+                FileSegmentService.getChunkFromSingleFile(ClientConfig.getCurrentClient().getFolderPath(), fileName, fileChunkName);
+                String srcFilePath = FileSegmentService.getTEMP_DIR() + "/" + fileChunkName;
                 String dstFilePath = "./users/" + userName + "/" + fileChunkName;
                 sftpService.uploadFile(srcFilePath, dstFilePath);
             }
+            clearTmpDir(); // to be tested
         }
     }
 
@@ -327,6 +331,15 @@ public class FileSyncClientService implements Runnable {
             Logger.getLogger(FileSyncServerService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
             Logger.getLogger(FileSyncServerService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void clearTmpDir() {
+        File tmp = new File(FileSegmentService.getTEMP_DIR());
+        String[] files = tmp.list();
+        for (int i = 0; i < files.length; i++) {
+            File cur = new File(tmp, files[i]);
+            cur.delete();
         }
     }
 }
