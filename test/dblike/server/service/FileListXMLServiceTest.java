@@ -70,10 +70,13 @@ public class FileListXMLServiceTest {
     public void testLoadFileListFromXML() {
         System.out.println("loadFileListFromXML");
         String username = "haijun";
-        FileListService r = FileListXMLService.loadFileListFromXML(username);
-        System.out.println(r.getPathname());
-        System.out.println(r.getFileHashTable().get("file1"));
-        System.out.println(r.getFileHashTable().get("file2"));
+//        FileListService r = FileListXMLService.loadFileListFromXML(username);
+        FileListService r = new FileListService();
+        System.out.println(r);
+        FileListXMLService.saveFileListToXML(r);
+//        System.out.println(r.getPathname());
+//        System.out.println(r.getFileHashTable().get("file1"));
+//        System.out.println(r.getFileHashTable().get("file2"));
 //        assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");

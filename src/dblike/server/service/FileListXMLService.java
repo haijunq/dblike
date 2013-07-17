@@ -46,6 +46,31 @@ public class FileListXMLService {
             pathnameElement.appendChild(fileListXML.createTextNode(filelist.getPathname()));
             rootElement.appendChild(pathnameElement);
 
+            if (filelist.getFileHashTable().isEmpty()) {
+                Element fileInfoElement = fileListXML.createElement("fileInfo");
+                rootElement.appendChild(fileInfoElement);
+
+                Element versionElement = fileListXML.createElement("version");
+                fileInfoElement.appendChild(versionElement);
+
+                Element deviceIDElement = fileListXML.createElement("deviceID");
+                fileInfoElement.appendChild(deviceIDElement);
+
+                Element fileNameElement = fileListXML.createElement("fileName");
+                fileInfoElement.appendChild(fileNameElement);
+
+                Element timestampElement = fileListXML.createElement("timestamp");
+                fileInfoElement.appendChild(timestampElement);
+
+                Element fileSizeElement = fileListXML.createElement("fileSize");
+                fileInfoElement.appendChild(fileSizeElement);
+                
+                Element fileHashCodeElement = fileListXML.createElement("fileHashCode");
+                fileInfoElement.appendChild(fileHashCodeElement);
+                Element fileChunkHashCodeElement = fileListXML.createElement("fileChunkHashCode");
+                fileHashCodeElement.appendChild(fileChunkHashCodeElement);
+            }
+
             for (String filename : filelist.getFileHashTable().keySet()) {
                 Element fileInfoElement = fileListXML.createElement("fileInfo");
                 fileInfoElement.setAttribute("filename", filename);
@@ -84,7 +109,8 @@ public class FileListXMLService {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(fileListXML);
-            StreamResult result = new StreamResult(new File(filelist.getPathname() + "filelist.xml"));
+            File file = new File(filelist.getPathname() + "filelist.xml");
+            StreamResult result = new StreamResult(file);
             transformer.transform(source, result);
 
         } catch (ParserConfigurationException pce) {
@@ -106,7 +132,11 @@ public class FileListXMLService {
             if (fileListServiceNodeList != null) {
                 Node pathNameNode = fileListServiceNodeList.item(0);
                 if (pathNameNode.getNodeName().equals("pathname")) {
-                    filelist.setPathname(pathNameNode.getFirstChild().getNodeValue());
+                    if (pathNameNode.hasChildNodes()) {
+                        filelist.setPathname(pathNameNode.getFirstChild().getNodeValue());
+                    } else {
+                        filelist.setPathname("");
+                    }
                 }
 
 //                System.out.println(fileInfoNode.getNodeName());
@@ -115,32 +145,56 @@ public class FileListXMLService {
                     if (fileInfoNode.hasChildNodes()) {
                         Node versionNode = fileInfoNode.getFirstChild();
                         if (versionNode.getNodeName().equals("version")) {
-                            fileinfo.setVersion(Integer.parseInt(versionNode.getFirstChild().getNodeValue()));
+                            if (versionNode.hasChildNodes()) {
+                                fileinfo.setVersion(Integer.parseInt(versionNode.getFirstChild().getNodeValue()));
+                            } else {
+                                fileinfo.setVersion(0);
+                            }
                         }
                         Node deviceIDNode = versionNode.getNextSibling();
                         if (deviceIDNode.getNodeName().equals("deviceID")) {
-                            fileinfo.setDeviceID(deviceIDNode.getFirstChild().getNodeValue());
+                            if (deviceIDNode.hasChildNodes()) {
+                                fileinfo.setDeviceID(deviceIDNode.getFirstChild().getNodeValue());
+                            } else {
+                                fileinfo.setDeviceID("");
+                            }
                         }
                         Node fileNameNode = deviceIDNode.getNextSibling();
                         if (fileNameNode.getNodeName().equals("fileName")) {
-                            fileinfo.setFileName(fileNameNode.getFirstChild().getNodeValue());
+                            if (fileNameNode.hasChildNodes()) {
+                                fileinfo.setFileName(fileNameNode.getFirstChild().getNodeValue());
+                            } else {
+                                fileinfo.setFileName("");
+                            }
                         }
                         Node timestampNode = fileNameNode.getNextSibling();
                         if (timestampNode.getNodeName().equals("timestamp")) {
-                            fileinfo.setTimestamp(timestampNode.getFirstChild().getNodeValue());
+                            if (timestampNode.hasChildNodes()) {
+                                fileinfo.setTimestamp(timestampNode.getFirstChild().getNodeValue());
+                            } else {
+                                fileinfo.setTimestamp("");
+                            }
                         }
                         Node fileSizeNode = timestampNode.getNextSibling();
                         if (fileSizeNode.getNodeName().equals("fileSize")) {
-                            fileinfo.setFileSize(Long.parseLong(fileSizeNode.getFirstChild().getNodeValue()));
+                            if (fileSizeNode.hasChildNodes()) {
+                                fileinfo.setFileSize(Long.parseLong(fileSizeNode.getFirstChild().getNodeValue()));
+                            } else {
+                                fileinfo.setFileSize(0);
+                            }
                         }
                         Node fileHashCodeNode = fileSizeNode.getNextSibling();
                         Hashtable<String, String> fileHashCode = new Hashtable<>();
 
                         for (Node node = fileHashCodeNode.getFirstChild(); node != null; node = node.getNextSibling()) {
-                            fileHashCode.put(((Attr) node.getAttributes().item(0)).getValue(), node.getFirstChild().getNodeValue());
+                            if (node.hasChildNodes()) {
+                                fileHashCode.put(((Attr) node.getAttributes().item(0)).getValue(), node.getFirstChild().getNodeValue());
+                            }
                         }
                         fileinfo.setFileHashCode(fileHashCode);
-                        filelist.getFileHashTable().put(((Attr) fileInfoNode.getAttributes().item(0)).getValue(), fileinfo);
+                        if (fileInfoNode.hasAttributes()) {
+                            filelist.getFileHashTable().put(((Attr) fileInfoNode.getAttributes().item(0)).getValue(), fileinfo);
+                        }
                     }
                 }
             }
@@ -164,7 +218,7 @@ public class FileListXMLService {
     {
         return new FileInfo();
     }
-    
+
     public static void setFileInfo(String userName, String directory, String fileName, FileInfo fileInfo) // to do
     {
         ;
