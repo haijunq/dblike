@@ -96,8 +96,12 @@ public class ServerImp implements ServerAPI {
         return ActiveClientListServer.beatTheClient(clientID, deviceID);
     }
     
+    public boolean containFileInfoFromServer(String serverIP, int port, String userName, String directory, String fileName) {
+        return FileSyncServerService.fileListHashtable.get(userName).containFileInfo(fileName);
+    }
+    
     public String getFileInfoFromServer(String serverIP, int port, String userName, String directory, String fileName) {
-        return FileInfoService.fileInfoToXMLString(FileSyncServerService.fileListHashtable.get(userName).getFileInfoByFileName(fileName));
+        return FileInfoService.fileInfoToXMLString(FileSyncServerService.fileListHashtable.get(userName).getFileInfo(fileName));
     }
     
     public void setFileInfoToServer(String serverIP, int port, String userName, String directory, String fileName, String fileInfo) {
