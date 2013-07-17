@@ -70,8 +70,8 @@ public class ClientStart {
 
     public static void main(String args[]) {
         ClientConfig.loadServerList();
-        Client aClient = new Client(ClientConfig.getServerList().get(0).getServerIP(), ClientConfig.getServerList().get(0).getPort());
-        clientID=aClient.login();
+        Client aClient = new Client(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(), ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getPort());
+        clientID = aClient.login();
         aClient.initData();
         bindForClient();
     }

@@ -139,7 +139,6 @@ public class Client {
     public String login() {
         try {
             boolean flag = true;
-
             registry = LocateRegistry.getRegistry(serverIP, serverPort);
             lookup();
             while (flag) {

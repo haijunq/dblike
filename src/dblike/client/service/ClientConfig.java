@@ -44,6 +44,21 @@ public class ClientConfig {
     private static CurrentClient currentClient = new CurrentClient();
     private static Vector<ActiveServer> ServerList = new Vector<ActiveServer>();
     private static FileListService myFileList = new FileListService();
+    private static int currentServerIndex;
+
+    /**
+     * @return the currentServerIndex
+     */
+    public static int getCurrentServerIndex() {
+        return currentServerIndex;
+    }
+
+    /**
+     * @param aCurrentServerIndex the currentServerIndex to set
+     */
+    public static void setCurrentServerIndex(int aCurrentServerIndex) {
+        currentServerIndex = aCurrentServerIndex;
+    }
 
     /**
      * @return the currentClient
@@ -223,6 +238,7 @@ public class ClientConfig {
                 for (int i = 0; i < getServerList().size(); ++i) {
                     System.out.println(getServerList().get(i).getServerIP() + ":" + getServerList().get(i).getPort());
                 }
+                setCurrentServerIndex((int)(Math.random() * getServerList().size()));
                 return true;
             } else {
                 return false;
@@ -252,20 +268,20 @@ public class ClientConfig {
             fileListXML.appendChild(rootElement);
 
             Element pathnameElement = fileListXML.createElement("pathname");
-            pathnameElement.appendChild(fileListXML.createTextNode(myFileList.getPathname()));
+            pathnameElement.appendChild(fileListXML.createTextNode(getMyFileList().getPathname()));
             rootElement.appendChild(pathnameElement);
 
-            for (String filename : myFileList.getFileHashTable().keySet()) {
+            for (String filename : getMyFileList().getFileHashTable().keySet()) {
                 Element fileInfoElement = fileListXML.createElement("fileInfo");
                 fileInfoElement.setAttribute("filename", filename);
                 rootElement.appendChild(fileInfoElement);
 
                 Element versionElement = fileListXML.createElement("version");
-                versionElement.appendChild(fileListXML.createTextNode(Integer.toString(myFileList.getFileHashTable().get(filename).getVersion())));
+                versionElement.appendChild(fileListXML.createTextNode(Integer.toString(getMyFileList().getFileHashTable().get(filename).getVersion())));
                 fileInfoElement.appendChild(versionElement);
 
                 Element deviceIDElement = fileListXML.createElement("deviceID");
-                deviceIDElement.appendChild(fileListXML.createTextNode(myFileList.getFileHashTable().get(filename).getDeviceID()));
+                deviceIDElement.appendChild(fileListXML.createTextNode(getMyFileList().getFileHashTable().get(filename).getDeviceID()));
                 fileInfoElement.appendChild(deviceIDElement);
 
                 Element fileNameElement = fileListXML.createElement("fileName");
@@ -273,19 +289,19 @@ public class ClientConfig {
                 fileInfoElement.appendChild(fileNameElement);
 
                 Element timestampElement = fileListXML.createElement("timestamp");
-                timestampElement.appendChild(fileListXML.createTextNode(myFileList.getFileHashTable().get(filename).getTimestamp()));
+                timestampElement.appendChild(fileListXML.createTextNode(getMyFileList().getFileHashTable().get(filename).getTimestamp()));
                 fileInfoElement.appendChild(timestampElement);
 
                 Element fileSizeElement = fileListXML.createElement("fileSize");
-                fileSizeElement.appendChild(fileListXML.createTextNode(Long.toString(myFileList.getFileHashTable().get(filename).getFileSize())));
+                fileSizeElement.appendChild(fileListXML.createTextNode(Long.toString(getMyFileList().getFileHashTable().get(filename).getFileSize())));
                 fileInfoElement.appendChild(fileSizeElement);
 
                 Element fileHashCodeElement = fileListXML.createElement("fileHashCode");
                 fileInfoElement.appendChild(fileHashCodeElement);
 
-                for (String fileChunkName : myFileList.getFileInfoByFileName(filename).getFileHashCode().keySet()) {
+                for (String fileChunkName : getMyFileList().getFileInfoByFileName(filename).getFileHashCode().keySet()) {
                     Element fileChunkHashCodeElement = fileListXML.createElement("fileChunkHashCode");
-                    fileChunkHashCodeElement.appendChild(fileListXML.createTextNode(myFileList.getFileInfoByFileName(filename).getFileHashCode().get(fileChunkName)));
+                    fileChunkHashCodeElement.appendChild(fileListXML.createTextNode(getMyFileList().getFileInfoByFileName(filename).getFileHashCode().get(fileChunkName)));
                     fileChunkHashCodeElement.setAttribute("fileChunkName", fileChunkName);
                     fileHashCodeElement.appendChild(fileChunkHashCodeElement);
                 }
@@ -314,7 +330,7 @@ public class ClientConfig {
             if (fileListServiceNodeList != null) {
                 Node pathNameNode = fileListServiceNodeList.item(0);
                 if (pathNameNode.getNodeName().equals("pathname")) {
-                    myFileList.setPathname(pathNameNode.getFirstChild().getNodeValue());
+                    getMyFileList().setPathname(pathNameNode.getFirstChild().getNodeValue());
                 }
 
 //                System.out.println(fileInfoNode.getNodeName());
@@ -348,7 +364,7 @@ public class ClientConfig {
                             fileHashCode.put(((Attr) node.getAttributes().item(0)).getValue(), node.getFirstChild().getNodeValue());
                         }
                         fileinfo.setFileHashCode(fileHashCode);
-                        myFileList.getFileHashTable().put(((Attr) fileInfoNode.getAttributes().item(0)).getValue(), fileinfo);
+                        getMyFileList().getFileHashTable().put(((Attr) fileInfoNode.getAttributes().item(0)).getValue(), fileinfo);
                     }
                 }
             }
@@ -363,6 +379,6 @@ public class ClientConfig {
             e.printStackTrace();
         }
  
-        return myFileList;
+        return getMyFileList();
     }
 }
