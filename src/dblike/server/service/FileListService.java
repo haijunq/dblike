@@ -43,6 +43,8 @@ public final class FileListService {
     }
 
     public FileListService() {
+        this.pathname = "";
+        this.fileHashTable = new Hashtable<>();
     }
 
     
