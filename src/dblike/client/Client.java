@@ -36,7 +36,7 @@ public class Client {
     }
     private ServerAPI server = null;
     private String userParam, password;
-    private int loginStatus;
+    private static int loginStatus;
     private static int testFlag = 0;
     private static Registry registry;
     private static String clientID;
@@ -110,15 +110,15 @@ public class Client {
         this.loginStatus = loginStatus;
     }
 
-    public static void pickupNewServer() {
+    public void pickupNewServer() {
         stopThread();
         while (true) {
             int availableServerIndex = ClientConfig.pickupAvailableServer();
             if (availableServerIndex != -1) {
                 ClientConfig.setCurrentServerIndex(availableServerIndex);
-
-                startThread(clientID, deviceID, ActiveServerListServer.getActiveServerList().get(availableServerIndex).getServerIP(), ActiveServerListServer.getActiveServerList().get(availableServerIndex).getPort());
-
+                serverIP = ActiveServerListServer.getActiveServerList().get(availableServerIndex).getServerIP();
+                serverPort = ActiveServerListServer.getActiveServerList().get(availableServerIndex).getPort();
+                initData();
             } else {
                 System.out.println("There is no available server!!!");
             }
@@ -128,7 +128,7 @@ public class Client {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-     }
+    }
 
     public void inputNamePassword() {
         Scanner scanUN = new Scanner(System.in);
