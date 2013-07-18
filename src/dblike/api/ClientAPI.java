@@ -25,6 +25,10 @@ public interface ClientAPI extends Remote {
 //    
 //    public void setFileInfoToServer(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) throws RemoteException;
 
+    public boolean containFileInfo(String serverIP, int port, String userName, String directory, String fileName) throws Exception;
+    
+    public String getFileInfo(String serverIP, int port, String userName, String directory, String fileName) throws Exception;
+    
     // to do 
     public String getFileInfoFromClient(String serverIP, int port, String userName, String directory, String fileName) throws Exception;  
     
@@ -33,5 +37,5 @@ public interface ClientAPI extends Remote {
     
     public void syncModifiedFileFromServer(String serverIP, int port, String userName, String directory, String fileName, String fileInfoXML) throws Exception;
     
-    public void syncClientFileByServer(String serverIP, int port, String userName, String directory, String fileName, String fileInfoXML) throws Exception;
+    public void syncDeletedFileFromServer(String serverIP, int port, String userName, String directory, String fileName, String fileInfoXML) throws Exception;
 }

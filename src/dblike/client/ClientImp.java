@@ -39,6 +39,14 @@ public class ClientImp implements ClientAPI {
 //        FileListXMLService.setFileInfo(userName, directory, fileName, fileInfo);
 //    }
     
+    public boolean containFileInfo(String serverIP, int port, String userName, String directory, String fileName) throws Exception {
+        return ClientConfig.getMyFileList().getFileHashTable().containsKey(fileName);
+    }
+    
+    public String getFileInfo(String serverIP, int port, String userName, String directory, String fileName) {
+        return FileInfoService.fileInfoToXMLString(ClientConfig.getMyFileList().getFileHashTable().get(fileName));
+    }
+            
     public String getFileInfoFromClient(String serverIP, int port, String userName, String directory, String fileName) throws Exception{
         // to do 
         if (ClientConfig.getMyFileList().getFileHashTable().containsKey(fileName))
@@ -59,7 +67,7 @@ public class ClientImp implements ClientAPI {
         FileSyncClientService.syncCreatedFileFromServer(userName, directory, fileName);
     }
     
-    public void syncClientFileByServer(String serverIP, int port, String userName, String directory, String fileName, String fileInfoXML) throws Exception {
+    public void syncDeletedFileFromServer(String serverIP, int port, String userName, String directory, String fileName, String fileInfoXML) throws Exception {
         FileSyncClientService.syncDeletedFileFromServer(userName, directory, fileName);
         
     }
