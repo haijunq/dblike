@@ -110,7 +110,7 @@ public class SyncActionClient implements Runnable {
         try {
             target.getServerAPI().beatFromClient(clientID, deviceID);
         } catch (RemoteException ex) {
-            System.out.println("Someting wrong with this server..." + serverLabel);
+            //System.out.println("Someting wrong with this server..." + serverLabel);
         }
         return flag;
     }

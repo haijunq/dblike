@@ -41,7 +41,7 @@ public class ClientListenerServer implements Runnable {
                     ActiveClientListServer.removeClient(aClient.getClientID(), aClient.getDeviceID());
                     flag = false;
                 } else {
-                    System.out.println("Connection problem, wait to see..."+ aClient.getClientIP() + ":" + aClient.getPort());
+                    //System.out.println("Connection problem, wait to see..."+ aClient.getClientIP() + ":" + aClient.getPort());
                 }
             }
         } 
