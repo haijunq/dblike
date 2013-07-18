@@ -20,8 +20,8 @@ import java.rmi.RemoteException;
 public class ClientImp implements ClientAPI {
     
     @Override
-    public void showMessage(String message) throws RemoteException {
-        System.out.println(message); 
+    public void actOnClient() throws RemoteException {
+        Client.setTestFlag(1);
     }
 
     @Override

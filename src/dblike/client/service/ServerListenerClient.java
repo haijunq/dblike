@@ -4,8 +4,15 @@
  */
 package dblike.client.service;
 
+import dblike.api.ServerAPI;
 import dblike.client.ActiveServer;
+import dblike.client.Client;
 import dblike.service.InternetUtil;
+import java.rmi.AccessException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,11 +54,15 @@ public class ServerListenerClient implements Runnable {
         return flag;
     }
 
+
     public void waitForAWhile(int timeOut) {
         try {
             Thread.sleep(timeOut * 1000);
+
+
         } catch (InterruptedException ex) {
-            Logger.getLogger(ServerListenerClient.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ServerListenerClient.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
 
     }

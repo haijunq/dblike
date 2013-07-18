@@ -67,6 +67,7 @@ public class ClientStart {
 
     public static void main(String args[]) throws IOException {
         ClientConfig.loadServerList();
+        ClientConfig.getCurrentServerIndex();
         Client aClient = new Client(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(), ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getPort());
         clientID = aClient.login();
         aClient.initData();
