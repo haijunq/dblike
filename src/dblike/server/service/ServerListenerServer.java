@@ -41,25 +41,28 @@ public class ServerListenerServer implements Runnable {
     }
 
     public boolean checkAllServer() {
-        boolean flag = true; 
+        boolean flag = true;
         for (int i = 0; i < ActiveServerList.size(); i++) {
             flag = true;
-            ActiveServer aServer = ActiveServerList.get(i); 
-            if (aServer.getStatus() == InternetUtil.getOK()) { 
+            ActiveServer aServer = ActiveServerList.get(i);
+            if (aServer.getStatus() == InternetUtil.getOK()) {
+                aServer.setIsConnect(1);
+                System.out.println(aServer.getServerIP() + ":" + aServer.getPort() + "---> OK");
                 aServer.setStatus(aServer.getStatus() - 1);
             } else {
                 aServer.setStatus(aServer.getStatus() - 1);
                 if (aServer.getStatus() == 0) {
-                    ActiveServerListServer.removeServer(aServer.getServerIP(), aServer.getPort());
+                    System.out.println(aServer.getServerIP() + ":" + aServer.getPort() + "---> NO");
+                    aServer.setIsConnect(0);
+                    //ActiveServerListServer.removeServer(aServer.getServerIP(), aServer.getPort());
                     flag = false;
                 } else {
                     //System.out.println("Connection problem, wait to see..."+ aServer.getServerIP() + ":" + aServer.getPort());
                 }
             }
-        } 
+        }
         return flag;
     }
-
 
     public void waitForAWhile(int timeOut) {
         try {
@@ -71,6 +74,7 @@ public class ServerListenerServer implements Runnable {
     }
 
     public void run() {
+        waitForAWhile(2);
         ActiveServerListServer.loadServerList();
         while (runningFlag) {
             checkAllServer();

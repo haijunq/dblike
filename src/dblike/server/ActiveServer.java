@@ -20,6 +20,21 @@ public class ActiveServer {
     private int status;
     private Registry registry;
     private ServerAPI serverAPI = null;
+    private int isConnect;
+
+    /**
+     * @return the isConnect
+     */
+    public int isIsConnect() {
+        return isConnect;
+    }
+
+    /**
+     * @param isConnect the isConnect to set
+     */
+    public void setIsConnect(int isConnect) {
+        this.isConnect = isConnect;
+    }
 
     /**
      * @return the registry
@@ -110,5 +125,6 @@ public class ActiveServer {
         this.serverIP = aClientIP;
         this.port = aPort;
         this.status = InternetUtil.getOK();
+        this.isConnect=0;
     }
 }

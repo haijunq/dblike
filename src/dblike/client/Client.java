@@ -5,6 +5,8 @@ import dblike.client.service.ActiveServerListClient;
 import dblike.client.service.ClientConfig;
 import dblike.client.service.ServerListenerClient;
 import dblike.client.service.SyncActionClient;
+import dblike.server.service.ActiveServerListServer;
+import dblike.service.InternetUtil;
 import dblike.service.MD5Service;
 import java.rmi.*;
 import java.util.logging.Level;
@@ -32,20 +34,21 @@ public class Client {
     public static void setTestFlag(int aTestFlag) {
         testFlag = aTestFlag;
     }
-
     private ServerAPI server = null;
     private String userParam, password;
     private int loginStatus;
-    private static int testFlag=0;
+    private static int testFlag = 0;
     private static Registry registry;
-    private String clientID;
-    private String deviceID;
-    private String clientIP;
-    private int clientPort;
-    private String serverIP;
-    private int serverPort;
+    private static String clientID;
+    private static String deviceID;
+    private static String clientIP;
+    private static int clientPort;
+    private static String serverIP;
+    private static int serverPort;
     static Thread sLThread;
     static Thread syncThread;
+    private static ServerListenerClient serverListener;
+    private static SyncActionClient sync;
 
     /**
      * @return the clientID
@@ -58,7 +61,6 @@ public class Client {
         return server;
     }
 
-    
     /**
      * @param clientID the clientID to set
      */
@@ -108,6 +110,26 @@ public class Client {
         this.loginStatus = loginStatus;
     }
 
+    public static void pickupNewServer() {
+        stopThread();
+        while (true) {
+            int availableServerIndex = ClientConfig.pickupAvailableServer();
+            if (availableServerIndex != -1) {
+                ClientConfig.setCurrentServerIndex(availableServerIndex);
+
+                startThread(clientID, deviceID, ActiveServerListServer.getActiveServerList().get(availableServerIndex).getServerIP(), ActiveServerListServer.getActiveServerList().get(availableServerIndex).getPort());
+
+            } else {
+                System.out.println("There is no available server!!!");
+            }
+            try {
+                Thread.sleep(InternetUtil.getCHANGESERVERINTERVAL() * 1000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+     }
+
     public void inputNamePassword() {
         Scanner scanUN = new Scanner(System.in);
         System.out.println("Username:");
@@ -130,13 +152,18 @@ public class Client {
         setPassword(scanPW.nextLine());
     }
 
+    public static void stopThread() {
+        serverListener.setRunningFlag(false);
+        sync.setRunningFlag(false);
+    }
+
     public static void startThread(String clientID, String deviceID, String serverIP, int serverPort) {
         //New thread to listen to heartbeat from all servers
-        ServerListenerClient serverListener = new ServerListenerClient();
+        serverListener = new ServerListenerClient();
         sLThread = new Thread(serverListener);
         sLThread.start();
         //New thread to send heartbeat to others, broadcast
-        SyncActionClient sync = new SyncActionClient();
+        sync = new SyncActionClient();
         sync.setClientID(clientID);
         sync.setDeviceID(deviceID);
         sync.setServerIP(serverIP);
@@ -189,7 +216,7 @@ public class Client {
             this.clientIP = ClientConfig.getCurrentClient().getIp();
             this.clientPort = Integer.parseInt(ClientConfig.getCurrentClient().getPort());
 
-            server.addClient(clientID, deviceID, clientIP, clientPort); 
+            server.addClient(clientID, deviceID, clientIP, clientPort);
             ActiveServerListClient.addServer(serverIP, serverPort);
             System.out.println("Connection built!");
 
@@ -228,7 +255,7 @@ public class Client {
     }
 
     public void lookup() {
-        try { 
+        try {
             server = (ServerAPI) registry.lookup("serverUtility");
         } catch (RemoteException ex) {
             System.out.println(ex);

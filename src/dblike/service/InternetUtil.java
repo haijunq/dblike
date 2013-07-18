@@ -21,6 +21,21 @@ public class InternetUtil {
     private static int TIMEOUT = 3;
     private static int BEATINTERVAL = 1;
     private static int OK = 5;
+    private static int CHANGESERVERINTERVAL = 5;
+
+    /**
+     * @return the CHANGESERVERINTERVAL
+     */
+    public static int getCHANGESERVERINTERVAL() {
+        return CHANGESERVERINTERVAL;
+    }
+
+    /**
+     * @param aCHANGESERVERINTERVAL the CHANGESERVERINTERVAL to set
+     */
+    public static void setCHANGESERVERINTERVAL(int aCHANGESERVERINTERVAL) {
+        CHANGESERVERINTERVAL = aCHANGESERVERINTERVAL;
+    }
 
     /**
      * @return the OK

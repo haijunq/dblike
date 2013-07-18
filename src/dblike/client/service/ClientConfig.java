@@ -53,14 +53,20 @@ public class ClientConfig {
 
     public static int pickupAvailableServer() {
         int availableServer = -1;
+        availableFlag = true;
         for (int i = 0; i < ServerList.size(); i++) {
             Client.setTestFlag(0);
             ActiveServer aServer = ServerList.get(i);
             tryToConect(aServer.getServerIP(), aServer.getPort());
-            if (availableFlag && Client.getTestFlag() == 1) {
+            System.out.println(availableFlag);
+            System.out.println(Client.getTestFlag());
+            if (availableFlag) {
                 availableServer = i;
+                break;
             }
+            availableFlag = true;
         }
+        availableFlag = true;
         System.out.println("Pick up server Num is: " + availableServer);
         return availableServer;
     }
@@ -71,8 +77,9 @@ public class ClientConfig {
             Registry registry;
             registry = LocateRegistry.getRegistry(ip, port);
             server = (ServerAPI) registry.lookup("serverUtility");
-            String bindParam = "clientUtility" + ClientConfig.getCurrentClient().getClientID() + ClientConfig.getCurrentClient().getDeviceID() + ClientConfig.getCurrentClient().getIp() + ClientConfig.getCurrentClient().getPort();
-            server.actClient(bindParam, ip, port);
+//            String bindParam = "clientUtility" + ClientConfig.getCurrentClient().getClientID() + ClientConfig.getCurrentClient().getDeviceID() + ClientConfig.getCurrentClient().getIp() + ClientConfig.getCurrentClient().getPort();
+//            System.out.println(bindParam);
+//            server.actClient(bindParam, ip, port);
         } catch (Exception ex) {
             availableFlag = false;
         }

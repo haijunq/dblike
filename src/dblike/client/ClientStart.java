@@ -67,7 +67,13 @@ public class ClientStart {
 
     public static void main(String args[]) throws IOException {
         ClientConfig.loadServerList();
-        ClientConfig.getCurrentServerIndex();
+        int availableIndex=ClientConfig.pickupAvailableServer();
+        System.out.println("Picked No."+availableIndex);
+        if(availableIndex==-1){
+            System.out.println("No server available!!!");
+            return;
+        }
+        ClientConfig.setCurrentServerIndex(ClientConfig.pickupAvailableServer());
         Client aClient = new Client(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(), ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getPort());
         clientID = aClient.login();
         aClient.initData();
