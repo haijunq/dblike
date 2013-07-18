@@ -135,8 +135,8 @@ public class ClientConfig {
         return myFileList;
     }
 
-    public static void setMyFileList(FileListService myFileList) {
-        ClientConfig.myFileList = myFileList;
+    public static void setMyFileList(FileListService fileList) {
+        myFileList = fileList;
     }
 
     public static void initCurrentClient(String aClientID, String aDeviceID, String aFolderPath, String aIP, String aPort) {

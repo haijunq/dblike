@@ -229,7 +229,7 @@ public class Client {
             server.addClient(clientID, deviceID, clientIP, clientPort);
             ActiveServerListClient.addServer(serverIP, serverPort);
             System.out.println("Connection built!");
-
+            
             startThread(getClientID(), deviceID, serverIP, serverPort);
         } catch (Exception e) {
             System.out.println(e);

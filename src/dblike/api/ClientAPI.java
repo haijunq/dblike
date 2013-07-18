@@ -37,5 +37,5 @@ public interface ClientAPI extends Remote {
     
     public void syncModifiedFileFromServer(String serverIP, int port, String userName, String directory, String fileName, String fileInfoXML) throws Exception;
     
-    public void syncClientFileByServer(String serverIP, int port, String userName, String directory, String fileName, String fileInfoXML) throws Exception;
+    public void syncDeletedFileFromServer(String serverIP, int port, String userName, String directory, String fileName, String fileInfoXML) throws Exception;
 }

@@ -164,7 +164,7 @@ public class FileSyncClientService implements Runnable {
         // get fileinfo from server
         ServerAPI server = ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerAPI();
         server.printMsg();
-        System.out.println(FileInfoService.fileInfoToXMLString(fileInfo));
+//        System.out.println(FileInfoService.fileInfoToXMLString(fileInfo));
 //        server.setFileInfoToServer(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(),
 //                ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getPort(), userName, directory, fileName,
 //                FileInfoService.fileInfoToXMLString(fileInfo));

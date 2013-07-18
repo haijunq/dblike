@@ -67,7 +67,7 @@ public class ClientImp implements ClientAPI {
         FileSyncClientService.syncCreatedFileFromServer(userName, directory, fileName);
     }
     
-    public void syncClientFileByServer(String serverIP, int port, String userName, String directory, String fileName, String fileInfoXML) throws Exception {
+    public void syncDeletedFileFromServer(String serverIP, int port, String userName, String directory, String fileName, String fileInfoXML) throws Exception {
         FileSyncClientService.syncDeletedFileFromServer(userName, directory, fileName);
         
     }
