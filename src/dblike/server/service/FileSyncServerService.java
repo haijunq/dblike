@@ -370,6 +370,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
         
         // sync modified file with active servers
         Vector<ActiveServer> activeServerList = ActiveServerListServer.getActiveServerList();
+        System.out.println("size: " + activeServerList.size());
         for (ActiveServer activeServer : activeServerList)
         {
             if (!ServerStart.getServerIP().equals(activeServer.getServerIP()))
