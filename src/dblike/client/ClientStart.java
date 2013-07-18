@@ -26,6 +26,7 @@ public class ClientStart {
 
     private static Registry registry;
     private static String clientID = "001"; 
+     public static Client aClient;
 
     /**
      * @return the clientID
@@ -65,7 +66,7 @@ public class ClientStart {
         }
     }
 
-    public static void main(String args[]) throws IOException {
+    public static void main(String args[]) throws IOException, RemoteException, Exception {
         ClientConfig.loadServerList();
         int availableIndex=ClientConfig.pickupAvailableServer();
         System.out.println("Picked No."+availableIndex);
@@ -74,7 +75,7 @@ public class ClientStart {
             return;
         }
         ClientConfig.setCurrentServerIndex(ClientConfig.pickupAvailableServer());
-        Client aClient = new Client(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(), ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getPort());
+         aClient = new Client(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(), ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getPort());
         clientID = aClient.login();
         aClient.initData();
         bindForClient();

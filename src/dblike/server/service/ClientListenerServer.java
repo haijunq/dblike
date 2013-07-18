@@ -33,7 +33,7 @@ public class ClientListenerServer implements Runnable {
             flag = true;
             ActiveClient aClient = ActiveClientList.get(i); 
             if (aClient.getStatus() == InternetUtil.getOK()) {
-                System.out.println("OK");
+//                System.out.println("OK");
                 aClient.setStatus(aClient.getStatus() - 1);
             } else {
                 aClient.setStatus(aClient.getStatus() - 1);

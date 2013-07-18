@@ -6,6 +6,7 @@ import dblike.client.service.ClientConfig;
 import dblike.client.service.ServerListenerClient;
 import dblike.client.service.SyncActionClient;
 import dblike.server.service.ActiveServerListServer;
+import dblike.server.service.FileListXMLService;
 import dblike.service.InternetUtil;
 import dblike.service.MD5Service;
 import java.rmi.*;
@@ -36,7 +37,7 @@ public class Client {
     }
     private ServerAPI server = null;
     private String userParam, password;
-    private int loginStatus;
+    private static int loginStatus;
     private static int testFlag = 0;
     private static Registry registry;
     private static String clientID;
@@ -110,15 +111,15 @@ public class Client {
         this.loginStatus = loginStatus;
     }
 
-    public static void pickupNewServer() {
+    public void pickupNewServer() {
         stopThread();
         while (true) {
             int availableServerIndex = ClientConfig.pickupAvailableServer();
             if (availableServerIndex != -1) {
                 ClientConfig.setCurrentServerIndex(availableServerIndex);
-
-                startThread(clientID, deviceID, ActiveServerListServer.getActiveServerList().get(availableServerIndex).getServerIP(), ActiveServerListServer.getActiveServerList().get(availableServerIndex).getPort());
-
+                serverIP = ActiveServerListServer.getActiveServerList().get(availableServerIndex).getServerIP();
+                serverPort = ActiveServerListServer.getActiveServerList().get(availableServerIndex).getPort();
+                initData();
             } else {
                 System.out.println("There is no available server!!!");
             }
@@ -128,7 +129,7 @@ public class Client {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-     }
+    }
 
     public void inputNamePassword() {
         Scanner scanUN = new Scanner(System.in);
@@ -211,6 +212,7 @@ public class Client {
             setLoginStatus(1);
             ClientConfig.initCurrentClient(getClientID(), "", "", "", "");
             ClientConfig.loadCurrentUser();
+            ClientConfig.setMyFileList(FileListXMLService.loadFileListFromXML("ClientCfg/users/" + ClientConfig.getCurrentClient().getClientID() + "/"));
 
             this.deviceID = ClientConfig.getCurrentClient().getDeviceID();
             this.clientIP = ClientConfig.getCurrentClient().getIp();

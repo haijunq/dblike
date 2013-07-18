@@ -63,4 +63,8 @@ public class ClientImp implements ClientAPI {
         FileSyncClientService.syncDeletedFileFromServer(userName, directory, fileName);
         
     }
+    
+    public void printMsg() throws RemoteException {
+        System.out.println("printMsg() from ClientAPI!");
+    }
 }

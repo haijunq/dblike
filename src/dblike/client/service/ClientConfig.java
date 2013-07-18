@@ -11,6 +11,7 @@ import dblike.client.CurrentClient;
 import dblike.server.service.FileListService;
 import dblike.server.service.FileListXMLService;
 import dblike.service.FileInfo;
+import dblike.service.FileInfoService;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -147,7 +148,7 @@ public class ClientConfig {
      *
      * @return
      */
-    public static boolean loadCurrentUser() {
+    public static boolean loadCurrentUser() throws Exception {
         DocumentBuilderFactory domfac = DocumentBuilderFactory.newInstance();
         try {
             DocumentBuilder dombuilder = domfac.newDocumentBuilder();
@@ -185,6 +186,7 @@ public class ClientConfig {
                                 Scanner scanFP = new Scanner(System.in);
                                 System.out.println("First time login, must specify a sync Folder:");
                                 folderPath = scanFP.nextLine();
+                                folderPath = FileInfoService.getAbsolutePathName(folderPath) + "/";
                                 node.appendChild(doc.createTextNode(folderPath));
                                 node.getFirstChild().setNodeValue(folderPath);
                             }
@@ -417,6 +419,10 @@ public class ClientConfig {
             e.printStackTrace();
         }
 
+        System.out.println("just before setting the folderpath");
+        System.out.println(getCurrentClient().getFolderPath());
+        getMyFileList().setPathname(getCurrentClient().getFolderPath());
+        System.out.println(getMyFileList());
         return getMyFileList();
     }
 }

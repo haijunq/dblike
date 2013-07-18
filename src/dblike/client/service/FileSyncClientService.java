@@ -55,7 +55,7 @@ public class FileSyncClientService implements Runnable {
     private final Path directory;
     private static SFTPService sftpService = null;
 
-    public FileSyncClientService(String directory) throws IOException {
+    public FileSyncClientService(String directory) throws IOException, RemoteException, Exception {
 
         // set sync directory and register directory watcher
         FileSystem fs = FileSystems.getDefault();
@@ -64,13 +64,15 @@ public class FileSyncClientService implements Runnable {
         this.directory.register(watchService, ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE, OVERFLOW);
         System.out.println("Registered watchService on " + directory);
 
+        updateAllLocalFileInfo(directory);
+        FileListXMLService.saveFileListToXML(ClientConfig.getMyFileList());
         initSftpService();
     }
 
     // how to guarantee the connection in case of failure
     private static void initSftpService() {
         while (sftpService == null) {
-            sftpService = new SFTPService(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(), ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getPort());
+            sftpService = new SFTPService(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP());
         }
     }
 
@@ -83,10 +85,10 @@ public class FileSyncClientService implements Runnable {
      * @throws JSchException
      * @throws SftpException
      */
-    public synchronized void uploadCreatedFileToServer(String userName, String directory, String fileName) throws JSchException, SftpException {
+    public synchronized void uploadCreatedFileToServer(String userName, String directory, String fileName) throws JSchException, SftpException, Exception {
         this.initSftpService();
-        String srcFilePath = ClientConfig.getCurrentClient().getFolderPath() + "/" + fileName;
-        String dstFilePath = "./users/" + userName + "/" + fileName;
+        String srcFilePath = ClientConfig.getCurrentClient().getFolderPath() + fileName;
+        String dstFilePath = FileInfoService.getSERVER_USERS_FOLDER() + userName + "/" + fileName;
         sftpService.uploadFile(srcFilePath, dstFilePath);
     }
 
@@ -112,7 +114,7 @@ public class FileSyncClientService implements Runnable {
 //            return;
 //        }
         this.initSftpService();
-        String filePath = "./users/" + userName + "/" + fileName;
+        String filePath = directory + fileName;
         sftpService.deleteFile(filePath);
 
 //        for (String fileChunkName : serverToDeleteFileInfo.getFileHashCode().keySet()) {
@@ -158,20 +160,22 @@ public class FileSyncClientService implements Runnable {
      * @param activeServer
      * @throws RemoteException
      */
-    public synchronized void updateFileInfoToServer(String userName, String directory, String fileName) throws RemoteException {
+    public synchronized void updateFileInfoToServer(String userName, String directory, String fileName, FileInfo fileInfo) throws RemoteException {
         // get fileinfo from server
         ServerAPI server = ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerAPI();
-        server.setFileInfoToServer(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(),
-                ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getPort(), userName, directory, fileName,
-                FileInfoService.fileInfoToXMLString(ClientConfig.getMyFileList().getFileInfo(fileName)));
+        server.printMsg();
+        System.out.println(FileInfoService.fileInfoToXMLString(fileInfo));
+//        server.setFileInfoToServer(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(),
+//                ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getPort(), userName, directory, fileName,
+//                FileInfoService.fileInfoToXMLString(fileInfo));
     }
 
     /**
-     * 
+     *
      * @param userName
      * @param directory
      * @param fileName
-     * @throws RemoteException 
+     * @throws RemoteException
      */
     public synchronized static void updateFileInfoFromServer(String userName, String directory, String fileName) throws RemoteException {
         // get fileinfo from server
@@ -183,20 +187,44 @@ public class FileSyncClientService implements Runnable {
     }
 
     /**
-     *
+     * 
      * @param userName
      * @param directory
      * @param fileName
-     * @param activeClient
-     * @param fileInfo
      * @throws RemoteException
-     * @throws Exception
+     * @throws Exception 
      */
-    public synchronized void updateLocalFileInfo(String userName, String directory, String fileName) throws RemoteException, Exception {
+    public synchronized static void updateLocalFileInfo(String userName, String directory, String fileName) throws RemoteException, Exception {
+        ClientConfig.getMyFileList().updateFileInfo(getLocalFileInfoByFileName(fileName));
+    }
+
+    /**
+     * Sync the local folder and the local FileListService table. This function only runs once right after the client login.
+     * @param directory 
+     */
+    public synchronized static void updateAllLocalFileInfo(String directory) throws RemoteException, Exception {
+        File dir = new File(directory);
+        String [] files = dir.list();
+        for (String file : files) {
+//            System.out.println(file);
+//            System.out.println(getLocalFileInfoByFileName(file));
+            updateLocalFileInfo(ClientConfig.getCurrentClient().getClientID(), directory, file);
+        }
+        System.out.println(ClientConfig.getMyFileList());
+    }
+    /**
+     * 
+     * @param fileName
+     * @return
+     * @throws Exception 
+     */
+    public synchronized static FileInfo getLocalFileInfoByFileName(String fileName) throws Exception {
         FileInfo newFileInfo = FileInfoService.getFileInfoByFileName(ClientConfig.getCurrentClient().getFolderPath(), fileName);
         if (ClientConfig.getMyFileList().getFileHashTable().containsKey(fileName)) {
             if (ClientConfig.getMyFileList().getFileHashTable().get(fileName).getFileHashCode().equals(newFileInfo.getFileHashCode())) {
                 // the fileinfo and file are already same, do nothing
+                System.out.println("here");
+                newFileInfo = ClientConfig.getMyFileList().getFileHashTable().get(fileName);
             } else {
                 // for now, set the version increment by one
                 newFileInfo.setVersion(ClientConfig.getMyFileList().getFileHashTable().get(fileName).getVersion() + 1);
@@ -207,26 +235,25 @@ public class FileSyncClientService implements Runnable {
             newFileInfo.setVersion(0);
             newFileInfo.setDeviceID(ClientConfig.getCurrentClient().getDeviceID());
         }
-        // need to know what is the update version
-        ClientConfig.getMyFileList().updateFileInfo(newFileInfo);
+        return newFileInfo;
     }
-
+    
     /**
-     * 
+     *
      * @param directory
      * @param fileName
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     public synchronized boolean isFolderChangeFromServer(String directory, String fileName) throws Exception {
         FileInfo newFileInfo = FileInfoService.getFileInfoByFileName(ClientConfig.getCurrentClient().getFolderPath(), fileName);
-        if (ClientConfig.getMyFileList().getFileHashTable().containsKey(fileName) && 
-                ClientConfig.getMyFileList().getFileHashTable().get(fileName).getFileHashCode().equals(newFileInfo.getFileHashCode())) {
+        if (ClientConfig.getMyFileList().getFileHashTable().containsKey(fileName)
+                && ClientConfig.getMyFileList().getFileHashTable().get(fileName).getFileHashCode().equals(newFileInfo.getFileHashCode())) {
             return true;
         } else {
             return false;
         }
-        
+
     }
 
     /**
@@ -242,7 +269,8 @@ public class FileSyncClientService implements Runnable {
     public synchronized void syncCreatedFileToServer(String userName, String directory, String fileName) throws RemoteException, JSchException, SftpException, Exception {
         this.updateLocalFileInfo(userName, directory, fileName);
         this.uploadCreatedFileToServer(userName, directory, fileName);
-        this.updateFileInfoToServer(userName, directory, fileName);
+        this.updateFileInfoToServer(userName, directory, fileName, ClientConfig.getMyFileList().getFileInfo(fileName));
+        System.out.println(ClientConfig.getMyFileList());
 
         //        FileInfo fileInfo = fileListHashtable.get(userName).getFileInfoByFileName(fileName);
 //        
@@ -288,8 +316,11 @@ public class FileSyncClientService implements Runnable {
 
     public synchronized void syncDeletedFileToServer(String userName, String directory, String fileName) throws RemoteException, JSchException, SftpException, Exception {
         this.updateLocalFileInfo(userName, directory, fileName);
+        System.out.println(ClientConfig.getMyFileList().getFileInfo(fileName));
         this.uploadDeletedFileToServer(userName, directory, fileName);
-        this.updateFileInfoToServer(userName, directory, fileName);
+        this.updateFileInfoToServer(userName, directory, fileName, ClientConfig.getMyFileList().getFileInfo(fileName));
+        System.out.println(ClientConfig.getMyFileList());
+
 //        // get fileinfo from current server
 //        FileInfo fileInfo = fileListHashtable.get(userName).getFileInfoByFileName(fileName);
 //        
@@ -382,9 +413,16 @@ public class FileSyncClientService implements Runnable {
                 @SuppressWarnings("unchecked")
                 WatchEvent<Path> event = (WatchEvent<Path>) e;
 
-                // get userName, directoryName, and fileName
-                String directoryName = directory.getName(directory.getNameCount() - 1).toString();
-                String fileName = directory.getName(directory.getNameCount()).toString();
+//                // get userName, directoryName, and fileName
+//                String directoryName = directory.getName(directory.getNameCount() - 2).toString();
+//                String fileName = directory.getName(directory.getNameCount() - 1).toString();
+//                System.out.println(directory.getFileName());
+
+                Path name = event.context();
+                Path child = directory.resolve(name);
+
+                String directoryName = FileInfoService.getSERVER_USERS_FOLDER() + ClientConfig.getCurrentClient().getClientID() + "/";
+                String fileName = child.getName(child.getNameCount() - 1).toString();
 
                 if (e.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
                     if (!this.isFolderChangeFromServer(directoryName, fileName)) {
@@ -393,7 +431,7 @@ public class FileSyncClientService implements Runnable {
                     System.out.println("directory: " + directory.getParent() + " file was created: " + fileName);
                 } else if (e.kind() == StandardWatchEventKinds.ENTRY_MODIFY) {
                     if (!this.isFolderChangeFromServer(directoryName, fileName)) {
-                        this.syncModifiedFileFromServer(ClientConfig.getCurrentClient().getClientID(), directoryName, fileName);
+                        this.syncModifiedFileToServer(ClientConfig.getCurrentClient().getClientID(), directoryName, fileName);
                     }
                     System.out.println("file was modified: " + fileName);
                 } else if (e.kind() == StandardWatchEventKinds.ENTRY_DELETE) {

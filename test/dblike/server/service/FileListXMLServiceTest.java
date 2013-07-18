@@ -5,6 +5,7 @@
 package dblike.server.service;
 
 import dblike.service.FileInfo;
+import java.io.IOException;
 import java.util.Hashtable;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -42,7 +43,7 @@ public class FileListXMLServiceTest {
      * Test of saveFileListToXML method, of class FileListXMLService.
      */
     @Test
-    public void testSaveFileListToXML() {
+    public void testSaveFileListToXML() throws IOException {
         System.out.println("saveFileListToXML");
         FileListService filelist = new FileListService("haijun");
         Hashtable<String, String> filehashcode1 = new Hashtable<String, String>();
@@ -67,13 +68,13 @@ public class FileListXMLServiceTest {
      * Test of loadFileListFromXML method, of class FileListXMLService.
      */
     @Test
-    public void testLoadFileListFromXML() {
+    public void testLoadFileListFromXML() throws IOException {
         System.out.println("loadFileListFromXML");
         String username = "haijun";
-//        FileListService r = FileListXMLService.loadFileListFromXML(username);
-        FileListService r = new FileListService();
+        FileListService r = FileListXMLService.loadFileListFromXML(username);
+//        FileListService r = new FileListService();
         System.out.println(r);
-        FileListXMLService.saveFileListToXML(r);
+//        FileListXMLService.saveFileListToXML(r);
 //        System.out.println(r.getPathname());
 //        System.out.println(r.getFileHashTable().get("file1"));
 //        System.out.println(r.getFileHashTable().get("file2"));

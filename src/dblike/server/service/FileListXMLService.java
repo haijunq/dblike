@@ -34,7 +34,7 @@ import org.xml.sax.SAXException;
  */
 public class FileListXMLService {
 
-    public static void saveFileListToXML(FileListService filelist) {
+    public static void saveFileListToXML(FileListService filelist) throws IOException {
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -51,66 +51,50 @@ public class FileListXMLService {
                 Element fileInfoElement = fileListXML.createElement("fileInfo");
                 rootElement.appendChild(fileInfoElement);
 
-                Element versionElement = fileListXML.createElement("version");
-                fileInfoElement.appendChild(versionElement);
+            } else {
+                for (String filename : filelist.getFileHashTable().keySet()) {
+                    Element fileInfoElement = fileListXML.createElement("fileInfo");
+                    fileInfoElement.setAttribute("filename", filename);
+                    rootElement.appendChild(fileInfoElement);
 
-                Element deviceIDElement = fileListXML.createElement("deviceID");
-                fileInfoElement.appendChild(deviceIDElement);
+                    Element versionElement = fileListXML.createElement("version");
+                    versionElement.appendChild(fileListXML.createTextNode(Integer.toString(filelist.getFileHashTable().get(filename).getVersion())));
+                    fileInfoElement.appendChild(versionElement);
 
-                Element fileNameElement = fileListXML.createElement("fileName");
-                fileInfoElement.appendChild(fileNameElement);
+                    Element deviceIDElement = fileListXML.createElement("deviceID");
+                    deviceIDElement.appendChild(fileListXML.createTextNode(filelist.getFileHashTable().get(filename).getDeviceID()));
+                    fileInfoElement.appendChild(deviceIDElement);
 
-                Element timestampElement = fileListXML.createElement("timestamp");
-                fileInfoElement.appendChild(timestampElement);
+                    Element fileNameElement = fileListXML.createElement("fileName");
+                    fileNameElement.appendChild(fileListXML.createTextNode(filename));
+                    fileInfoElement.appendChild(fileNameElement);
 
-                Element fileSizeElement = fileListXML.createElement("fileSize");
-                fileInfoElement.appendChild(fileSizeElement);
+                    Element timestampElement = fileListXML.createElement("timestamp");
+                    timestampElement.appendChild(fileListXML.createTextNode(filelist.getFileHashTable().get(filename).getTimestamp()));
+                    fileInfoElement.appendChild(timestampElement);
 
-                Element fileHashCodeElement = fileListXML.createElement("fileHashCode");
-                fileInfoElement.appendChild(fileHashCodeElement);
-                Element fileChunkHashCodeElement = fileListXML.createElement("fileChunkHashCode");
-                fileHashCodeElement.appendChild(fileChunkHashCodeElement);
-            }
+                    Element fileSizeElement = fileListXML.createElement("fileSize");
+                    fileSizeElement.appendChild(fileListXML.createTextNode(Long.toString(filelist.getFileHashTable().get(filename).getFileSize())));
+                    fileInfoElement.appendChild(fileSizeElement);
 
-            for (String filename : filelist.getFileHashTable().keySet()) {
-                Element fileInfoElement = fileListXML.createElement("fileInfo");
-                fileInfoElement.setAttribute("filename", filename);
-                rootElement.appendChild(fileInfoElement);
+                    Element fileHashCodeElement = fileListXML.createElement("fileHashCode");
+                    fileInfoElement.appendChild(fileHashCodeElement);
 
-                Element versionElement = fileListXML.createElement("version");
-                versionElement.appendChild(fileListXML.createTextNode(Integer.toString(filelist.getFileHashTable().get(filename).getVersion())));
-                fileInfoElement.appendChild(versionElement);
-
-                Element deviceIDElement = fileListXML.createElement("deviceID");
-                deviceIDElement.appendChild(fileListXML.createTextNode(filelist.getFileHashTable().get(filename).getDeviceID()));
-                fileInfoElement.appendChild(deviceIDElement);
-
-                Element fileNameElement = fileListXML.createElement("fileName");
-                fileNameElement.appendChild(fileListXML.createTextNode(filename));
-                fileInfoElement.appendChild(fileNameElement);
-
-                Element timestampElement = fileListXML.createElement("timestamp");
-                timestampElement.appendChild(fileListXML.createTextNode(filelist.getFileHashTable().get(filename).getTimestamp()));
-                fileInfoElement.appendChild(timestampElement);
-
-                Element fileSizeElement = fileListXML.createElement("fileSize");
-                fileSizeElement.appendChild(fileListXML.createTextNode(Long.toString(filelist.getFileHashTable().get(filename).getFileSize())));
-                fileInfoElement.appendChild(fileSizeElement);
-
-                Element fileHashCodeElement = fileListXML.createElement("fileHashCode");
-                fileInfoElement.appendChild(fileHashCodeElement);
-
-                for (String fileChunkName : filelist.getFileInfoByFileName(filename).getFileHashCode().keySet()) {
-                    Element fileChunkHashCodeElement = fileListXML.createElement("fileChunkHashCode");
-                    fileChunkHashCodeElement.appendChild(fileListXML.createTextNode(filelist.getFileInfoByFileName(filename).getFileHashCode().get(fileChunkName)));
-                    fileChunkHashCodeElement.setAttribute("fileChunkName", fileChunkName);
-                    fileHashCodeElement.appendChild(fileChunkHashCodeElement);
+                    for (String fileChunkName : filelist.getFileInfoByFileName(filename).getFileHashCode().keySet()) {
+                        Element fileChunkHashCodeElement = fileListXML.createElement("fileChunkHashCode");
+                        fileChunkHashCodeElement.appendChild(fileListXML.createTextNode(filelist.getFileInfoByFileName(filename).getFileHashCode().get(fileChunkName)));
+                        fileChunkHashCodeElement.setAttribute("fileChunkName", fileChunkName);
+                        fileHashCodeElement.appendChild(fileChunkHashCodeElement);
+                    }
                 }
             }
+
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(fileListXML);
             File file = new File(filelist.getPathname() + "filelist.xml");
+            if (!file.exists())
+                file.createNewFile();
             StreamResult result = new StreamResult(file);
             transformer.transform(source, result);
 
@@ -136,7 +120,7 @@ public class FileListXMLService {
                     if (pathNameNode.hasChildNodes()) {
                         filelist.setPathname(pathNameNode.getFirstChild().getNodeValue());
                     } else {
-                        filelist.setPathname("");
+//                        filelist.setPathname("");
                     }
                 }
 
@@ -209,7 +193,6 @@ public class FileListXMLService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
 
         return filelist;

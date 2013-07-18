@@ -34,17 +34,24 @@ import org.xml.sax.SAXException;
  * @author haijun
  */
 public class FileInfoService {
+    
+    private static String SERVER_USERS_FOLDER = "./users/";
 
+    public static String getSERVER_USERS_FOLDER() throws Exception {
+        return getAbsolutePathName(SERVER_USERS_FOLDER) + "/";
+    }
+
+    
     /**
-     * 
+     *
      * @param fileinfo
-     * @return 
+     * @return
      */
     public static String fileInfoToXMLString(FileInfo fileinfo) {
         String xmlstring = "";
-        if (fileinfo == null || fileinfo.getFileHashCode().isEmpty()) {
-            return xmlstring;
-        }
+//        if (fileinfo == null || fileinfo.getFileHashCode().isEmpty()) {
+//            return xmlstring;
+//        }
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -103,9 +110,9 @@ public class FileInfoService {
     }
 
     /**
-     * 
+     *
      * @param xmlstring
-     * @return 
+     * @return
      */
     public static FileInfo parseXMLStringToFileInfo(String xmlstring) {
         FileInfo fileinfo = new FileInfo();
@@ -157,32 +164,40 @@ public class FileInfoService {
         }
         return fileinfo;
     }
-    
+
     public static FileInfo getFileInfoByFileName(String directory, String filename) throws Exception {
         FileInfo fileInfo = new FileInfo();
-        File file = new File(directory+ "/" + filename);
+        File file = new File(directory + "/" + filename);
         if (file.exists()) {
             // this is the new file or updated file, don't know yet
             // set version = -1, deviceID = "" because do not know 
-            fileInfo.setVersion(-1); 
+            fileInfo.setVersion(-1);
             fileInfo.setDeviceID("");
             fileInfo.setFileName(filename);
             fileInfo.setFileSize(file.length());
             fileInfo.setTimestamp(new DateTime(file.lastModified()).toString());
             fileInfo.setFileHashCode(MD5Service.getMD5StringTableFromSingleFile(directory, filename));
-        }
-        // this is a new file or a delete
+        } // this is a new file or a delete
         else {
             // this is a deleted file or never exsiting file
             fileInfo.setVersion(-1);
             fileInfo.setDeviceID("");
             fileInfo.setFileName(filename);
             fileInfo.setFileSize(0);
-            fileInfo.setTimestamp(new DateTime().toString());  
+            fileInfo.setTimestamp(new DateTime().toString());
             fileInfo.setFileHashCode(new Hashtable<String, String>()); // null
         }
-        
+
         return fileInfo;
     }
-   
+
+    public static String getAbsolutePathName(String pathName) throws Exception {
+        File path = new File(pathName);
+        String pathString = "";
+        if (!path.exists()) {
+            path.mkdir();
+        }
+        pathString = path.getCanonicalPath();
+        return pathString;
+    }
 }
