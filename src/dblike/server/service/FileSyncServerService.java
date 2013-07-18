@@ -83,7 +83,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
      */
     public void uploadCreatedFileToServer(String userName, String directory, String fileName, ActiveServer activeServer) throws JSchException, SftpException
     {
-        System.out.println("\nFunc: uploadCreatedFileToServer");
+//        System.out.println("Func: uploadCreatedFileToServer");
         
         SFTPService sftpService = new SFTPService(activeServer.getServerIP());
         
@@ -92,13 +92,13 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
         String dstFilePath = "./" + userName + "/" + fileName;
         
         sftpService.uploadFile(srcFilePath, dstFilePath, this.getDir().toString(), this.getDir().toString());
-        System.out.println("\nFunc: uploadCreatedFileToServer done");
+//        System.out.println("Func: uploadCreatedFileToServer done");
         
     }
     
     public void uploadModifiedFileToServer(String userName, String directory, String fileName, ActiveServer activeServer, FileInfoDiff diff) throws JSchException, SftpException
     {
-        System.out.println("\nFunc: uploadModifiedFileToServer");
+//        System.out.println("Func: uploadModifiedFileToServer");
         
         SFTPService sftpService = new SFTPService(activeServer.getServerIP());
         
@@ -107,12 +107,12 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
         String dstFilePath = "./" + userName + "/" + fileName;
         
         sftpService.uploadFile(srcFilePath, dstFilePath, this.getDir().toString(), this.getDir().toString());
-        System.out.println("\nFunc: uploadModifiedFileToServer done");
+//        System.out.println("Func: uploadModifiedFileToServer done");
     }
     
     public void uploadDeletedFileToServer(String userName, String directory, String fileName, ActiveServer activeServer) throws JSchException, SftpException
     {
-        System.out.println("\nFunc: uploadDeletedFileToServer");
+//        System.out.println("Func: uploadDeletedFileToServer");
         
         SFTPService sftpService = new SFTPService(activeServer.getServerIP());
         
@@ -120,7 +120,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
         String filePath = "./" + userName + "/" + fileName;
         sftpService.deleteFile(filePath, this.getDir().toString());
 
-        System.out.println("\nFunc: uploadDeletedFileToServer done");
+//        System.out.println("Func: uploadDeletedFileToServer done");
     }
     
     // to do
@@ -160,12 +160,12 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
      */
     public void updateFileInfoToServer(String userName, String directory, String fileName, ActiveServer activeServer, FileInfo fileInfo) throws RemoteException
     {
-        System.out.println("\nFunc: updateFileInfoToServer");
+//        System.out.println("Func: updateFileInfoToServer");
         
         // get fileinfo from server
         ServerAPI server = activeServer.getServerAPI();
         server.setFileInfoToServer(activeServer.getServerIP(), activeServer.getPort(), userName, directory, fileName, FileInfoService.fileInfoToXMLString(fileInfo));
-        System.out.println("\nFunc: updateFileInfoToServer done");
+//        System.out.println("Func: updateFileInfoToServer done");
     }
     
     /**
@@ -181,7 +181,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     public void updateFileInfoToClient(String userName, String directory, String fileName, ActiveClient activeClient, FileInfo fileInfo) throws RemoteException, Exception
     {
         ClientAPI client = activeClient.getClientAPI();
-        client.setFileInfoToClient(activeClient.getClientIP(), activeClient.getPort(), userName, directory, fileName, fileInfo.toString());
+        client.setFileInfoToClient(activeClient.getClientIP(), activeClient.getPort(), userName, directory, fileName, FileInfoService.fileInfoToXMLString(fileInfo));
     }
     
     
@@ -199,17 +199,10 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     public void syncCreatedFileWithServer(String userName, String directory, String fileName, ActiveServer activeServer) throws RemoteException, JSchException, SftpException
     {
         // get fileinfo from current server
-        FileInfo fileInfo = fileListHashtable.get(userName).getFileInfoByFileName(fileName);
+        FileInfo fileInfo = fileListHashtable.get(directory).getFileInfoByFileName(fileName);
         
-        // get fileinfo from server
-        ServerAPI server = activeServer.getServerAPI();
-        String fileInfoStr = server.getFileInfoFromServer(activeServer.getServerIP(), activeServer.getPort(),
-                userName, directory, fileName);
-        if (fileInfoStr.isEmpty())
-        {
-            uploadCreatedFileToServer(userName, directory, fileName, activeServer);
-            updateFileInfoToServer(userName, directory, fileName, activeServer, fileInfo);
-        }
+        uploadCreatedFileToServer(userName, directory, fileName, activeServer);
+        updateFileInfoToServer(userName, directory, fileName, activeServer, fileInfo);
     }
     
     /**
@@ -224,7 +217,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
      */
     public void syncModifiedFileWithServer(String userName, String directory, String fileName, ActiveServer activeServer) throws RemoteException, JSchException, SftpException
     {
-        System.out.println("\nFunc: syncModifiedFileWithServer");
+//        System.out.println("Func: syncModifiedFileWithServer");
         
         // get fileinfo from current server
         FileInfo fileInfo = fileListHashtable.get(directory).getFileInfoByFileName(fileName);
@@ -246,24 +239,17 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
             }
         }
         
-        System.out.println("Func: syncModifiedFileWithServer done");
+//        System.out.println("Func: syncModifiedFileWithServer done");
     }
     
     public void syncDeletedFileWithServer(String userName, String directory, String fileName, ActiveServer activeServer) throws RemoteException, JSchException, SftpException
     {
         // get fileinfo from current server
-        FileInfo fileInfo = fileListHashtable.get(userName).getFileInfoByFileName(fileName);
+        FileInfo fileInfo = fileListHashtable.get(directory).getFileInfoByFileName(fileName);
+
         
-        // get fileinfo from server
-        ServerAPI server = activeServer.getServerAPI();
-        String fileInfoStr = server.getFileInfoFromServer(activeServer.getServerIP(), activeServer.getPort(),
-                userName, directory, fileName);
-        
-        if (!fileInfoStr.isEmpty())
-        {
-            uploadDeletedFileToServer(userName, directory, fileName, activeServer);
-            updateFileInfoToServer(userName, directory, fileName, activeServer, fileInfo);
-        }
+        uploadDeletedFileToServer(userName, directory, fileName, activeServer);
+        updateFileInfoToServer(userName, directory, fileName, activeServer, fileInfo);
     }
     
     /**
@@ -278,7 +264,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     public void syncCreatedFileWithClient(String userName, String directory, String fileName, ActiveClient activeClient) throws RemoteException, JSchException, SftpException, Exception
     {
         // get fileinfo from current server
-        FileInfo fileInfo = fileListHashtable.get(userName).getFileInfoByFileName(fileName);
+        FileInfo fileInfo = fileListHashtable.get(directory).getFileInfoByFileName(fileName);
         
         ClientAPI client = activeClient.getClientAPI();
         String fileInfoStr = client.getFileInfoFromClient(activeClient.getClientIP(), activeClient.getPort(),
@@ -304,7 +290,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     public void syncModifiedFileWithClient(String userName, String directory, String fileName, ActiveClient activeClient) throws RemoteException, JSchException, SftpException, Exception
     {
         // get fileinfo from current server
-        FileInfo fileInfo = fileListHashtable.get(userName).getFileInfoByFileName(fileName);
+        FileInfo fileInfo = fileListHashtable.get(directory).getFileInfoByFileName(fileName);
         
         // get fileinfo from client
         ClientAPI client = activeClient.getClientAPI();
@@ -322,7 +308,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     public void syncDeletedFileWithClient(String userName, String directory, String fileName, ActiveClient activeClient) throws RemoteException, JSchException, SftpException, Exception
     {
         // get fileinfo from current server
-        FileInfo fileInfo = fileListHashtable.get(userName).getFileInfoByFileName(fileName);
+        FileInfo fileInfo = fileListHashtable.get(directory).getFileInfoByFileName(fileName);
         
         // get fileinfo from client
         ClientAPI client = activeClient.getClientAPI();
@@ -348,6 +334,8 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
      */
     public void syncCreatedFile(String userName, String directory, String fileName) throws JSchException, RemoteException, SftpException, Exception
     {
+        System.out.println("Func: syncCreatedFile");
+        
         // sync create file with active servers
         Vector<ActiveServer> activeServerList = ActiveServerListServer.getActiveServerList();
         for (ActiveServer activeServer : activeServerList)
@@ -363,6 +351,8 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
             if (activeClient.getClientID().equals(userName))
                 syncCreatedFileWithClient(userName, directory, fileName, activeClient);
         }
+        
+        System.out.println("Func: syncCreatedFile done");
     }
     
     /**
@@ -376,7 +366,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
      */
     public void syncModifiedFile(String userName, String directory, String fileName) throws JSchException, RemoteException, SftpException, Exception
     {
-        System.out.println("Func: syncModifiedFile");
+        System.out.println("\nFunc: syncModifiedFile");
         
         // sync modified file with active servers
         Vector<ActiveServer> activeServerList = ActiveServerListServer.getActiveServerList();
@@ -393,6 +383,8 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
             if (activeClient.getClientID().equals(userName))
                 syncModifiedFileWithClient(userName, directory, fileName, activeClient);
         }
+        
+        System.out.println("Func: syncModifiedFile done");
     }
     
     /**
@@ -406,6 +398,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
      */
     public void syncDeletedFile(String userName, String directory, String fileName) throws JSchException, RemoteException, SftpException, Exception
     {
+        System.out.println("Func: syncDeletedFile");
         // sync deleted file with active servers
         Vector<ActiveServer> activeServerList = ActiveServerListServer.getActiveServerList();
         for (ActiveServer activeServer : activeServerList)
@@ -421,6 +414,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
             if (activeClient.getClientID().equals(userName))
                 syncDeletedFileWithClient(userName, directory, fileName, activeClient);
         }
+        System.out.println("Func: syncDeletedFile done");
     }
     
     /**
@@ -461,6 +455,8 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
                 System.out.format("%s: %s\n", event.kind().name(), child);
                 System.out.format("userName: %s, fileName: %s\n", userName, fileName);
                 
+                Thread.sleep(3000);
+                
                 // TBD - provide example of how OVERFLOW event is handled
                 if (kind == OVERFLOW) {
                     continue;
@@ -477,6 +473,8 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
                 else {
                     System.out.println("ERROR: un-registered event!"); // never reach here!
                 }
+                
+                
                 
                 // if directory is created, and watching recursively, then
                 // register it and its sub-directories
