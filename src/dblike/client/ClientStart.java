@@ -25,8 +25,8 @@ import java.util.logging.Logger;
 public class ClientStart {
 
     private static Registry registry;
-    private static String clientID = "001"; 
-     public static Client aClient;
+    private static String clientID = "001";
+    public static Client aClient;
 
     /**
      * @return the clientID
@@ -41,7 +41,7 @@ public class ClientStart {
     public static void setClientID(String aClientID) {
         clientID = aClientID;
     }
-    
+
     public static void bindForClient() {
         try {
             System.out.println("Client start at " + ClientConfig.getCurrentClient().getIp() + ":" + ClientConfig.getCurrentClient().getPort());
@@ -68,18 +68,18 @@ public class ClientStart {
 
     public static void main(String args[]) throws IOException, RemoteException, Exception {
         ClientConfig.loadServerList();
-        int availableIndex=ClientConfig.pickupAvailableServer();
-        System.out.println("Picked No."+availableIndex);
-        if(availableIndex==-1){
+        int availableIndex = ClientConfig.pickupAvailableServer();
+        System.out.println("Picked No." + availableIndex);
+        if (availableIndex == -1) {
             System.out.println("No server available!!!");
             return;
         }
         ClientConfig.setCurrentServerIndex(ClientConfig.pickupAvailableServer());
-         aClient = new Client(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(), ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getPort());
+        aClient = new Client(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(), ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getPort());
         clientID = aClient.login();
         aClient.initData();
         bindForClient();
-        
+
         // new thread to synchronize files 
         String directory = ClientConfig.getCurrentClient().getFolderPath();
         FileSyncClientService fileSyncServer = new FileSyncClientService(directory);
