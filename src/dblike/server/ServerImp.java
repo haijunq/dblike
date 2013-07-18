@@ -108,6 +108,8 @@ public class ServerImp implements ServerAPI {
     public void setFileInfoToServer(String serverIP, int port, String userName, String directory, String fileName, String fileInfoStr) {
         
         FileInfo fileInfo = FileInfoService.parseXMLStringToFileInfo(fileInfoStr);
+        System.out.println(fileInfo);
+        System.out.println(directory);
         FileSyncServerService.fileListHashtable.get(directory).addNewFileInfo(fileInfo);
 
     }

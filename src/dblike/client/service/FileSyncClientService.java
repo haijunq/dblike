@@ -83,12 +83,10 @@ public class FileSyncClientService implements Runnable {
      * @throws JSchException
      * @throws SftpException
      */
-    public synchronized void uploadCreatedFileToServer(String userName, String directory, String fileName) throws JSchException, SftpException {
+    public synchronized void uploadCreatedFileToServer(String userName, String directory, String fileName) throws JSchException, SftpException, Exception {
         this.initSftpService();
-        String srcFilePath = ClientConfig.getCurrentClient().getFolderPath() + "/" + fileName;
-        String dstFilePath = "/home/ec2-user/users/" + userName + "/" + fileName;
-        System.out.println(srcFilePath);
-        System.out.println(dstFilePath);
+        String srcFilePath = ClientConfig.getCurrentClient().getFolderPath() + fileName;
+        String dstFilePath = FileInfoService.getSERVER_USERS_FOLDER() + userName + "/" + fileName;
         sftpService.uploadFile(srcFilePath, dstFilePath);
     }
 
@@ -243,6 +241,7 @@ public class FileSyncClientService implements Runnable {
      */
     public synchronized void syncCreatedFileToServer(String userName, String directory, String fileName) throws RemoteException, JSchException, SftpException, Exception {
         this.updateLocalFileInfo(userName, directory, fileName);
+        System.out.println(ClientConfig.getMyFileList().getFileInfo(fileName));
         this.uploadCreatedFileToServer(userName, directory, fileName);
         this.updateFileInfoToServer(userName, directory, fileName);
 
@@ -392,7 +391,7 @@ public class FileSyncClientService implements Runnable {
                 Path name = event.context();
                 Path child = directory.resolve(name);
                 
-                String directoryName = "./users/haijun/";
+                String directoryName = FileInfoService.getSERVER_USERS_FOLDER();
                 String fileName = child.getName(child.getNameCount()-1).toString();
                 System.out.println(fileName);
                 
@@ -403,7 +402,7 @@ public class FileSyncClientService implements Runnable {
                     System.out.println("directory: " + directory.getParent() + " file was created: " + fileName);
                 } else if (e.kind() == StandardWatchEventKinds.ENTRY_MODIFY) {
                     if (!this.isFolderChangeFromServer(directoryName, fileName)) {
-                        this.syncModifiedFileFromServer(ClientConfig.getCurrentClient().getClientID(), directoryName, fileName);
+                        this.syncModifiedFileToServer(ClientConfig.getCurrentClient().getClientID(), directoryName, fileName);
                     }
                     System.out.println("file was modified: " + fileName);
                 } else if (e.kind() == StandardWatchEventKinds.ENTRY_DELETE) {

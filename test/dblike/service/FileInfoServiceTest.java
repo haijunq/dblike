@@ -82,4 +82,19 @@ public class FileInfoServiceTest {
         // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
     }
+
+    /**
+     * Test of getAbsolutePathName method, of class FileInfoService.
+     */
+    @Test
+    public void testGetAbsolutePathName() throws Exception {
+        System.out.println("getAbsolutePathName");
+        String pathName = "./users/haijun";
+//        String expResult = "";
+        pathName = FileInfoService.getAbsolutePathName(pathName);
+        System.out.println(pathName);
+//        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+//        fail("The test case is a prototype.");
+    }
 }
