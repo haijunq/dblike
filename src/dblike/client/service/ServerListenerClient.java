@@ -45,7 +45,7 @@ public class ServerListenerClient implements Runnable {
         } else {
             aServer.setStatus(aServer.getStatus() - 1);
             if (aServer.getStatus() == 0) {
-                ActiveServerListClient.removeServer(aServer.getServerIP(), aServer.getPort());
+                //ActiveServerListClient.removeServer(aServer.getServerIP(), aServer.getPort());
                 System.out.println("Server down!!!-- " + aServer.getServerIP() + ":" + aServer.getPort());
                 ClientStart.aClient.pickupNewServer();
                 flag = false;
