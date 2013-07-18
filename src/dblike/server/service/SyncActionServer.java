@@ -76,36 +76,16 @@ public class SyncActionServer implements Runnable {
                 if (lookupClient(aClient) == false) {
                     System.out.println("Failed to look up " + clientLabel);
                 } else {
-                    aClient.getClientAPI().beatFromServer(ServerStart.getServerIP(), ServerStart.getPORT());
-                    System.out.println("Beat for [Client]: "+aClient.getClientID()+" "+aClient.getDeviceID());
+                    aClient.getClientAPI().beatFromServer(ServerStart.getServerIP(), ServerStart.getPORT()); 
                 }
             } catch (RemoteException ex) {
-                System.out.println("exp for: "+ex);
+                System.out.println("Someting wrong with this client..." + clientLabel);
             }
 
         }
         return flag;
     }
-
-//    public boolean beatForAllServer() {
-//        boolean flag = true;
-//        for (int i = 0; i < ActiveServerList.size() ; i++) {
-//            try {
-//                ActiveServer aServer = ActiveServerList.get(i);
-//                if (lookupServer(aServer) == false) {
-//                    String serverLabel = aServer.getServerIP() + aServer.getPort();
-//                    ActiveServerListServer.removeServer(aServer.getServerIP(), aServer.getPort());
-//                    System.out.println(serverLabel + " not available");
-//                } else {
-//                    server.beatFromServer(ServerStart.getServerIP(), ServerStart.getPORT());
-//                }
-//            } catch (RemoteException ex) {
-//                Logger.getLogger(SyncActionServer.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//
-//        }
-//        return flag;
-//    }
+ 
     public boolean beatForAllServer() {
         boolean flag = true;
         for (int i = 0; i < ActiveServerList.size(); i++) {
@@ -115,8 +95,7 @@ public class SyncActionServer implements Runnable {
                 if (lookupServer(aServer) == false) {
                     System.out.println("Failed to look up " + serverLabel);
                 } else {
-                    aServer.getServerAPI().beatFromServer(ServerStart.getServerIP(), ServerStart.getPORT());
-                    System.out.println("Beat for [Server]: "+aServer.getServerIP()+" "+aServer.getPort());
+                    aServer.getServerAPI().beatFromServer(ServerStart.getServerIP(), ServerStart.getPORT()); 
                 }
             } catch (RemoteException ex) {
                 System.out.println("Someting wrong with this server..." + serverLabel);

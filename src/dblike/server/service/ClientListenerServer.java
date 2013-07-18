@@ -28,13 +28,10 @@ public class ClientListenerServer implements Runnable {
     }
 
     public boolean checkAllClient() {
-        boolean flag = true;
-        System.out.println("-----cccccc-----");
+        boolean flag = true; 
         for (int i = 0; i < ActiveClientList.size(); i++) {
             flag = true;
-            ActiveClient aClient = ActiveClientList.get(i);
-            String serverLabel = aClient.getClientID() + ":" + aClient.getDeviceID() + "---> " + aClient.getStatus();
-            System.out.print(serverLabel + "---");
+            ActiveClient aClient = ActiveClientList.get(i); 
             if (aClient.getStatus() == InternetUtil.getOK()) {
                 System.out.println("OK");
                 aClient.setStatus(aClient.getStatus() - 1);
@@ -44,11 +41,10 @@ public class ClientListenerServer implements Runnable {
                     ActiveClientListServer.removeClient(aClient.getClientID(), aClient.getDeviceID());
                     flag = false;
                 } else {
-                    System.out.println("still have some...");
+                    System.out.println("Connection problem, wait to see..."+ aClient.getClientIP() + ":" + aClient.getPort());
                 }
             }
-        }
-        System.out.println("-----cccccc-----");
+        } 
         return flag;
     }
 

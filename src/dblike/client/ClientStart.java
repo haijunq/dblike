@@ -25,13 +25,7 @@ import java.util.logging.Logger;
 public class ClientStart {
 
     private static Registry registry;
-    private static String clientID = "001";
-    private static String deviceID = "iphone";
-    private static String clientIP = "127.0.0.1";
-    private static int clientPort = 7860;
-    //private static String serverIP = "23.23.129.199";
-    private static String serverIP = "127.0.0.1";
-    private static int serverPort = 1099;
+    private static String clientID = "001"; 
 
     /**
      * @return the clientID
