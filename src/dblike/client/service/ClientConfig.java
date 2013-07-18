@@ -4,7 +4,9 @@
  */
 package dblike.client.service;
 
+import dblike.api.ServerAPI;
 import dblike.client.ActiveServer;
+import dblike.client.Client;
 import dblike.client.CurrentClient;
 import dblike.server.service.FileListService;
 import dblike.server.service.FileListXMLService;
@@ -14,6 +16,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.Hashtable;
 import java.util.Scanner;
 import java.util.Vector;
@@ -45,6 +49,34 @@ public class ClientConfig {
     private static Vector<ActiveServer> ServerList = ActiveServerListClient.getActiveServerList();
     private static FileListService myFileList = new FileListService();
     private static int currentServerIndex;
+    private static boolean availableFlag = true;
+
+    public static int pickupAvailableServer() {
+        int availableServer = -1;
+        for (int i = 0; i < ServerList.size(); i++) {
+            Client.setTestFlag(0);
+            ActiveServer aServer = ServerList.get(i);
+            tryToConect(aServer.getServerIP(), aServer.getPort());
+            if (availableFlag && Client.getTestFlag() == 1) {
+                availableServer = i;
+            }
+        }
+        System.out.println("Pick up server Num is: " + availableServer);
+        return availableServer;
+    }
+
+    public static void tryToConect(String ip, int port) {
+        try {
+            ServerAPI server;
+            Registry registry;
+            registry = LocateRegistry.getRegistry(ip, port);
+            server = (ServerAPI) registry.lookup("serverUtility");
+            String bindParam = "clientUtility" + ClientConfig.getCurrentClient().getClientID() + ClientConfig.getCurrentClient().getDeviceID() + ClientConfig.getCurrentClient().getIp() + ClientConfig.getCurrentClient().getPort();
+            server.actClient(bindParam, ip, port);
+        } catch (Exception ex) {
+            availableFlag = false;
+        }
+    }
 
     /**
      * @return the currentServerIndex
@@ -96,7 +128,6 @@ public class ClientConfig {
         ClientConfig.myFileList = myFileList;
     }
 
-    
     public static void initCurrentClient(String aClientID, String aDeviceID, String aFolderPath, String aIP, String aPort) {
         getCurrentClient().setClientID(aClientID);
         getCurrentClient().setDeviceID(aDeviceID);
@@ -238,7 +269,7 @@ public class ClientConfig {
                 for (int i = 0; i < getServerList().size(); ++i) {
                     System.out.println(getServerList().get(i).getServerIP() + ":" + getServerList().get(i).getPort());
                 }
-                setCurrentServerIndex((int)(Math.random() * getServerList().size()));
+                setCurrentServerIndex((int) (Math.random() * getServerList().size()));
                 return true;
             } else {
                 return false;
@@ -378,7 +409,7 @@ public class ClientConfig {
         } catch (IOException e) {
             e.printStackTrace();
         }
- 
+
         return getMyFileList();
     }
 }

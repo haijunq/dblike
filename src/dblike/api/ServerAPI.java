@@ -24,7 +24,7 @@ public interface ServerAPI extends Remote {
 
     public void callClient(String clientID, String deviceID, String content) throws RemoteException;
 
-    public void displayClient(ActiveClient target, String message) throws RemoteException;
+    public void actClient(String bindParam, String ip, int port) throws RemoteException;
 
     public boolean beatFromServer(String serverIP, int port) throws RemoteException;
 

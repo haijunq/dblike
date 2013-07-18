@@ -43,8 +43,8 @@ public class ServerImp implements ServerAPI {
     @Override
     public void callClient(String clientID, String deviceID, String content)
             throws RemoteException {
-        ActiveClient clientTemp = ActiveClientListServer.searchClientbyID(clientID, deviceID);
-        displayClient(clientTemp, content);
+//        ActiveClient clientTemp = ActiveClientListServer.searchClientbyID(clientID, deviceID);
+//        actClient(clientTemp, content);
 
     }
 
@@ -61,16 +61,16 @@ public class ServerImp implements ServerAPI {
     }
 
     @Override
-    public void displayClient(ActiveClient target, String message)
+    public void actClient(String bindParam, String ip, int port)
             throws RemoteException {
-        lookup(target);
-        client.showMessage(message);
+        lookup(bindParam, ip, port);
+        client.actOnClient();
     }
 
-    public void lookup(ActiveClient target) throws RemoteException {
-        registry = LocateRegistry.getRegistry(target.getClientIP(), target.getPort());
+    public void lookup(String bindParam, String ip, int port) throws RemoteException {
+        registry = LocateRegistry.getRegistry(ip, port);
         try {
-            String lookupClient = "clientUtility" + target.getClientID() + target.getDeviceID() + target.getClientIP() + target.getPort();
+            String lookupClient = bindParam;
             client = (ClientAPI) registry.lookup(lookupClient);
         } catch (NotBoundException ex) {
             Logger.getLogger(ServerImp.class.getName()).log(Level.SEVERE, null, ex);

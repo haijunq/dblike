@@ -19,6 +19,20 @@ import java.util.Scanner;
  */
 public class Client {
 
+    /**
+     * @return the testFlag
+     */
+    public static int getTestFlag() {
+        return testFlag;
+    }
+
+    /**
+     * @param aTestFlag the testFlag to set
+     */
+    public static void setTestFlag(int aTestFlag) {
+        testFlag = aTestFlag;
+    }
+
     private ServerAPI server = null;
     private String userParam, password;
     private int loginStatus;
