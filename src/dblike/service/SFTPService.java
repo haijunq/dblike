@@ -37,6 +37,11 @@ public class SFTPService {
         this.sftpPort = port;
     }
     
+    public SFTPService(String host, String privateKey) {
+        this.sftpHost = host;
+        this.privateKey = privateKey;
+    }
+    
     /**
      *
      * @param sftpHost
