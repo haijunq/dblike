@@ -7,6 +7,7 @@ package dblike.client;
 import dblike.api.ClientAPI;
 import dblike.client.service.ActiveServerListClient;
 import dblike.client.service.ClientConfig;
+import dblike.client.service.FileSyncClientService;
 import dblike.server.service.FileListXMLService;
 import dblike.service.FileInfo;
 import dblike.service.FileInfoService;
@@ -42,19 +43,24 @@ public class ClientImp implements ClientAPI {
         // to do 
         if (ClientConfig.getMyFileList().getFileHashTable().containsKey(fileName))
             return FileInfoService.fileInfoToXMLString(ClientConfig.getMyFileList().getFileHashTable().get(fileName));
-        else 
-            return FileInfoService.fileInfoToXMLString(new FileInfo());
+        else {
+            FileInfo newFileInfo = FileInfoService.getFileInfoByFileName(ClientConfig.getCurrentClient().getFolderPath(), fileName);
+            newFileInfo.setVersion(0);
+            newFileInfo.setDeviceID(ClientConfig.getCurrentClient().getDeviceID());
+            return FileInfoService.fileInfoToXMLString(newFileInfo);
+        }
     }
     
     public void setFileInfoToClient(String serverIP, int port, String userName, String directory, String fileName, String fileInfoXML) throws Exception{
-         ClientConfig.getMyFileList().getFileHashTable().put(fileName, FileInfoService.parseXMLStringToFileInfo(fileInfoXML));
+         ClientConfig.getMyFileList().updateFileInfo(FileInfoService.parseXMLStringToFileInfo(fileInfoXML));
     }
     
-    public void downloadFileFromServer(String serverIP, int port, String userName, String directory, String fileName, String fileInfoXML) throws Exception {
-        
+    public synchronized void syncModifiedFileFromServer(String serverIP, int port, String userName, String directory, String fileName, String fileInfoXML) throws Exception {
+        FileSyncClientService.syncCreatedFileFromServer(userName, directory, fileName);
     }
     
-    public void deleteClientFileByServer(String serverIP, int port, String userName, String directory, String fileName, String fileInfoXML) throws Exception {
+    public void syncClientFileByServer(String serverIP, int port, String userName, String directory, String fileName, String fileInfoXML) throws Exception {
+        FileSyncClientService.syncDeletedFileFromServer(userName, directory, fileName);
         
     }
 }

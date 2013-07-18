@@ -166,7 +166,7 @@ public class FileSyncClientServiceTest {
     }
 
     /**
-     * Test of syncCreatedFileWithServer method, of class FileSyncClientService.
+     * Test of syncCreatedFileToServer method, of class FileSyncClientService.
      */
     @Test
     public void testSyncCreatedFileWithServer() throws Exception {
@@ -182,7 +182,7 @@ public class FileSyncClientServiceTest {
     }
 
     /**
-     * Test of syncModifiedFileWithServer method, of class FileSyncClientService.
+     * Test of syncModifiedFileToServer method, of class FileSyncClientService.
      */
     @Test
     public void testSyncModifiedFileWithServer() throws Exception {
@@ -198,7 +198,7 @@ public class FileSyncClientServiceTest {
     }
 
     /**
-     * Test of syncDeletedFileWithServer method, of class FileSyncClientService.
+     * Test of syncDeletedFileToServer method, of class FileSyncClientService.
      */
     @Test
     public void testSyncDeletedFileWithServer() throws Exception {
@@ -214,7 +214,7 @@ public class FileSyncClientServiceTest {
     }
 
     /**
-     * Test of syncCreatedFile method, of class FileSyncClientService.
+     * Test of syncCreatedFileFromServer method, of class FileSyncClientService.
      */
     @Test
     public void testSyncCreatedFile() throws Exception {
@@ -222,13 +222,13 @@ public class FileSyncClientServiceTest {
         String directoryName = "";
         String fileName = "";
         FileSyncClientService instance = null;
-        instance.syncCreatedFile(directoryName, fileName);
+        instance.syncCreatedFileFromServer(directoryName, fileName);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of syncModifiedFile method, of class FileSyncClientService.
+     * Test of syncModifiedFileFromServer method, of class FileSyncClientService.
      */
     @Test
     public void testSyncModifiedFile() throws Exception {
@@ -236,13 +236,13 @@ public class FileSyncClientServiceTest {
         String directory = "";
         String fileName = "";
         FileSyncClientService instance = null;
-        instance.syncModifiedFile(directory, fileName);
+        instance.syncModifiedFileFromServer(directory, fileName);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of syncDeletedFile method, of class FileSyncClientService.
+     * Test of syncDeletedFileFromServer method, of class FileSyncClientService.
      */
     @Test
     public void testSyncDeletedFile() throws Exception {
@@ -250,7 +250,7 @@ public class FileSyncClientServiceTest {
         String directory = "";
         String fileName = "";
         FileSyncClientService instance = null;
-        instance.syncDeletedFile(directory, fileName);
+        instance.syncDeletedFileFromServer(directory, fileName);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }

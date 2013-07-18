@@ -74,7 +74,7 @@ public class FileInfoServiceTest {
     public void testGetFileInfoByFileName() throws Exception {
         System.out.println("getFileInfoByFileName");
         String directory = "./users/haijun";
-        String filename = "filelist.xml";
+        String filename = "filelist.xmsl";
 //        FileInfo expResult = null;
         FileInfo result = FileInfoService.getFileInfoByFileName(directory, filename);
         System.out.println(result);
