@@ -83,14 +83,14 @@ public class FileSyncClientService implements Runnable {
      * @throws JSchException
      * @throws SftpException
      */
-    public void uploadCreatedFileToServer(String userName, String directory, String fileName) throws JSchException, SftpException {
+    public synchronized void uploadCreatedFileToServer(String userName, String directory, String fileName) throws JSchException, SftpException {
         this.initSftpService();
         String srcFilePath = ClientConfig.getCurrentClient().getFolderPath() + "/" + fileName;
         String dstFilePath = "./users/" + userName + "/" + fileName;
         sftpService.uploadFile(srcFilePath, dstFilePath);
     }
 
-    public void uploadModifiedFileToServer(String userName, String directory, String fileName, FileInfoDiff diff) throws JSchException, SftpException, Exception {
+    public synchronized void uploadModifiedFileToServer(String userName, String directory, String fileName, FileInfoDiff diff) throws JSchException, SftpException, Exception {
 //        SFTPService sftpService = new SFTPService(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(), ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getPort());
         // upload only changed slices. 
         // to do should also include the deleted slices.
@@ -106,7 +106,7 @@ public class FileSyncClientService implements Runnable {
         uploadCreatedFileToServer(userName, directory, fileName);
     }
 
-    public void uploadDeletedFileToServer(String userName, String directory, String fileName, FileInfo serverToDeleteFileInfo) throws JSchException, SftpException {
+    public synchronized void uploadDeletedFileToServer(String userName, String directory, String fileName) throws JSchException, SftpException {
 //        SFTPService sftpService = new SFTPService(activeServer.getServerIP(), activeServer.getPort());
 //        if (serverToDeleteFileInfo.getFileHashCode().isEmpty()) {
 //            return;
@@ -122,7 +122,7 @@ public class FileSyncClientService implements Runnable {
     }
 
     // the following three are for clientAPI methods
-    public void createFile(String directory, String fileName, FileInfo fileInfo) throws JSchException, SftpException {
+    public synchronized void createFile(String directory, String fileName, FileInfo fileInfo) throws JSchException, SftpException {
         //download all file segments to ./tmp/download/ and merge to single file
         // for now download the file from server directly
         this.initSftpService();
@@ -132,13 +132,13 @@ public class FileSyncClientService implements Runnable {
     }
 
     // to do
-    public void modifieFile(String directory, String fileName, FileInfoDiff diff) throws JSchException, SftpException {
+    public synchronized void modifieFile(String directory, String fileName, FileInfoDiff diff) throws JSchException, SftpException {
         createFile(directory, fileName, diff);
         //download updated file segments to ./tmp/download/ and insert to single file
     }
 
     // to do
-    public void deleteFile(String directory, String fileName) throws JSchException, SftpException {
+    public synchronized void deleteFile(String directory, String fileName) throws JSchException, SftpException {
         //just delete using File.delete()
         File file = new File(ClientConfig.getCurrentClient().getFolderPath() + "/" + fileName);
         if (file.exists()) 
@@ -157,10 +157,12 @@ public class FileSyncClientService implements Runnable {
      * @param activeServer
      * @throws RemoteException
      */
-    public void updateFileInfoToServer(String userName, String directory, String fileName, FileInfo fileInfo) throws RemoteException {
+    public synchronized void updateFileInfoToServer(String userName, String directory, String fileName) throws RemoteException {
         // get fileinfo from server
         ServerAPI server = ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerAPI();
-        server.setFileInfoToServer(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(), ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getPort(), userName, directory, fileName, FileInfoService.fileInfoToXMLString(fileInfo));
+        server.setFileInfoToServer(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(), 
+                ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getPort(), userName, directory, fileName, 
+                FileInfoService.fileInfoToXMLString(ClientConfig.getMyFileList().getFileInfo(fileName)));
     }
 
     /**
@@ -173,10 +175,10 @@ public class FileSyncClientService implements Runnable {
      * @throws RemoteException
      * @throws Exception
      */
-    public void updateLocalFileInfo(String userName, String directory, String fileName, FileInfo fileInfo) throws RemoteException, Exception {
+    public synchronized void updateLocalFileInfo(String userName, String directory, String fileName) throws RemoteException, Exception {
         FileInfo newFileInfo = FileInfoService.getFileInfoByFileName(ClientConfig.getCurrentClient().getFolderPath(), fileName);
         if (ClientConfig.getMyFileList().getFileHashTable().containsKey(fileName)) {
-            if (ClientConfig.getMyFileList().getFileHashTable().get(fileName).getFileHashCode().equals(fileInfo.getFileHashCode())) {
+            if (ClientConfig.getMyFileList().getFileHashTable().get(fileName).getFileHashCode().equals(newFileInfo.getFileHashCode())) {
                 // the fileinfo and file are already same, do nothing
             } else {
                 // for now, set the version increment by one
@@ -202,9 +204,12 @@ public class FileSyncClientService implements Runnable {
      * @throws JSchException
      * @throws SftpException
      */
-    public synchronized void syncCreatedFileWithServer(String userName, String directory, String fileName, ActiveServer activeServer) throws RemoteException, JSchException, SftpException {
-//        // get fileinfo from current server
-//        FileInfo fileInfo = fileListHashtable.get(userName).getFileInfoByFileName(fileName);
+    public synchronized void syncCreatedFileWithServer(String userName, String directory, String fileName) throws RemoteException, JSchException, SftpException, Exception {
+        this.updateLocalFileInfo(userName, directory, fileName);
+        this.uploadCreatedFileToServer(userName, directory, fileName);
+        this.updateFileInfoToServer(userName, directory, fileName);
+
+        //        FileInfo fileInfo = fileListHashtable.get(userName).getFileInfoByFileName(fileName);
 //        
 //        // get fileinfo from server
 //        ServerAPI server = activeServer.getServerAPI();
@@ -227,8 +232,10 @@ public class FileSyncClientService implements Runnable {
      * @throws JSchException
      * @throws SftpException
      */
-    public synchronized void syncModifiedFileWithServer(String userName, String directory, String fileName, ActiveServer activeServer) throws RemoteException, JSchException, SftpException {
-//        // get fileinfo from current server
+    public synchronized void syncModifiedFileWithServer(String userName, String directory, String fileName) throws RemoteException, JSchException, SftpException, Exception {
+        this.syncCreatedFileWithServer(userName, directory, fileName);
+        
+                // get fileinfo from current server
 //        FileInfo fileInfo = fileListHashtable.get(userName).getFileInfoByFileName(fileName);
 //        
 //        // get fileinfo from server
@@ -244,7 +251,10 @@ public class FileSyncClientService implements Runnable {
 //        }
     }
 
-    public synchronized void syncDeletedFileWithServer(String userName, String directory, String fileName, ActiveServer activeServer) throws RemoteException, JSchException, SftpException {
+    public synchronized void syncDeletedFileWithServer(String userName, String directory, String fileName) throws RemoteException, JSchException, SftpException, Exception {
+        this.updateLocalFileInfo(userName, directory, fileName);
+        this.uploadDeletedFileToServer(userName, directory, fileName);
+        this.updateFileInfoToServer(userName, directory, fileName);
 //        // get fileinfo from current server
 //        FileInfo fileInfo = fileListHashtable.get(userName).getFileInfoByFileName(fileName);
 //        
@@ -269,18 +279,19 @@ public class FileSyncClientService implements Runnable {
      * @throws RemoteException
      * @throws SftpException
      */
-    public synchronized void syncCreatedFile(String directoryName, String fileName) throws JSchException, RemoteException, SftpException, Exception {
+    public synchronized void syncCreatedFile(String directory, String fileName) throws JSchException, RemoteException, SftpException, Exception {
+        
         // get md5 table
-        String filePath = directory.toString() + fileName;
-        Hashtable<String, String> md5Hashtable = MD5Service.getMD5StringTableFromSingleFile(directory.toString(), filePath);
-
-        // compare md5 with fileinfo
-        if (ClientConfig.getMyFileList().getFileInfoByFileName(fileName) == null) // created from own client
-        {
-            // update local
-            // update server
-//            syncCreatedFileWithServer(directoryName, fileName, ClientConfig.getServerList().elementAt(ClientConfig.getCurrentServerIndex()));
-        }
+//        String filePath = directory.toString() + fileName;
+//        Hashtable<String, String> md5Hashtable = MD5Service.getMD5StringTableFromSingleFile(directory.toString(), filePath);
+//
+//        // compare md5 with fileinfo
+//        if (ClientConfig.getMyFileList().getFileInfoByFileName(fileName) == null) // created from own client
+//        {
+//            // update local
+//            // update server
+////            syncCreatedFileWithServer(directoryName, fileName, ClientConfig.getServerList().elementAt(ClientConfig.getCurrentServerIndex()));
+//        }
     }
 
     /**
