@@ -49,11 +49,11 @@ public final class FileListService {
     
     
     
-    public FileListService(String username) {
-        this.pathname = "./users/" + username + "/";
+    public FileListService(String pathName) {
+        this.pathname = pathName;
         fileHashTable = new Hashtable<>();
     }
-    
+
     public Hashtable<String, FileInfo> getFileHashTable() {
         return this.fileHashTable;
     }

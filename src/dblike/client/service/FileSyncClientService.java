@@ -55,7 +55,7 @@ public class FileSyncClientService implements Runnable {
     private final Path directory;
     private static SFTPService sftpService = null;
 
-    public FileSyncClientService(String directory) throws IOException {
+    public FileSyncClientService(String directory) throws IOException, RemoteException, Exception {
 
         // set sync directory and register directory watcher
         FileSystem fs = FileSystems.getDefault();
@@ -64,6 +64,7 @@ public class FileSyncClientService implements Runnable {
         this.directory.register(watchService, ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE, OVERFLOW);
         System.out.println("Registered watchService on " + directory);
 
+//        updateAllLocalFileInfo(directory);
         initSftpService();
     }
 
@@ -192,10 +193,24 @@ public class FileSyncClientService implements Runnable {
      * @throws RemoteException
      * @throws Exception 
      */
-    public synchronized void updateLocalFileInfo(String userName, String directory, String fileName) throws RemoteException, Exception {
+    public synchronized static void updateLocalFileInfo(String userName, String directory, String fileName) throws RemoteException, Exception {
         ClientConfig.getMyFileList().updateFileInfo(getLocalFileInfoByFileName(fileName));
     }
 
+    /**
+     * Sync the local folder and the local FileListService table. This function only runs once right after the client login.
+     * @param directory 
+     */
+    public synchronized static void updateAllLocalFileInfo(String directory) throws RemoteException, Exception {
+        File dir = new File(directory);
+        String [] files = dir.list();
+        for (String file : files) {
+//            System.out.println(file);
+//            System.out.println(getLocalFileInfoByFileName(file));
+            updateLocalFileInfo(ClientConfig.getCurrentClient().getClientID(), directory, file);
+        }
+        System.out.println(ClientConfig.getMyFileList());
+    }
     /**
      * 
      * @param fileName
