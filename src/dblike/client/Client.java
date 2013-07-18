@@ -49,6 +49,7 @@ public class Client {
     static Thread syncThread;
     private static ServerListenerClient serverListener;
     private static SyncActionClient sync;
+    private boolean alreadyAuthorized = false;
 
     /**
      * @return the clientID
@@ -114,10 +115,12 @@ public class Client {
         stopThread();
         while (true) {
             int availableServerIndex = ClientConfig.pickupAvailableServer();
+            System.out.println("The new server is No." + availableServerIndex);
             if (availableServerIndex != -1) {
                 ClientConfig.setCurrentServerIndex(availableServerIndex);
-                serverIP = ActiveServerListServer.getActiveServerList().get(availableServerIndex).getServerIP();
-                serverPort = ActiveServerListServer.getActiveServerList().get(availableServerIndex).getPort();
+                serverIP = ClientConfig.getServerList().get(availableServerIndex).getServerIP();
+                serverPort = ClientConfig.getServerList().get(availableServerIndex).getPort();
+                login();
                 initData();
             } else {
                 System.out.println("There is no available server!!!");
@@ -125,7 +128,7 @@ public class Client {
             try {
                 Thread.sleep(InternetUtil.getCHANGESERVERINTERVAL() * 1000);
             } catch (InterruptedException ex) {
-                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println(ex);
             }
         }
     }
@@ -187,22 +190,25 @@ public class Client {
             boolean flag = true;
             registry = LocateRegistry.getRegistry(serverIP, serverPort);
             lookup();
-            while (flag) {
-                try {
-                    inputNamePassword();
-                    if (server.validateUser(getClientID(), MD5Service.getMD5FromString(password))) {
-                        flag = false;
-                        System.out.println("Login Successfully");
-                    } else {
-                        System.out.println("Not a validate user, input again!");
+            if (!alreadyAuthorized) {
+                while (flag) {
+                    try {
+                        inputNamePassword();
+                        if (server.validateUser(getClientID(), MD5Service.getMD5FromString(password))) {
+                            flag = false;
+                            System.out.println("Login Successfully");
+                        } else {
+                            System.out.println("Not a validate user, input again!");
+                        }
+                    } catch (RemoteException ex) {
+                        Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                } catch (RemoteException ex) {
-                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         } catch (RemoteException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
+        alreadyAuthorized = true;
         return clientID;
     }
 
