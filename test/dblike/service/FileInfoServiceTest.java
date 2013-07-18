@@ -52,4 +52,34 @@ public class FileInfoServiceTest {
         FileInfo newfileinfo = FileInfoService.parseXMLStringToFileInfo(result);
         System.out.println(newfileinfo);
     }
+
+    /**
+     * Test of parseXMLStringToFileInfo method, of class FileInfoService.
+     */
+    @Test
+    public void testParseXMLStringToFileInfo() {
+        System.out.println("parseXMLStringToFileInfo");
+        String xmlstring = "";
+        FileInfo expResult = null;
+        FileInfo result = FileInfoService.parseXMLStringToFileInfo(xmlstring);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getFileInfoByFileName method, of class FileInfoService.
+     */
+    @Test
+    public void testGetFileInfoByFileName() throws Exception {
+        System.out.println("getFileInfoByFileName");
+        String directory = "./users/haijun";
+        String filename = "filelist.xml";
+//        FileInfo expResult = null;
+        FileInfo result = FileInfoService.getFileInfoByFileName(directory, filename);
+        System.out.println(result);
+        //        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+//        fail("The test case is a prototype.");
+    }
 }
