@@ -70,7 +70,7 @@ public class FileSyncClientService implements Runnable {
     // how to guarantee the connection in case of failure
     private static void initSftpService() {
         while (sftpService == null) {
-            sftpService = new SFTPService(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(), ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getPort());
+            sftpService = new SFTPService(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP());
         }
     }
 
@@ -86,7 +86,9 @@ public class FileSyncClientService implements Runnable {
     public synchronized void uploadCreatedFileToServer(String userName, String directory, String fileName) throws JSchException, SftpException {
         this.initSftpService();
         String srcFilePath = ClientConfig.getCurrentClient().getFolderPath() + "/" + fileName;
-        String dstFilePath = "./users/" + userName + "/" + fileName;
+        String dstFilePath = "/home/ec2-user/users/" + userName + "/" + fileName;
+        System.out.println(srcFilePath);
+        System.out.println(dstFilePath);
         sftpService.uploadFile(srcFilePath, dstFilePath);
     }
 
@@ -376,16 +378,24 @@ public class FileSyncClientService implements Runnable {
                 e.printStackTrace();
                 return;
             }
-
+            
             for (WatchEvent<?> e : key.pollEvents()) {
 
                 @SuppressWarnings("unchecked")
                 WatchEvent<Path> event = (WatchEvent<Path>) e;
 
-                // get userName, directoryName, and fileName
-                String directoryName = directory.getName(directory.getNameCount() - 1).toString();
-                String fileName = directory.getName(directory.getNameCount()).toString();
+//                // get userName, directoryName, and fileName
+//                String directoryName = directory.getName(directory.getNameCount() - 2).toString();
+//                String fileName = directory.getName(directory.getNameCount() - 1).toString();
+//                System.out.println(directory.getFileName());
 
+                Path name = event.context();
+                Path child = directory.resolve(name);
+                
+                String directoryName = "./users/haijun/";
+                String fileName = child.getName(child.getNameCount()-1).toString();
+                System.out.println(fileName);
+                
                 if (e.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
                     if (!this.isFolderChangeFromServer(directoryName, fileName)) {
                         this.syncCreatedFileToServer(ClientConfig.getCurrentClient().getClientID(), directoryName, fileName);
