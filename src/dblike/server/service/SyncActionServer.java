@@ -40,6 +40,8 @@ public class SyncActionServer implements Runnable {
 
     public boolean lookupClient(ActiveClient target) throws RemoteException {
         try {
+            System.out.println("targetapi="+target.getClientAPI());
+            target.getClientAPI().printMsg();
             target.setRegistry(LocateRegistry.getRegistry(target.getClientIP(), target.getPort()));
             String lookupClient = "clientUtility" + target.getClientID() + target.getDeviceID() + target.getClientIP() + target.getPort();
             target.setClientAPI((ClientAPI) (target.getRegistry()).lookup(lookupClient));
@@ -57,6 +59,7 @@ public class SyncActionServer implements Runnable {
         try {
             target.setRegistry(LocateRegistry.getRegistry(target.getServerIP(), target.getPort()));
             target.setServerAPI((ServerAPI) (target.getRegistry()).lookup("serverUtility"));
+            System.out.println();
         } catch (NotBoundException ex) {
             System.out.println(ex);
             return false;
@@ -69,9 +72,12 @@ public class SyncActionServer implements Runnable {
 
     public boolean beatForAllClient() { 
         boolean flag = true;
+        System.out.println("aclientsize=" + ActiveClientList.size());
         for (int i = 0; i < ActiveClientList.size(); i++) {
             ActiveClient aClient = ActiveClientList.get(i);
             String clientLabel = aClient.getClientID() + aClient.getDeviceID();
+            System.out.println(aClient.getClientAPI());
+            System.out.println(aClient.getRegistry());
             try {
                 if (lookupClient(aClient) == false) {
                     System.out.println("Failed to look up " + clientLabel);
@@ -79,7 +85,7 @@ public class SyncActionServer implements Runnable {
                     aClient.getClientAPI().beatFromServer(ServerStart.getServerIP(), ServerStart.getPORT()); 
                 }
             } catch (RemoteException ex) {
-                //System.out.println("Someting wrong with this client..." + clientLabel);
+                System.out.println("Someting wrong with this client..." + clientLabel);
             }
 
         }

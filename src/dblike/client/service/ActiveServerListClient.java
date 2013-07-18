@@ -80,6 +80,7 @@ public class ActiveServerListClient {
     
      public static boolean beatCurrentServer(String serverIP, int port) { 
         int position = checkServerByIP_Port(serverIP, port);
+//         System.out.println("position=" + position);
         if (position == -1) {
             return false;
         } else {
