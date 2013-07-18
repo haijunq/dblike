@@ -56,6 +56,9 @@ public class ClientConfig {
         int availableServer = -1;
         availableFlag = true;
         for (int i = 0; i < ServerList.size(); i++) {
+            System.out.println(ServerList.get(i).getServerIP()+":"+ServerList.get(i).getPort());
+        }
+        for (int i = 0; i < ServerList.size(); i++) {
             Client.setTestFlag(0);
             ActiveServer aServer = ServerList.get(i);
             tryToConect(aServer.getServerIP(), aServer.getPort());
