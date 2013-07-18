@@ -120,7 +120,7 @@ public class FileListXMLService {
                     if (pathNameNode.hasChildNodes()) {
                         filelist.setPathname(pathNameNode.getFirstChild().getNodeValue());
                     } else {
-                        filelist.setPathname("");
+//                        filelist.setPathname("");
                     }
                 }
 
@@ -193,7 +193,6 @@ public class FileListXMLService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
 
         return filelist;

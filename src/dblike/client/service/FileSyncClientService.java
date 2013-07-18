@@ -64,7 +64,8 @@ public class FileSyncClientService implements Runnable {
         this.directory.register(watchService, ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE, OVERFLOW);
         System.out.println("Registered watchService on " + directory);
 
-//        updateAllLocalFileInfo(directory);
+        updateAllLocalFileInfo(directory);
+        FileListXMLService.saveFileListToXML(ClientConfig.getMyFileList());
         initSftpService();
     }
 

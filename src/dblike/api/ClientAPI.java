@@ -25,6 +25,10 @@ public interface ClientAPI extends Remote {
 //    
 //    public void setFileInfoToServer(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) throws RemoteException;
 
+    public boolean containFileInfo(String serverIP, int port, String userName, String directory, String fileName) throws Exception;
+    
+    public String getFileInfo(String serverIP, int port, String userName, String directory, String fileName) throws Exception;
+    
     // to do 
     public String getFileInfoFromClient(String serverIP, int port, String userName, String directory, String fileName) throws Exception;  
     

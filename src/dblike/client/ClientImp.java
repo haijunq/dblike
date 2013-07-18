@@ -39,6 +39,14 @@ public class ClientImp implements ClientAPI {
 //        FileListXMLService.setFileInfo(userName, directory, fileName, fileInfo);
 //    }
     
+    public boolean containFileInfo(String serverIP, int port, String userName, String directory, String fileName) throws Exception {
+        return ClientConfig.getMyFileList().getFileHashTable().containsKey(fileName);
+    }
+    
+    public String getFileInfo(String serverIP, int port, String userName, String directory, String fileName) {
+        return FileInfoService.fileInfoToXMLString(ClientConfig.getMyFileList().getFileHashTable().get(fileName));
+    }
+            
     public String getFileInfoFromClient(String serverIP, int port, String userName, String directory, String fileName) throws Exception{
         // to do 
         if (ClientConfig.getMyFileList().getFileHashTable().containsKey(fileName))
