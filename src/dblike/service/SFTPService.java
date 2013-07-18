@@ -9,6 +9,7 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 
 /**
@@ -185,7 +186,18 @@ public class SFTPService {
         
         ChannelSftp sftpChannel = (ChannelSftp) channel;
         sftpChannel.cd(curRemoteDir);
-        sftpChannel.rm(file);
+        //        System.out.println("Del: " + file + " cur: " + curRemoteDir);
+        
+        Boolean fileExists = true;
+        SftpATTRS sftpATTRS;
+        try {
+            sftpATTRS = sftpChannel.lstat(file);
+        } catch (Exception ex) {
+            fileExists = false;
+        }
+        
+        if (fileExists)
+            sftpChannel.rm(file);
         sftpChannel.exit();
         session.disconnect();
     }
