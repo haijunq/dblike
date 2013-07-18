@@ -68,8 +68,7 @@ public class ActiveServerListClient {
         }
     }
 
-    public static boolean beatTheServer(String serverIP, int port) {
-        System.out.println("Beat server " + serverIP + ":" + port);
+    public static boolean beatTheServer(String serverIP, int port) { 
         int position = checkServerByIP_Port(serverIP, port);
         if (position == -1) {
             return false;
@@ -79,8 +78,7 @@ public class ActiveServerListClient {
         }
     }
     
-     public static boolean beatCurrentServer(String serverIP, int port) {
-        System.out.println("Beat server " + serverIP + ":" + port);
+     public static boolean beatCurrentServer(String serverIP, int port) { 
         int position = checkServerByIP_Port(serverIP, port);
         if (position == -1) {
             return false;

@@ -79,7 +79,7 @@ public class SyncActionServer implements Runnable {
                     aClient.getClientAPI().beatFromServer(ServerStart.getServerIP(), ServerStart.getPORT()); 
                 }
             } catch (RemoteException ex) {
-                System.out.println("Someting wrong with this client..." + clientLabel);
+                //System.out.println("Someting wrong with this client..." + clientLabel);
             }
 
         }
@@ -98,7 +98,7 @@ public class SyncActionServer implements Runnable {
                     aServer.getServerAPI().beatFromServer(ServerStart.getServerIP(), ServerStart.getPORT()); 
                 }
             } catch (RemoteException ex) {
-                System.out.println("Someting wrong with this server..." + serverLabel);
+                //System.out.println("Someting wrong with this server..." + serverLabel);
             }
 
         }

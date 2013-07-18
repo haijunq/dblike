@@ -22,7 +22,7 @@ public class Client {
     private ServerAPI server = null;
     private String userParam, password;
     private int loginStatus;
-    private static String host;
+    private static int testFlag=0;
     private static Registry registry;
     private String clientID;
     private String deviceID;
