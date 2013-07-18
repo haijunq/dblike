@@ -6,6 +6,7 @@ import dblike.client.service.ClientConfig;
 import dblike.client.service.ServerListenerClient;
 import dblike.client.service.SyncActionClient;
 import dblike.server.service.ActiveServerListServer;
+import dblike.server.service.FileListXMLService;
 import dblike.service.InternetUtil;
 import dblike.service.MD5Service;
 import java.rmi.*;
@@ -217,6 +218,7 @@ public class Client {
             setLoginStatus(1);
             ClientConfig.initCurrentClient(getClientID(), "", "", "", "");
             ClientConfig.loadCurrentUser();
+            ClientConfig.setMyFileList(FileListXMLService.loadFileListFromXML("ClientCfg/users/" + ClientConfig.getCurrentClient().getClientID() + "/"));
 
             this.deviceID = ClientConfig.getCurrentClient().getDeviceID();
             this.clientIP = ClientConfig.getCurrentClient().getIp();

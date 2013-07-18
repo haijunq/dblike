@@ -66,7 +66,7 @@ public class ClientStart {
         }
     }
 
-    public static void main(String args[]) throws IOException {
+    public static void main(String args[]) throws IOException, RemoteException, Exception {
         ClientConfig.loadServerList();
         int availableIndex=ClientConfig.pickupAvailableServer();
         System.out.println("Picked No."+availableIndex);

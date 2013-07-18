@@ -65,7 +65,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
         {
             String userName = entry.getKey();
             System.out.println("Load user: " + userName);
-            FileListService fileList = FileListXMLService.loadFileListFromXML(userName);
+            FileListService fileList = FileListXMLService.loadFileListFromXML("./users/" + userName + "/");
             fileListHashtable.put(fileList.getPathname(), fileList);
             System.out.println("User: " + userName + " filelist size: " + fileList.getFileHashTable().size());
         }
@@ -124,9 +124,10 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     }
     
     // to do
-    public void uploadCreatedFileToClient(String userName, String directory, String fileName, ActiveClient activeClient) throws JSchException, SftpException
+    public void uploadCreatedFileToClient(String userName, String directory, String fileName, ActiveClient activeClient) throws JSchException, SftpException, RemoteException
     {
         ClientAPI client = activeClient.getClientAPI();
+        client.printMsg();
         // client upload and download file from server
         String srcFilePath = "~/" + userName + "/" + fileName;
         String dstFilePath = "~/" + userName + "/" + fileName;
@@ -264,17 +265,17 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     public void syncCreatedFileWithClient(String userName, String directory, String fileName, ActiveClient activeClient) throws RemoteException, JSchException, SftpException, Exception
     {
         // get fileinfo from current server
-        FileInfo fileInfo = fileListHashtable.get(directory).getFileInfoByFileName(fileName);
+//        FileInfo fileInfo = fileListHashtable.get(directory).getFileInfoByFileName(fileName);
         
         ClientAPI client = activeClient.getClientAPI();
         String fileInfoStr = client.getFileInfoFromClient(activeClient.getClientIP(), activeClient.getPort(),
                 userName, directory, fileName);
         
-        if (fileInfoStr.isEmpty())
-        {
+//        if (fileInfoStr.isEmpty())
+//        {
             uploadCreatedFileToClient(userName, directory, fileName, activeClient);
-            updateFileInfoToClient(userName, directory, fileName, activeClient, fileInfo);
-        }
+//            updateFileInfoToClient(userName, directory, fileName, activeClient, fileInfo);
+//        }
     }
     
     /**

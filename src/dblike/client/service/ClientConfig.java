@@ -422,6 +422,10 @@ public class ClientConfig {
             e.printStackTrace();
         }
 
+        System.out.println("just before setting the folderpath");
+        System.out.println(getCurrentClient().getFolderPath());
+        getMyFileList().setPathname(getCurrentClient().getFolderPath());
+        System.out.println(getMyFileList());
         return getMyFileList();
     }
 }
