@@ -15,6 +15,8 @@ import java.rmi.*;
  */
 public interface ClientAPI extends Remote {
  
+    public void printMsg() throws RemoteException;
+    
     public void actOnClient() throws RemoteException;
     
     public boolean beatFromServer(String serverIP, int port) throws RemoteException;

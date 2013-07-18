@@ -49,9 +49,9 @@ public class FileInfoService {
      */
     public static String fileInfoToXMLString(FileInfo fileinfo) {
         String xmlstring = "";
-        if (fileinfo == null || fileinfo.getFileHashCode().isEmpty()) {
-            return xmlstring;
-        }
+//        if (fileinfo == null || fileinfo.getFileHashCode().isEmpty()) {
+//            return xmlstring;
+//        }
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();

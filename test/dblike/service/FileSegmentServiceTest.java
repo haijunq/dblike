@@ -58,7 +58,7 @@ public class FileSegmentServiceTest {
         System.out.println("mergeByteArrayToSingleFile");
         String directory = "./users/haijun";
         String filename = "doraemon.jpg";
-        FileSegmentService.mergeByteArrayToSingleFile(directory, filename);
+//        FileSegmentService.mergeByteArrayToSingleFile(directory, filename);
         // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
     }
@@ -73,7 +73,7 @@ public class FileSegmentServiceTest {
         String filename = "doraemon.jpg";
         ArrayList<String> fileChunks = new ArrayList<>();
         fileChunks.add("doraemon.jpg.part.0008");
-        FileSegmentService.insertSegmentsToFile(directory, filename, fileChunks);
+//        FileSegmentService.insertSegmentsToFile(directory, filename, fileChunks);
         // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
     }

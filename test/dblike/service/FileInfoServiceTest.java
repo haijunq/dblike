@@ -4,6 +4,7 @@
  */
 package dblike.service;
 
+import dblike.client.service.FileSyncClientService;
 import dblike.server.service.FileListService;
 import dblike.server.service.FileListXMLService;
 import org.junit.After;
@@ -42,11 +43,14 @@ public class FileInfoServiceTest {
      * Test of fileInfoToXMLString method, of class FileInfoService.
      */
     @Test
-    public void testFileInfoToXMLString() {
+    public void testFileInfoToXMLString() throws Exception {
         System.out.println("fileInfoToXMLString");
-        String username = "haijun";
-        FileListService r = FileListXMLService.loadFileListFromXML(username);
-        FileInfo fileinfo = r.getFileInfoByFileName("file2");
+//        String username = "haijun";
+//        FileListService r = FileListXMLService.loadFileListFromXML(username);
+//        FileInfo fileinfo = r.getFileInfoByFileName("file2");
+        FileInfo fileinfo = FileSyncClientService.getLocalFileInfoByFileName("yes");
+        fileinfo.setDeviceID("one");
+        System.out.println(fileinfo);
         String result = FileInfoService.fileInfoToXMLString(fileinfo);
         System.out.println(result);
         FileInfo newfileinfo = FileInfoService.parseXMLStringToFileInfo(result);

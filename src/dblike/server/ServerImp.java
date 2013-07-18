@@ -106,11 +106,9 @@ public class ServerImp implements ServerAPI {
     
 
     public void setFileInfoToServer(String serverIP, int port, String userName, String directory, String fileName, String fileInfoStr) {
-        
         FileInfo fileInfo = FileInfoService.parseXMLStringToFileInfo(fileInfoStr);
-        System.out.println(fileInfo);
-        System.out.println(directory);
         FileSyncServerService.fileListHashtable.get(directory).addNewFileInfo(fileInfo);
+        System.out.println(FileSyncServerService.fileListHashtable);
 
     }
     
@@ -128,4 +126,8 @@ public class ServerImp implements ServerAPI {
     public boolean validateUser(String userID, String hashedPassword) throws RemoteException {
         return UserListXMLReader.isValidUser(userID, hashedPassword);
     } 
+    
+    public void printMsg() throws RemoteException {
+        System.out.println("printMsg() in ServerImp!");
+    }
 }

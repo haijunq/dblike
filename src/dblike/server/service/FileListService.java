@@ -79,11 +79,12 @@ public final class FileListService {
         else
             return null;
     }
-    
+
     @Override
     public String toString() {
-        return "FileListService{" + '}';
+        return "FileListService{" + "pathname=" + pathname + ", fileHashTable=" + fileHashTable + '}';
     }
+    
     
     public void addNewFileInfo(FileInfo newFileInfo) {
         this.fileHashTable.put(newFileInfo.getFileName(), newFileInfo);
