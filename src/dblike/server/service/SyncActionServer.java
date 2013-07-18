@@ -40,8 +40,6 @@ public class SyncActionServer implements Runnable {
 
     public boolean lookupClient(ActiveClient target) throws RemoteException {
         try {
-            System.out.println("targetapi="+target.getClientAPI());
-            target.getClientAPI().printMsg();
             target.setRegistry(LocateRegistry.getRegistry(target.getClientIP(), target.getPort()));
             String lookupClient = "clientUtility" + target.getClientID() + target.getDeviceID() + target.getClientIP() + target.getPort();
             target.setClientAPI((ClientAPI) (target.getRegistry()).lookup(lookupClient));
@@ -76,8 +74,6 @@ public class SyncActionServer implements Runnable {
         for (int i = 0; i < ActiveClientList.size(); i++) {
             ActiveClient aClient = ActiveClientList.get(i);
             String clientLabel = aClient.getClientID() + aClient.getDeviceID();
-            System.out.println(aClient.getClientAPI());
-            System.out.println(aClient.getRegistry());
             try {
                 if (lookupClient(aClient) == false) {
                     System.out.println("Failed to look up " + clientLabel);

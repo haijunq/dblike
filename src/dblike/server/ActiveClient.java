@@ -128,4 +128,11 @@ public class ActiveClient {
         this.port = aPort;
         this.status = InternetUtil.getOK();
     }
+
+    @Override
+    public String toString() {
+        return "ActiveClient{" + "clientID=" + clientID + ", deviceID=" + deviceID + ", clientIP=" + clientIP + ", port=" + port + ", status=" + status + ", registry=" + registry + ", clientAPI=" + clientAPI + '}';
+    }
+    
+    
 }
