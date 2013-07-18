@@ -7,6 +7,7 @@ package dblike.client.service;
 import dblike.api.ServerAPI;
 import dblike.client.ActiveServer;
 import dblike.client.Client;
+import dblike.client.ClientStart;
 import dblike.service.InternetUtil;
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
@@ -46,7 +47,7 @@ public class ServerListenerClient implements Runnable {
             if (aServer.getStatus() == 0) {
                 ActiveServerListClient.removeServer(aServer.getServerIP(), aServer.getPort());
                 System.out.println("Server down!!!-- " + aServer.getServerIP() + ":" + aServer.getPort());
-                Client.pickupNewServer();
+                ClientStart.aClient.pickupNewServer();
                 flag = false;
             } else {
                 //System.out.println("Connection problem, wait to see..."+ aServer.getServerIP() + ":" + aServer.getPort());
