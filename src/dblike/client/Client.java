@@ -124,6 +124,7 @@ public class Client {
                 serverPort = ClientConfig.getServerList().get(availableServerIndex).getPort();
                 login();
                 initData();
+                break;
             } else {
                 System.out.println("There is no available server!!!");
             }
