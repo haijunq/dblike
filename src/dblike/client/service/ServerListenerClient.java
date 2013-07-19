@@ -47,10 +47,10 @@ public class ServerListenerClient implements Runnable {
             if (aServer.getStatus() == 0) {
                 //ActiveServerListClient.removeServer(aServer.getServerIP(), aServer.getPort());
                 System.out.println("Server down!!!-- " + aServer.getServerIP() + ":" + aServer.getPort());
-                ClientStart.aClient.pickupNewServer();
+                //ClientStart.aClient.pickupNewServer();
                 flag = false;
             } else {
-                //System.out.println("Connection problem, wait to see..."+ aServer.getServerIP() + ":" + aServer.getPort());
+                System.out.println("Connection problem, wait to see..."+ aServer.getServerIP() + ":" + aServer.getPort());
             }
         }
         return flag;

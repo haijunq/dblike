@@ -112,8 +112,7 @@ public class Client {
         this.loginStatus = loginStatus;
     }
 
-    public void pickupNewServer() {
-        ClientConfig.getServerList().clear();
+    public void pickupNewServer() { 
         System.out.println("in pickupNewServer");
         stopThread();
         while (true) {
@@ -224,10 +223,9 @@ public class Client {
 
             this.deviceID = ClientConfig.getCurrentClient().getDeviceID();
             this.clientIP = ClientConfig.getCurrentClient().getIp();
-            this.clientPort = Integer.parseInt(ClientConfig.getCurrentClient().getPort());
-
+            this.clientPort = Integer.parseInt(ClientConfig.getCurrentClient().getPort()); 
             server.addClient(clientID, deviceID, clientIP, clientPort);
-            ActiveServerListClient.addServer(serverIP, serverPort);
+            //ActiveServerListClient.addServer(serverIP, serverPort);
             System.out.println("Connection built!");
             
             startThread(getClientID(), deviceID, serverIP, serverPort);

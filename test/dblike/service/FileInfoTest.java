@@ -266,7 +266,7 @@ public class FileInfoTest {
         System.out.println("comparesToFileInfo");
         String xml1 = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><fileInfo><version>3</version><deviceID>pc</deviceID><fileName>file2</fileName><timestamp>120</timestamp><fileSize>4000</fileSize><fileHashCode><fileChunkHashCode fileChunkName=\"file2.part.0001\">0728367gq9yeuwqoye</fileChunkHashCode><fileChunkHashCode fileChunkName=\"file2.part.0000\">joiqunhjksa6fhkeew</fileChunkHashCode></fileHashCode></fileInfo>\n";
         FileInfo fthis = FileInfoService.parseXMLStringToFileInfo(xml1);
-        String xml2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><fileInfo><version>4</version><deviceID>iph</deviceID><fileName>file2</fileName><timestamp>101</timestamp><fileSize>4000</fileSize><fileHashCode><fileChunkHashCode fileChunkName=\"file2.part.0001\">0728367gq9yeuwqoye</fileChunkHashCode><fileChunkHashCode fileChunkName=\"file2.part.0000\">joiqunhjksa6fhkeew</fileChunkHashCode></fileHashCode></fileInfo>\n";
+        String xml2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><fileInfo><version>4</version><deviceID>pc</deviceID><fileName>file2</fileName><timestamp>101</timestamp><fileSize>4000</fileSize><fileHashCode><fileChunkHashCode fileChunkName=\"file2.part.0001\">0728367gq9yeuwqoye</fileChunkHashCode><fileChunkHashCode fileChunkName=\"file2.part.0000\">joiqunhqerq6fhkeew</fileChunkHashCode></fileHashCode></fileInfo>\n";
         FileInfo fthat = FileInfoService.parseXMLStringToFileInfo(xml2);
         
         FileInfoDiff diff = fthis.comparesToFileInfo(fthat);

@@ -39,11 +39,14 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.joda.time.DateTime;
 
 /**
  *
@@ -187,36 +190,50 @@ public class FileSyncClientService implements Runnable {
     }
 
     /**
-     * 
+     *
      * @param userName
      * @param directory
      * @param fileName
      * @throws RemoteException
-     * @throws Exception 
+     * @throws Exception
      */
     public synchronized static void updateLocalFileInfo(String userName, String directory, String fileName) throws RemoteException, Exception {
         ClientConfig.getMyFileList().updateFileInfo(getLocalFileInfoByFileName(fileName));
     }
 
     /**
-     * Sync the local folder and the local FileListService table. This function only runs once right after the client login.
-     * @param directory 
+     * Sync the local folder and the local FileListService table. This function
+     * only runs once right after the client login.
+     *
+     * @param directory
      */
     public synchronized static void updateAllLocalFileInfo(String directory) throws RemoteException, Exception {
         File dir = new File(directory);
-        String [] files = dir.list();
-        for (String file : files) {
-//            System.out.println(file);
-//            System.out.println(getLocalFileInfoByFileName(file));
+        HashSet<String> curfiles = new HashSet<String>(Arrays.asList(dir.list()));
+        
+        // for deleted files
+        if (!ClientConfig.getMyFileList().getFileHashTable().isEmpty()) {
+            for (String oldfile : ClientConfig.getMyFileList().getFileHashTable().keySet()) {
+                if (!curfiles.contains(oldfile)) { // means this file is deleted.
+                    ClientConfig.getMyFileList().getFileHashTable().get(oldfile).setFileSize(0);
+                    ClientConfig.getMyFileList().getFileHashTable().get(oldfile).setVersion(ClientConfig.getMyFileList().getFileHashTable().get(oldfile).getVersion() + 1);
+                    ClientConfig.getMyFileList().getFileHashTable().get(oldfile).setTimestamp(new DateTime().toString());
+                    ClientConfig.getMyFileList().getFileHashTable().get(oldfile).getFileHashCode().clear();
+                }
+            }
+        }
+
+        for (String file : curfiles) {
             updateLocalFileInfo(ClientConfig.getCurrentClient().getClientID(), directory, file);
         }
         System.out.println(ClientConfig.getMyFileList());
     }
+
     /**
-     * 
+     *
      * @param fileName
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     public synchronized static FileInfo getLocalFileInfoByFileName(String fileName) throws Exception {
         FileInfo newFileInfo = FileInfoService.getFileInfoByFileName(ClientConfig.getCurrentClient().getFolderPath(), fileName);
@@ -237,7 +254,7 @@ public class FileSyncClientService implements Runnable {
         }
         return newFileInfo;
     }
-    
+
     /**
      *
      * @param directory
