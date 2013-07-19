@@ -1,0 +1,2 @@
+java -classpath ./build/classes -Djava.rmi.server.hostname=54.245.233.216 -Djava.rmi.server.codebase=file:./build/classes/ dblike.client.ClientStart
+java -classpath ./build/classes -Djava.rmi.server.hostname=54.245.232.18 -Djava.rmi.server.codebase=file:./build/classes/ dblike.server.ServerStart

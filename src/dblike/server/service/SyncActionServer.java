@@ -43,7 +43,7 @@ public class SyncActionServer implements Runnable {
             target.setRegistry(LocateRegistry.getRegistry(target.getClientIP(), target.getPort()));
             String lookupClient = "clientUtility" + target.getClientID() + target.getDeviceID() + target.getClientIP() + target.getPort();
             target.setClientAPI((ClientAPI) (target.getRegistry()).lookup(lookupClient));
-            target.getClientAPI().printMsg();
+//            target.getClientAPI().printMsg();
         } catch (NotBoundException ex) {
             System.out.println(ex);
             return false;

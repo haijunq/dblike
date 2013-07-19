@@ -113,7 +113,7 @@ public class Client {
     }
 
     public void pickupNewServer() { 
-        System.out.println("in pickupNewServer");
+//        System.out.println("in pickupNewServer");
         stopThread();
         while (true) {
             int availableServerIndex = ClientConfig.pickupAvailableServer();
