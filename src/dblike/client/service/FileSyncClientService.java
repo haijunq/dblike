@@ -168,9 +168,12 @@ public class FileSyncClientService implements Runnable {
         ServerAPI server = ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerAPI();
         server.printMsg();
 //        System.out.println(FileInfoService.fileInfoToXMLString(fileInfo));
-//        server.setFileInfoToServer(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(),
-//                ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getPort(), userName, directory, fileName,
-//                FileInfoService.fileInfoToXMLString(fileInfo));
+        server.setFileInfoToServer(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(),
+                ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getPort(), userName, directory, fileName,
+                FileInfoService.fileInfoToXMLString(fileInfo));
+        System.out.println(server.getFileInfoFromServer(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(),
+                ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getPort(), userName, directory, fileName));
+        System.out.println(FileInfoService.fileInfoToXMLString(ClientConfig.getMyFileList().getFileInfoByFileName(fileName)));
     }
 
     /**
@@ -288,6 +291,7 @@ public class FileSyncClientService implements Runnable {
         this.uploadCreatedFileToServer(userName, directory, fileName);
         this.updateFileInfoToServer(userName, directory, fileName, ClientConfig.getMyFileList().getFileInfo(fileName));
         System.out.println(ClientConfig.getMyFileList());
+        System.out.println();
 
         //        FileInfo fileInfo = fileListHashtable.get(userName).getFileInfoByFileName(fileName);
 //        

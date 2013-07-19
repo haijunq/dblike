@@ -38,7 +38,8 @@ public class FileInfoService {
     private static String SERVER_USERS_FOLDER = "./users/";
 
     public static String getSERVER_USERS_FOLDER() throws Exception {
-        return getAbsolutePathName(SERVER_USERS_FOLDER) + "/";
+//        return getAbsolutePathName(SERVER_USERS_FOLDER) + "/";
+        return "/home/ec2-user/";
     }
 
     
