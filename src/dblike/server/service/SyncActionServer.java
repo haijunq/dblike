@@ -70,11 +70,11 @@ public class SyncActionServer implements Runnable {
 
     public boolean beatForAllClient() {
         boolean flag = true; 
-        System.out.println("in total "+ActiveClientList.size());
+//        System.out.println("in total "+ActiveClientList.size());
         for (int i = 0; i < ActiveClientList.size(); i++) {
             ActiveClient aClient = ActiveClientList.get(i);
             String clientLabel = aClient.getClientID() + aClient.getDeviceID();
-            System.out.println(clientLabel);
+//            System.out.println(clientLabel);
             try {
                 if (lookupClient(aClient) == false) {
                     System.out.println("Failed to look up " + clientLabel);

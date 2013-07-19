@@ -50,7 +50,7 @@ public class ServerListenerClient implements Runnable {
                 //ClientStart.aClient.pickupNewServer();
                 flag = false;
             } else {
-                System.out.println("Connection problem, wait to see..."+ aServer.getServerIP() + ":" + aServer.getPort());
+                System.out.println("Slow connection, still connected to ["+ aServer.getServerIP() + ":" + aServer.getPort() +"]");
             }
         }
         return flag;
