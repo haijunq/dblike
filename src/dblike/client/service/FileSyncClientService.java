@@ -92,6 +92,8 @@ public class FileSyncClientService implements Runnable {
         this.initSftpService();
         String srcFilePath = ClientConfig.getCurrentClient().getFolderPath() + fileName;
         String dstFilePath = FileInfoService.getSERVER_USERS_FOLDER() + userName + "/" + fileName;
+        System.out.println(ClientConfig.getCurrentClient().getFolderPath());
+        System.out.println(dstFilePath);
         sftpService.uploadFile(srcFilePath, dstFilePath);
     }
 

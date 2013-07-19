@@ -39,7 +39,7 @@ public class FileInfoService {
 
     public static String getSERVER_USERS_FOLDER() throws Exception {
 //        return getAbsolutePathName(SERVER_USERS_FOLDER) + "/";
-        return "/home/ec2-user/";
+        return "/home/ec2-user/users/";
     }
 
     
