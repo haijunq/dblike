@@ -50,16 +50,21 @@ import java.util.logging.Logger;
 public class FileSyncServerService extends WatchDirectoryService implements Runnable {
     
     public static Hashtable<String, FileListService> fileListHashtable;
-    public static Hashtable<String, String> userListHashtable;
     
     public FileSyncServerService(Path dir, boolean recursive) throws IOException {
         
+
+        
         super(dir, recursive);
         
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println("Before sync in server side");
+        
         // load a list of users
-        this.userListHashtable = UserListXMLReader.getValidUserList();
+        Hashtable<String, String> userListHashtable;
+        userListHashtable = UserListXMLReader.getValidUserList();
         System.out.println("Loaded a user list, size: " + userListHashtable.size());
-        for (Map.Entry<String, String> entry : this.userListHashtable.entrySet())
+        for (Map.Entry<String, String> entry : userListHashtable.entrySet())
         {
             System.out.println(entry.getKey() + " " + entry.getValue());
         }
@@ -73,8 +78,14 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
             FileListService fileList = FileListXMLService.loadFileListFromXML("./users/" + userName + "/");
             fileListHashtable.put(fileList.getPathname(), fileList);
             System.out.println("User: " + userName + " filelist size: " + fileList.getFileHashTable().size());
+            
+            for (Map.Entry<String, FileInfo> tmpEntry : fileList.getFileHashTable().entrySet())
+            {
+                System.out.println("pathName: " + fileList.getPathname() + " fileName: " + tmpEntry.getKey());
+            }
         }
         System.out.println("Loaded file info lists for each user.");
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
     
     /**
@@ -231,6 +242,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
         ServerAPI server = activeServer.getServerAPI();
         String fileInfoStr;
         FileInfoDiff diff;
+        System.out.println(activeServer.getServerIP() + ":" + activeServer.getPort());
         if (server.containFileInfoFromServer(activeServer.getServerIP(), activeServer.getPort(), userName, directory, fileName))
         {
             fileInfoStr = server.getFileInfoFromServer(activeServer.getServerIP(), activeServer.getPort(), userName, directory, fileName);
@@ -376,7 +388,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
         Vector<ActiveServer> activeServerList = ActiveServerListServer.getActiveServerList();
         for (ActiveServer activeServer : activeServerList)
         {
-            if (!ServerStart.getServerIP().equals(activeServer.getServerIP()))
+            if (!ServerStart.getServerIP().equals(activeServer.getServerIP()) && activeServer.isIsConnect() == 1)
                 syncCreatedFileWithServer(userName, directory, fileName, activeServer);
         }
         
@@ -408,7 +420,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
         Vector<ActiveServer> activeServerList = ActiveServerListServer.getActiveServerList();
         for (ActiveServer activeServer : activeServerList)
         {
-            if (!ServerStart.getServerIP().equals(activeServer.getServerIP()))
+            if (!ServerStart.getServerIP().equals(activeServer.getServerIP()) && activeServer.isIsConnect() == 1)
                 syncModifiedFileWithServer(userName, directory, fileName, activeServer);
         }
         
@@ -439,7 +451,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
         Vector<ActiveServer> activeServerList = ActiveServerListServer.getActiveServerList();
         for (ActiveServer activeServer : activeServerList)
         {
-            if (!ServerStart.getServerIP().equals(activeServer.getServerIP()))
+            if (!ServerStart.getServerIP().equals(activeServer.getServerIP()) && activeServer.isIsConnect() == 1)
                 syncDeletedFileWithServer(userName, directory, fileName, activeServer);
         }
         
@@ -489,7 +501,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
                 
                 // print out event
                 System.out.format("%s: %s\n", event.kind().name(), child);
-                System.out.format("userName: %s, fileName: %s\n", userName, fileName);
+                System.out.format("userName: %s, directory: %s, fileName: %s\n", userName, directory, fileName);
                 
                 Thread.sleep(3000);
                 
