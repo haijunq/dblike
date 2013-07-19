@@ -92,7 +92,7 @@ public class FileSyncClientService implements Runnable {
         this.initSftpService();
         String srcFilePath = ClientConfig.getCurrentClient().getFolderPath() + fileName;
         String dstFilePath = FileInfoService.getSERVER_USERS_FOLDER() + userName + "/" + fileName;
-        System.out.println(ClientConfig.getCurrentClient().getFolderPath());
+        System.out.println(srcFilePath);
         System.out.println(dstFilePath);
         sftpService.uploadFile(srcFilePath, dstFilePath);
     }
@@ -187,6 +187,7 @@ public class FileSyncClientService implements Runnable {
      */
     public synchronized static void updateFileInfoFromServer(String userName, String directory, String fileName) throws RemoteException {
         // get fileinfo from server
+        System.out.println("Func: updateFileInfoFromServer");
         ServerAPI server = ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerAPI();
         FileInfo newFileInfo = FileInfoService.parseXMLStringToFileInfo(
                 server.getFileInfoFromServer(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(),
@@ -292,7 +293,7 @@ public class FileSyncClientService implements Runnable {
         this.updateLocalFileInfo(userName, directory, fileName);
         this.uploadCreatedFileToServer(userName, directory, fileName);
         this.updateFileInfoToServer(userName, directory, fileName, ClientConfig.getMyFileList().getFileInfo(fileName));
-        System.out.println(ClientConfig.getMyFileList());
+//        System.out.println(ClientConfig.getMyFileList());
         System.out.println();
 
         //        FileInfo fileInfo = fileListHashtable.get(userName).getFileInfoByFileName(fileName);
@@ -369,7 +370,9 @@ public class FileSyncClientService implements Runnable {
      * @throws SftpException
      */
     public synchronized static void syncCreatedFileFromServer(String userName, String directory, String fileName) throws JSchException, RemoteException, SftpException, Exception {
+        System.out.println("Func: syncCreatedFileFromServer body1");
         updateFileInfoFromServer(userName, directory, fileName);
+        System.out.println("Func: syncCreatedFileFromServer body2");
         createFile(directory, fileName, null);
 
         // get md5 table
@@ -444,7 +447,8 @@ public class FileSyncClientService implements Runnable {
                 Path name = event.context();
                 Path child = directory.resolve(name);
 
-                String directoryName = FileInfoService.getSERVER_USERS_FOLDER() + ClientConfig.getCurrentClient().getClientID() + "/";
+                String userName = ClientConfig.getCurrentClient().getClientID();
+                String directoryName = "./users/" + userName + "/";
                 String fileName = child.getName(child.getNameCount() - 1).toString();
 
                 if (e.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
