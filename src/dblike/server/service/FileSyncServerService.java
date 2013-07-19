@@ -58,7 +58,6 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
         super(dir, recursive);
         
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        System.out.println("Before sync in server side");
         
         // load a list of users
         Hashtable<String, String> userListHashtable;
@@ -325,6 +324,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
         
         if (isDebug)
         {
+            System.out.println("Func: syncModifiedFileWithClient");
             client.syncModifiedFileFromServer(activeClient.getClientIP(), activeClient.getPort(), userName, directory, fileName, FileInfoService.fileInfoToXMLString(fileInfo));
         }
         else
@@ -353,7 +353,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
         
         if (isDebug)
         {
-            client.syncModifiedFileFromServer(activeClient.getClientIP(), activeClient.getPort(), userName, directory, fileName, FileInfoService.fileInfoToXMLString(fileInfo));
+            client.syncDeletedFileFromServer(activeClient.getClientIP(), activeClient.getPort(), userName, directory, fileName, FileInfoService.fileInfoToXMLString(fileInfo));
         }
         else
         {

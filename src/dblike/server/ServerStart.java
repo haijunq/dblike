@@ -13,6 +13,8 @@ import dblike.server.service.ServerListenerServer;
 import dblike.server.service.SyncActionServer;
 import dblike.service.InternetUtil;
 import java.net.InetAddress;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -100,10 +102,11 @@ public class ServerStart {
             syncThread.start();
 
             // new thread to synchronize files
-//            String directory = "E:\\Dropbox\\Course\\CICS525\\dblike\\test\\";
-//            FileSyncServerService fileSyncServer = new FileSyncServerService(directory);
-//            Thread fileSyncServerThread = new Thread(fileSyncServer);
-//            fileSyncServerThread.start();
+            String directory = "/home/ec2-user/users";
+            boolean isRecursive = true;
+            FileSyncServerService fileSyncServer = new FileSyncServerService(Paths.get(directory), isRecursive);
+            Thread fileSyncServerThread = new Thread(fileSyncServer);
+            fileSyncServerThread.start();
 
         } catch (Exception e) {
             System.out.println(e);

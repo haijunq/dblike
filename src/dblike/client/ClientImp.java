@@ -64,6 +64,7 @@ public class ClientImp implements ClientAPI {
     }
     
     public synchronized void syncModifiedFileFromServer(String serverIP, int port, String userName, String directory, String fileName, String fileInfoXML) throws Exception {
+        System.out.println("Func: syncModifiedFileFromServer");
         FileSyncClientService.syncCreatedFileFromServer(userName, directory, fileName);
     }
     
