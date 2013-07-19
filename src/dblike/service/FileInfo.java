@@ -149,6 +149,7 @@ public class FileInfo {
                 return diff;
             }
             if (diff.getFlag() == 2) {
+                diff = new FileInfoDiff(2, fileInfoThat);
                 return diff;
             }
 
@@ -240,7 +241,6 @@ public class FileInfo {
 
                 // if both not empty, then make a conflict copy by changing the newer 
                 if (fileInfoThis.isTimestampNewer(fileInfoThat.getTimestamp())) {
-                System.out.println("here");
                     String conflict = "conflicted_copy_from_" + fileInfoThis.getDeviceID();
                     diff.setFlag(1);
                     diff.setVersion(fileInfoThis.getVersion());
