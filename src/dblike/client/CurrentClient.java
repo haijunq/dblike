@@ -11,6 +11,8 @@ import java.rmi.registry.Registry;
 
 /**
  *
+ * This class defines the attributes of the client object.
+ *
  * @author wenhanwu
  */
 public class CurrentClient {
@@ -94,6 +96,15 @@ public class CurrentClient {
         this.deviceID = deviceID;
     }
 
+    /**
+     * Constructor.
+     *
+     * @param aClientID
+     * @param aDeviceID
+     * @param aFolderPath
+     * @param aIP
+     * @param aPort
+     */
     public CurrentClient(String aClientID, String aDeviceID, String aFolderPath, String aIP, String aPort) {
         this.clientID = aClientID;
         this.deviceID = aDeviceID;

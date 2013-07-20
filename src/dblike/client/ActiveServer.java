@@ -10,6 +10,7 @@ import dblike.service.InternetUtil;
 import java.rmi.registry.Registry;
 
 /**
+ * This class defines the attributes of the server object.
  *
  * @author wenhanwu
  */
@@ -106,6 +107,13 @@ public class ActiveServer {
         this.status = status;
     }
 
+    /**
+     * Constructor
+     *
+     * @param aServerID
+     * @param aClientIP
+     * @param aPort
+     */
     public ActiveServer(String aServerID, String aClientIP, int aPort) {
         this.serverID = aServerID;
         this.serverIP = aClientIP;
