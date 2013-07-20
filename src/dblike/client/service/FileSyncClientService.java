@@ -67,7 +67,7 @@ public class FileSyncClientService implements Runnable {
         this.directory.register(watchService, ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE, OVERFLOW);
         System.out.println("Registered watchService on " + directory);
 
-        updateAllLocalFileInfo(directory);
+//        updateAllLocalFileInfo(directory);
 //        FileListXMLService.saveFileListToXML(ClientConfig.getMyFileList());   // for debug
         initSftpService();
     }
@@ -325,6 +325,8 @@ public class FileSyncClientService implements Runnable {
     public synchronized void syncCreatedFileToServer(String userName, String directory, String fileName) throws RemoteException, JSchException, SftpException, Exception {
         System.out.println("Func: syncCreatedFileToServer");
         this.updateLocalFileInfo(userName, directory, fileName);
+        System.out.println(ClientConfig.getMyFileList().toString());
+        
         FileInfoDiff diff = compareToServerFileInfo(userName, directory, fileName);
         if (diff.getFlag() == 1) {
             System.out.println("Func: syncCreatedFileToServer flag = 1");
@@ -497,9 +499,9 @@ public class FileSyncClientService implements Runnable {
                     }
                     System.out.println("directory: " + directory.getParent() + " file was created: " + fileName);
                 } else if (e.kind() == StandardWatchEventKinds.ENTRY_MODIFY) {
-                    if (!this.isFolderChangeFromServer(directoryName, fileName)) {
+                    //if (!this.isFolderChangeFromServer(directoryName, fileName)) {
                         this.syncModifiedFileToServer(ClientConfig.getCurrentClient().getClientID(), directoryName, fileName);
-                    }
+                    //}
                     System.out.println("file was modified: " + fileName);
                 } else if (e.kind() == StandardWatchEventKinds.ENTRY_DELETE) {
                     if (!this.isFolderChangeFromServer(directoryName, fileName)) {

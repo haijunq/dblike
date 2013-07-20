@@ -1,6 +1,14 @@
 <serverList>
     <server>
-    <IP>127.0.0.1</IP>
+    <IP>54.244.115.114</IP>
         <port>1099</port>
+    </server>
+    <server>
+    <IP>54.245.231.227</IP>
+        <port>1100</port>
+    </server>
+    <server>
+    <IP>54.245.232.2</IP>
+        <port>1101</port>
     </server>
 </serverList>
