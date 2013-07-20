@@ -5,8 +5,10 @@ package dblike.api;
  * and open the template in the editor.
  */
 import dblike.server.ActiveClient;
+import dblike.server.service.FileListService;
 import dblike.service.FileInfo;
 import java.rmi.*;
+import java.util.Hashtable;
 
 /**
  *
@@ -43,4 +45,8 @@ public interface ServerAPI extends Remote {
     public boolean validateUser(String userID, String hashedPassword) throws RemoteException;
     
     public void printMsg() throws RemoteException;
+    
+    public FileListService getFileListServiceFromServer(String pathName) throws RemoteException;
+    
+    public Hashtable<String, FileListService> getFileListHashtableFromServer() throws RemoteException;
 }
