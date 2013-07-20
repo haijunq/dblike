@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * This is the main class for the client, client program will start from here.
  *
  * @author wenhanwu
  */
@@ -42,6 +43,10 @@ public class ClientStart {
         clientID = aClientID;
     }
 
+    /**
+     * This is to bind for the client on the given port, to prepare be called by
+     * server.
+     */
     public static void bindForClient() {
         try {
 //            System.out.println("Client start at " + ClientConfig.getCurrentClient().getIp() + ":" + ClientConfig.getCurrentClient().getPort());
@@ -66,6 +71,14 @@ public class ClientStart {
         }
     }
 
+    /**
+     * This is the main method, the entry for the client.
+     *
+     * @param args
+     * @throws IOException
+     * @throws RemoteException
+     * @throws Exception
+     */
     public static void main(String args[]) throws IOException, RemoteException, Exception {
         ClientConfig.loadServerList();
         int availableIndex = ClientConfig.pickupAvailableServer();

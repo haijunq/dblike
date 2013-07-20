@@ -9,6 +9,8 @@ import dblike.service.InternetUtil;
 import java.util.Vector;
 
 /**
+ * This is to maintain the list of active servers, which is a static list. It is
+ * used to keep track of all servers Also will be used by other class.
  *
  * @author wenhanwu
  */
@@ -30,6 +32,13 @@ public class ActiveServerListClient {
         ActiveServerList = aActiveServerList;
     }
 
+    /**
+     * Search the server on the list by its IP and port.
+     *
+     * @param serverIP
+     * @param port
+     * @return the server
+     */
     public static ActiveServer searchServerByIP_Port(String serverIP, int port) {
         for (int i = 0; i < ActiveServerList.size(); ++i) {
             if (ActiveServerList.get(i).getServerIP().equals(serverIP) && ActiveServerList.get(i).getPort() == port) {
@@ -39,6 +48,14 @@ public class ActiveServerListClient {
         return null;
     }
 
+    /**
+     * Check if there is a server has the given IP and port. If there is, return
+     * the index, if not, return -1.
+     *
+     * @param serverIP
+     * @param port
+     * @return
+     */
     public static int checkServerByIP_Port(String serverIP, int port) {
         for (int i = 0; i < ActiveServerList.size(); ++i) {
             if (ActiveServerList.get(i).getServerIP().equals(serverIP) && ActiveServerList.get(i).getPort() == port) {
@@ -48,6 +65,13 @@ public class ActiveServerListClient {
         return -1;
     }
 
+    /**
+     * Remove the server from the list.
+     *
+     * @param serverIP
+     * @param port
+     * @return true for success, false for cannot find
+     */
     public static boolean removeServer(String serverIP, int port) {
         if (searchServerByIP_Port(serverIP, port) == null) {
             return false;
@@ -57,6 +81,13 @@ public class ActiveServerListClient {
         }
     }
 
+    /**
+     * Add an active server object to the list.
+     *
+     * @param serverIP
+     * @param port
+     * @return true if successfully added, false if already exist
+     */
     public static boolean addServer(String serverIP, int port) {
         if (searchServerByIP_Port(serverIP, port) == null) {
             String serverID = serverIP;
@@ -68,23 +99,20 @@ public class ActiveServerListClient {
         }
     }
 
-    public static boolean beatTheServer(String serverIP, int port) { 
-        int position = checkServerByIP_Port(serverIP, port);
-        if (position == -1) {
-            return false;
-        } else {
-            ActiveServerList.get(position).setStatus(InternetUtil.getOK());
-            return true;
-        }
-    }
-    
-     public static boolean beatCurrentServer(String serverIP, int port) { 
+    /**
+     * Do the heart beat for the given server. Will be called by the server.
+     *
+     * @param serverIP
+     * @param port
+     * @return
+     */
+    public static boolean beatCurrentServer(String serverIP, int port) {
         int position = checkServerByIP_Port(serverIP, port);
 //         System.out.println("position=" + position);
         if (position == -1) {
             return false;
         } else {
-            if(position!=ClientConfig.getCurrentServerIndex()){
+            if (position != ClientConfig.getCurrentServerIndex()) {
                 System.out.println("Error, the server will be beat is not the current server!!!");
             }
             ActiveServerList.get(position).setStatus(InternetUtil.getOK());
