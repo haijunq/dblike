@@ -225,9 +225,9 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
                 uploadCreatedFileToServer(userName, directory, fileName, activeServer);
                 updateFileInfoToServer(userName, directory, fileName, activeServer, fileInfo);
             }
-            if (diff.getFlag() == 4) 
+            if (diff.getFlag() == 3) 
             {
-                System.out.println("Func: syncCreatedFileWithServer flag = 4");
+                System.out.println("Func: syncCreatedFileWithServer flag = 3");
                 Path conflictFile = new File(this.getDir() + "/" + userName + "/" + fileName).toPath();
                 Path conflictCopy = new File(this.getDir() + "/" + userName + "/" + "conflicted_copy_from_" + fileInfo.getDeviceID() + "_" + fileName).toPath();
                 Files.copy(conflictFile, conflictCopy);
@@ -269,9 +269,9 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
                 uploadModifiedFileToServer(userName, directory, fileName, activeServer, diff);
                 updateFileInfoToServer(userName, directory, fileName, activeServer, fileInfo);
             }
-            if (diff.getFlag() == 4) 
+            if (diff.getFlag() == 3) 
             {
-                System.out.println("Func: syncModifiedFileWithServer flag = 4");
+                System.out.println("Func: syncModifiedFileWithServer flag = 3");
                 Path conflictFile = new File(this.getDir() + "/" + userName + "/" + fileName).toPath();
                 Path conflictCopy = new File(this.getDir() + "/" + userName + "/" + "conflicted_copy_from_" + fileInfo.getDeviceID() + "_" + fileName).toPath();
                 Files.copy(conflictFile, conflictCopy);
