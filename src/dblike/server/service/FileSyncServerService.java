@@ -8,6 +8,7 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 import dblike.api.ClientAPI;
 import dblike.api.ServerAPI;
+import dblike.client.service.ClientConfig;
 import dblike.server.ActiveClient;
 import dblike.server.ActiveServer;
 import dblike.server.ServerStart;
@@ -16,6 +17,7 @@ import dblike.service.FileInfoDiff;
 import dblike.service.FileInfoService;
 import dblike.service.SFTPService;
 import dblike.service.WatchDirectoryService;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
@@ -100,7 +102,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
                 String fileName = subEntry.getKey();
                 for (ActiveServer activeServer : activeServerList)
                     if (!ServerStart.getServerIP().equals(activeServer.getServerIP()) && activeServer.isIsConnect() == 1)
-                        syncCreatedFileWithServer(userName, pathName, fileName, activeServer);
+                        syncModifiedFileWithServer(userName, pathName, fileName, activeServer);
             }
         }
         
@@ -125,7 +127,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
                 String fileName = subEntry.getKey();
                 for (ActiveClient activeClient : activeClientList)
                     if (activeClient.getClientID().equals(userName))
-                        syncCreatedFileWithClient(userName, pathName, fileName, activeClient);
+                        syncModifiedFileWithClient(userName, pathName, fileName, activeClient);
             }
         }
         
@@ -207,7 +209,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
      * @throws JSchException
      * @throws SftpException
      */
-    public void syncCreatedFileWithServer(String userName, String directory, String fileName, ActiveServer activeServer) throws RemoteException, JSchException, SftpException {
+    public void syncCreatedFileWithServer(String userName, String directory, String fileName, ActiveServer activeServer) throws RemoteException, JSchException, SftpException, IOException {
         
         System.out.println("Func: syncCreatedFileWithServer: " + activeServer.getServerIP());
         FileInfo fileInfo = fileListHashtable.get(directory).getFileInfoByFileName(fileName);
@@ -222,6 +224,16 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
             {
                 uploadCreatedFileToServer(userName, directory, fileName, activeServer);
                 updateFileInfoToServer(userName, directory, fileName, activeServer, fileInfo);
+            }
+            if (diff.getFlag() == 4) 
+            {
+                System.out.println("Func: syncCreatedFileWithServer flag = 4");
+                Path conflictFile = new File(this.getDir() + "/" + userName + "/" + fileName).toPath();
+                Path conflictCopy = new File(this.getDir() + "/" + userName + "/" + "conflicted_copy_from_" + fileInfo.getDeviceID() + "_" + fileName).toPath();
+                Files.copy(conflictFile, conflictCopy);
+                FileInfo newFileInfo = new FileInfo(fileInfo);
+                newFileInfo.setFileName(conflictCopy.toString());
+                fileListHashtable.get(directory).addNewFileInfo(newFileInfo);
             }
         }
         else
@@ -241,7 +253,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
      * @throws JSchException
      * @throws SftpException
      */
-    public void syncModifiedFileWithServer(String userName, String directory, String fileName, ActiveServer activeServer) throws RemoteException, JSchException, SftpException {
+    public void syncModifiedFileWithServer(String userName, String directory, String fileName, ActiveServer activeServer) throws RemoteException, JSchException, SftpException, IOException {
         
         System.out.println("Func: syncModifiedFileWithServer: " + activeServer.getServerIP());
         FileInfo fileInfo = fileListHashtable.get(directory).getFileInfoByFileName(fileName);
@@ -256,6 +268,16 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
             {
                 uploadModifiedFileToServer(userName, directory, fileName, activeServer, diff);
                 updateFileInfoToServer(userName, directory, fileName, activeServer, fileInfo);
+            }
+            if (diff.getFlag() == 4) 
+            {
+                System.out.println("Func: syncModifiedFileWithServer flag = 4");
+                Path conflictFile = new File(this.getDir() + "/" + userName + "/" + fileName).toPath();
+                Path conflictCopy = new File(this.getDir() + "/" + userName + "/" + "conflicted_copy_from_" + fileInfo.getDeviceID() + "_" + fileName).toPath();
+                Files.copy(conflictFile, conflictCopy);
+                FileInfo newFileInfo = new FileInfo(fileInfo);
+                newFileInfo.setFileName(conflictCopy.toString());
+                fileListHashtable.get(directory).addNewFileInfo(newFileInfo);
             }
         }
         else
