@@ -42,7 +42,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
 
     public static Hashtable<String, FileListService> fileListHashtable; // file info of all users in the memory
 
-    public FileSyncServerService(Path dir, boolean recursive) throws IOException {
+    public FileSyncServerService(Path dir, boolean recursive) throws IOException, RemoteException, JSchException, SftpException, Exception {
 
         super(dir, recursive);
 
@@ -63,8 +63,45 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
 //            for (Map.Entry<String, FileInfo> tmpEntry : fileList.getFileHashTable().entrySet())
 //                System.out.println("pathName: " + fileList.getPathname() + " fileName: " + tmpEntry.getKey());
         }
+        
+        // sync with everything
+        syncWithAll();
     }
 
+    /**
+     * 
+     */
+    public void syncWithAll() throws RemoteException, JSchException, SftpException, Exception {
+        
+        System.out.println("Func: syncWithAll");
+        
+        // sync everything with active clients and servers
+        Vector<ActiveClient> activeClientList = ActiveClientListServer.getActiveClientList();
+        Vector<ActiveServer> activeServerList = ActiveServerListServer.getActiveServerList();
+        for (Map.Entry<String, FileListService> entry : fileListHashtable.entrySet())
+        {
+            String pathName = entry.getKey();
+            int last = pathName.lastIndexOf("/");
+            int lastButOne = pathName.lastIndexOf("/", last-1);
+            String userName = pathName.substring(lastButOne+1, last);
+            System.out.println("Pathname: " + pathName + " username: " + userName);
+            for (Map.Entry<String, FileInfo> subEntry : entry.getValue().getFileHashTable().entrySet())
+            {
+                String fileName = subEntry.getKey();
+                for (ActiveServer activeServer : activeServerList)
+                    if (!ServerStart.getServerIP().equals(activeServer.getServerIP()) && activeServer.isIsConnect() == 1)
+                        syncCreatedFileWithServer(userName, pathName, fileName, activeServer);
+                for (ActiveClient activeClient : activeClientList)
+                    if (activeClient.getClientID().equals(userName))
+                        syncCreatedFileWithClient(userName, pathName, fileName, activeClient);
+            }
+        }
+        
+        System.out.println("Func: syncWithAll done");
+    }
+            
+            
+            
     /**
      *
      * @param userName
