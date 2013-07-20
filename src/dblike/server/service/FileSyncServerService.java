@@ -76,7 +76,17 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
         System.out.println("Func: syncWithAll");
         
         // sync everything with active clients and servers
-        Vector<ActiveClient> activeClientList = ActiveClientListServer.getActiveClientList();
+        syncWithAllServers();
+        syncWithAllClients();
+        
+        System.out.println("Func: syncWithAll done");
+    }
+            
+    public void syncWithAllServers() throws RemoteException, JSchException, SftpException, Exception {
+        
+        System.out.println("Func: syncWithAllServers");
+        
+        // sync everything with active servers
         Vector<ActiveServer> activeServerList = ActiveServerListServer.getActiveServerList();
         for (Map.Entry<String, FileListService> entry : fileListHashtable.entrySet())
         {
@@ -91,17 +101,37 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
                 for (ActiveServer activeServer : activeServerList)
                     if (!ServerStart.getServerIP().equals(activeServer.getServerIP()) && activeServer.isIsConnect() == 1)
                         syncCreatedFileWithServer(userName, pathName, fileName, activeServer);
+            }
+        }
+        
+        System.out.println("Func: syncWithAllServers done");
+    }      
+          
+    public void syncWithAllClients() throws RemoteException, JSchException, SftpException, Exception {
+        
+        System.out.println("Func: syncWithAllClients");
+        
+        // sync everything with active clients
+        Vector<ActiveClient> activeClientList = ActiveClientListServer.getActiveClientList();
+        for (Map.Entry<String, FileListService> entry : fileListHashtable.entrySet())
+        {
+            String pathName = entry.getKey();
+            int last = pathName.lastIndexOf("/");
+            int lastButOne = pathName.lastIndexOf("/", last-1);
+            String userName = pathName.substring(lastButOne+1, last);
+            System.out.println("Pathname: " + pathName + " username: " + userName);
+            for (Map.Entry<String, FileInfo> subEntry : entry.getValue().getFileHashTable().entrySet())
+            {
+                String fileName = subEntry.getKey();
                 for (ActiveClient activeClient : activeClientList)
                     if (activeClient.getClientID().equals(userName))
                         syncCreatedFileWithClient(userName, pathName, fileName, activeClient);
             }
         }
         
-        System.out.println("Func: syncWithAll done");
+        System.out.println("Func: syncWithAllClients done");
     }
-            
-            
-            
+    
     /**
      *
      * @param userName
@@ -181,8 +211,24 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
         
         System.out.println("Func: syncCreatedFileWithServer: " + activeServer.getServerIP());
         FileInfo fileInfo = fileListHashtable.get(directory).getFileInfoByFileName(fileName);
-        uploadCreatedFileToServer(userName, directory, fileName, activeServer);
-        updateFileInfoToServer(userName, directory, fileName, activeServer, fileInfo);
+        ServerAPI server = activeServer.getServerAPI();
+        String fileInfoStr;
+        FileInfoDiff diff;
+        if (server.containFileInfoFromServer(activeServer.getServerIP(), activeServer.getPort(), userName, directory, fileName))
+        {
+            fileInfoStr = server.getFileInfoFromServer(activeServer.getServerIP(), activeServer.getPort(), userName, directory, fileName);
+            diff = fileInfo.comparesToFileInfo(FileInfoService.parseXMLStringToFileInfo(fileInfoStr));
+            if (diff.getFlag() == 1) 
+            {
+                uploadCreatedFileToServer(userName, directory, fileName, activeServer);
+                updateFileInfoToServer(userName, directory, fileName, activeServer, fileInfo);
+            }
+        }
+        else
+        {
+            uploadCreatedFileToServer(userName, directory, fileName, activeServer);
+            updateFileInfoToServer(userName, directory, fileName, activeServer, fileInfo);
+        }
     }
 
     /**
@@ -214,7 +260,8 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
         }
         else
         {
-            System.out.println("Server: " + activeServer.getServerIP() + " has no file: " + directory + fileName);
+            uploadCreatedFileToServer(userName, directory, fileName, activeServer);
+            updateFileInfoToServer(userName, directory, fileName, activeServer, fileInfo);
         }
     }
 
