@@ -8,6 +8,7 @@ import dblike.api.ClientAPI;
 import dblike.api.ServerAPI;
 import dblike.server.service.ActiveClientListServer;
 import dblike.server.service.ActiveServerListServer;
+import dblike.server.service.FileListService;
 import dblike.service.FileInfo;
 import dblike.server.service.FileListXMLService;
 import dblike.server.service.FileSyncServerService;
@@ -133,5 +134,13 @@ public class ServerImp implements ServerAPI {
     
     public void printMsg() throws RemoteException {
         System.out.println("printMsg() in ServerImp!");
+    }
+    
+    public Hashtable<String, FileListService> getFileListHashtableFromServer() throws RemoteException {
+        return FileSyncServerService.fileListHashtable;
+    }
+    
+    public FileListService getFileListServiceFromServer(String pathName) throws RemoteException {
+        return FileSyncServerService.fileListHashtable.get(pathName);
     }
 }
