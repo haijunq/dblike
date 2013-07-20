@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * This class is to define some global values for communication of hosts.
  *
  * @author wenhanwu
  */
@@ -65,6 +66,11 @@ public class InternetUtil {
         return TIMEOUT;
     }
 
+    /**
+     * Get all IP from the different network devices.
+     *
+     * @return
+     */
     public static String getIPList() {
         try {
             InetAddress[] ipInfo;
@@ -85,6 +91,11 @@ public class InternetUtil {
         return "Failed to get ip";
     }
 
+    /**
+     * Get the IP of the current host machine.
+     *
+     * @return
+     */
     public static String getMyIPInfo() {
         try {
             InetAddress ipInfo = InetAddress.getLocalHost();

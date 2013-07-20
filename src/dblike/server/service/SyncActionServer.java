@@ -92,6 +92,11 @@ public class SyncActionServer implements Runnable {
         return true;
     }
 
+    /**
+     * Beat for all clients in the list.
+     *
+     * @return
+     */
     public boolean beatForAllClient() {
         boolean flag = true;
 //        System.out.println("in total "+ActiveClientList.size());
@@ -113,6 +118,11 @@ public class SyncActionServer implements Runnable {
         return flag;
     }
 
+    /**
+     * Beat for all servers in the list.
+     *
+     * @return
+     */
     public boolean beatForAllServer() {
         boolean flag = true;
         for (int i = 0; i < ActiveServerList.size(); i++) {
@@ -132,6 +142,9 @@ public class SyncActionServer implements Runnable {
         return flag;
     }
 
+    /**
+     * Put the operation in a loop to keep beating the servers and clients.
+     */
     public void run() {
         int timeout = InternetUtil.getBEATINTERVAL() * 1000;
         while (runningFlag) {
