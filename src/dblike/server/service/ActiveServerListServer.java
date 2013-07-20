@@ -22,6 +22,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
+ * This is to maintain the list of active servers, which is a static list. It is
+ * used to keep track of all servers Also will be used by other class.
  *
  * @author wenhanwu
  */
@@ -43,6 +45,13 @@ public class ActiveServerListServer {
         ActiveServerList = aActiveServerList;
     }
 
+    /**
+     * This is to search the server by the given IP and port, return the object.
+     *
+     * @param serverIP
+     * @param port
+     * @return
+     */
     public static ActiveServer searchServerByIP_Port(String serverIP, int port) {
         for (int i = 0; i < ActiveServerList.size(); ++i) {
             if (ActiveServerList.get(i).getServerIP().equals(serverIP) && ActiveServerList.get(i).getPort() == port) {
@@ -52,6 +61,13 @@ public class ActiveServerListServer {
         return null;
     }
 
+    /**
+     * This is to check if there is a server has the given IP and port, return the index.
+     *
+     * @param serverIP
+     * @param port
+     * @return
+     */
     public static int checkServerByIP_Port(String serverIP, int port) {
         for (int i = 0; i < ActiveServerList.size(); ++i) {
             if (ActiveServerList.get(i).getServerIP().equals(serverIP) && ActiveServerList.get(i).getPort() == port) {
@@ -61,6 +77,13 @@ public class ActiveServerListServer {
         return -1;
     }
 
+    /**
+     * This is to remove the server object from the list.
+     *
+     * @param serverIP
+     * @param port
+     * @return
+     */
     public static boolean removeServer(String serverIP, int port) {
         if (searchServerByIP_Port(serverIP, port) == null) {
             return false;
@@ -70,9 +93,16 @@ public class ActiveServerListServer {
         }
     }
 
+    /**
+     * This is to add a new server object to the list.
+     *
+     * @param serverIP
+     * @param port
+     * @return
+     */
     public static boolean addServer(String serverIP, int port) {
         if (searchServerByIP_Port(serverIP, port) == null) {
-            String serverID=serverIP;
+            String serverID = serverIP;
             ActiveServerList.add(new ActiveServer(serverID, serverIP, port));
             System.out.println("Server [" + " " + serverIP + ":" + port + "] Added~!!!");
             return true;
@@ -80,9 +110,16 @@ public class ActiveServerListServer {
             return false;
         }
     }
-    
+
+    /**
+     * Do the heartbeat for the given server. Will be called by other server.
+     *
+     * @param serverIP
+     * @param port
+     * @return
+     */
     public static boolean beatTheServer(String serverIP, int port) {
-        int position =checkServerByIP_Port(serverIP, port);
+        int position = checkServerByIP_Port(serverIP, port);
         if (position == -1) {
             return false;
         } else {
@@ -90,8 +127,9 @@ public class ActiveServerListServer {
             return true;
         }
     }
-    
+
     /**
+     * Load all the servers from the xml file.
      *
      * @return
      */

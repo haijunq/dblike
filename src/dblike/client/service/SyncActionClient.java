@@ -5,31 +5,37 @@
 package dblike.client.service;
 
 import dblike.api.ServerAPI;
-import dblike.client.ActiveServer; 
+import dblike.client.ActiveServer;
 import dblike.service.InternetUtil;
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry; 
+import java.rmi.registry.LocateRegistry;
 import java.util.Vector;
 
 /**
+ * This class is to keep sending heartbeat to the server.
  *
  * @author wenhanwu
  */
 public class SyncActionClient implements Runnable {
 
-    private static Vector<ActiveServer> ActiveServerList; 
+    private static Vector<ActiveServer> ActiveServerList;
     private String clientID;
     private String deviceID;
     private String serverIP;
     private int serverPort;
-
     private boolean runningFlag = true;
 
+    /**
+     * This is to stop the thread.
+     *
+     * @param flag
+     */
     public void setRunningFlag(boolean flag) {
         this.runningFlag = flag;
     }
+
     /**
      * @return the serverIP
      */
@@ -86,10 +92,20 @@ public class SyncActionClient implements Runnable {
         this.deviceID = deviceID;
     }
 
+    /**
+     * To get the ActiveServerList
+     */
     public SyncActionClient() {
         SyncActionClient.ActiveServerList = ActiveServerListClient.getActiveServerList();
     }
 
+    /**
+     * Look up the server's API to do the heartbeat for the server.
+     *
+     * @param target
+     * @return
+     * @throws RemoteException
+     */
     public boolean lookupServer(ActiveServer target) throws RemoteException {
         try {
             target.setRegistry(LocateRegistry.getRegistry(target.getServerIP(), target.getPort()));
@@ -104,6 +120,12 @@ public class SyncActionClient implements Runnable {
         return true;
     }
 
+    /**
+     * Do the heartbeat on the server.
+     *
+     * @param target
+     * @return
+     */
     public boolean beatForServer(ActiveServer target) {
         boolean flag = true;
         String serverLabel = target.getServerIP() + target.getPort();
@@ -115,9 +137,12 @@ public class SyncActionClient implements Runnable {
         return flag;
     }
 
+    /**
+     * Put the operation into a loop to keep sending heartbeat for the server.
+     */
     public void run() {
         int timeout = InternetUtil.getBEATINTERVAL() * 1000;
-        ActiveServer target = ActiveServerListClient.searchServerByIP_Port(serverIP, serverPort); 
+        ActiveServer target = ActiveServerListClient.searchServerByIP_Port(serverIP, serverPort);
         try {
             lookupServer(target);
         } catch (RemoteException ex) {
@@ -128,7 +153,7 @@ public class SyncActionClient implements Runnable {
             try {
                 Thread.sleep(timeout);
             } catch (InterruptedException ex) {
-            System.out.println(ex);
+                System.out.println(ex);
             }
 
         }

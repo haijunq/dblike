@@ -33,7 +33,7 @@ public class ActiveServerListClient {
     }
 
     /**
-     * Search the server on the list by its IP and port.
+     * Search the server on the list by its IP and port, return the object.
      *
      * @param serverIP
      * @param port

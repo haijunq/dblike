@@ -19,22 +19,37 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * This is the listener thread to keep track on the ActiveServerList. Will be
+ * used to check the current server's heartbeat.
  *
  * @author wenhanwu
  */
 public class ServerListenerClient implements Runnable {
 
     private boolean runningFlag = true;
+    private Vector<ActiveServer> ActiveServerList;
 
+    /**
+     * This is to stop the thread.
+     *
+     * @param flag
+     */
     public void setRunningFlag(boolean flag) {
         this.runningFlag = flag;
     }
-    private Vector<ActiveServer> ActiveServerList;
 
+    /**
+     * To get the ActiveServerList
+     */
     public ServerListenerClient() {
         this.ActiveServerList = ActiveServerListClient.getActiveServerList();
     }
 
+    /**
+     * Keep checking the server's heartbeat to see if it is alive
+     *
+     * @return
+     */
     public boolean checkCurrentServer() {
         boolean flag = true;
         int currentIndex = ClientConfig.getCurrentServerIndex();
@@ -57,7 +72,11 @@ public class ServerListenerClient implements Runnable {
         return flag;
     }
 
-
+    /**
+     * Wait for a while
+     *
+     * @param timeOut
+     */
     public void waitForAWhile(int timeOut) {
         try {
             Thread.sleep(timeOut * 1000);
@@ -70,6 +89,9 @@ public class ServerListenerClient implements Runnable {
 
     }
 
+    /**
+     * Put the checking into a loop to keep track of the server
+     */
     public void run() {
         while (runningFlag) {
             checkCurrentServer();

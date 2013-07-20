@@ -24,22 +24,37 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
+ * This is the listener thread to keep track on the ActiveServerList. Will be
+ * used to check the heartbeat of servers.
  *
  * @author wenhanwu
  */
 public class ServerListenerServer implements Runnable {
 
     private boolean runningFlag = true;
+    private Vector<ActiveServer> ActiveServerList;
 
+    /**
+     * This is to stop the thread.
+     *
+     * @param flag
+     */
     public void setRunningFlag(boolean flag) {
         this.runningFlag = flag;
     }
-    private Vector<ActiveServer> ActiveServerList;
 
+    /**
+     * To get the ActiveServerList.
+     */
     public ServerListenerServer() {
         this.ActiveServerList = ActiveServerListServer.getActiveServerList();
     }
 
+    /**
+     * Keep checking all the servers to see the heartbeat.
+     *
+     * @return
+     */
     public boolean checkAllServer() {
         boolean flag = true;
         for (int i = 0; i < ActiveServerList.size(); i++) {
@@ -64,6 +79,11 @@ public class ServerListenerServer implements Runnable {
         return flag;
     }
 
+    /**
+     * Wait for a while.
+     *
+     * @param timeOut
+     */
     public void waitForAWhile(int timeOut) {
         try {
             Thread.sleep(timeOut * 1000);
@@ -73,6 +93,9 @@ public class ServerListenerServer implements Runnable {
 
     }
 
+    /**
+     * Put the checking into a loop to keep track of all servers.
+     */
     public void run() {
         waitForAWhile(2);
         ActiveServerListServer.loadServerList();

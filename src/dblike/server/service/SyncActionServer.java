@@ -21,6 +21,8 @@ import java.util.logging.Logger;
 
 /**
  *
+ * This class is to keep sending heartbeat to the servers and clients.
+ *
  * @author wenhanwu
  */
 public class SyncActionServer implements Runnable {
@@ -29,15 +31,30 @@ public class SyncActionServer implements Runnable {
     private static Vector<ActiveServer> ActiveServerList;
     private boolean runningFlag = true;
 
+    /**
+     * This is to stop the thread.
+     *
+     * @param flag
+     */
     public void setRunningFlag(boolean flag) {
         this.runningFlag = flag;
     }
 
+    /**
+     * To get the ActiveClientList and the ActiveServerList.
+     */
     public SyncActionServer() {
         SyncActionServer.ActiveClientList = ActiveClientListServer.getActiveClientList();
         SyncActionServer.ActiveServerList = ActiveServerListServer.getActiveServerList();
     }
 
+    /**
+     * Look up the client's API to do the heartbeat for the client.
+     *
+     * @param target
+     * @return
+     * @throws RemoteException
+     */
     public boolean lookupClient(ActiveClient target) throws RemoteException {
         try {
             target.setRegistry(LocateRegistry.getRegistry(target.getClientIP(), target.getPort()));
@@ -54,6 +71,13 @@ public class SyncActionServer implements Runnable {
         return true;
     }
 
+    /**
+     * Look up the server's API to do the heartbeat for the server.
+     *
+     * @param target
+     * @return
+     * @throws RemoteException
+     */
     public boolean lookupServer(ActiveServer target) throws RemoteException {
         try {
             target.setRegistry(LocateRegistry.getRegistry(target.getServerIP(), target.getPort()));
@@ -69,7 +93,7 @@ public class SyncActionServer implements Runnable {
     }
 
     public boolean beatForAllClient() {
-        boolean flag = true; 
+        boolean flag = true;
 //        System.out.println("in total "+ActiveClientList.size());
         for (int i = 0; i < ActiveClientList.size(); i++) {
             ActiveClient aClient = ActiveClientList.get(i);
@@ -111,7 +135,7 @@ public class SyncActionServer implements Runnable {
     public void run() {
         int timeout = InternetUtil.getBEATINTERVAL() * 1000;
         while (runningFlag) {
-            
+
             beatForAllClient();
             beatForAllServer();
             try {

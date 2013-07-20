@@ -10,6 +10,8 @@ import java.rmi.registry.Registry;
 
 /**
  *
+ * This class defines the attributes of the client object.
+ *
  * @author wenhanwu
  */
 public class ActiveClient {
@@ -120,7 +122,14 @@ public class ActiveClient {
         this.status = status;
     }
 
-
+    /**
+     * Constructor.
+     *
+     * @param aClientID
+     * @param aDeviceID
+     * @param aClientIP
+     * @param aPort
+     */
     public ActiveClient(String aClientID, String aDeviceID, String aClientIP, int aPort) {
         this.clientID = aClientID;
         this.deviceID = aDeviceID;
@@ -129,10 +138,13 @@ public class ActiveClient {
         this.status = InternetUtil.getOK();
     }
 
+    /**
+     * Print the information, for testing.
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return "ActiveClient{" + "clientID=" + clientID + ", deviceID=" + deviceID + ", clientIP=" + clientIP + ", port=" + port + ", status=" + status + ", registry=" + registry + ", clientAPI=" + clientAPI + '}';
     }
-    
-    
 }

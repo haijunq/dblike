@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * This is the main class for the server, server program will start from here.
  *
  * @author wenhanwu
  */
@@ -74,6 +75,11 @@ public class ServerStart {
         registry = aRegistry;
     }
 
+    /**
+     * This is the main method, the entry for the server.
+     *
+     * @param args
+     */
     public static void main(String args[]) {
         try {
             FileListXMLService.loadServerInfo();
