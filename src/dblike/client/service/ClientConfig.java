@@ -55,15 +55,15 @@ public class ClientConfig {
     public static int pickupAvailableServer() {
         int availableServer = -1;
         availableFlag = true;
-        for (int i = 0; i < ServerList.size(); i++) {
-            System.out.println(ServerList.get(i).getServerIP()+":"+ServerList.get(i).getPort());
-        }
+//        for (int i = 0; i < ServerList.size(); i++) {
+//            System.out.println(ServerList.get(i).getServerIP()+":"+ServerList.get(i).getPort());
+//        }
         for (int i = 0; i < ServerList.size(); i++) {
             Client.setTestFlag(0);
             ActiveServer aServer = ServerList.get(i);
             tryToConect(aServer.getServerIP(), aServer.getPort());
-            System.out.println(availableFlag);
-            System.out.println(Client.getTestFlag());
+//            System.out.println(availableFlag);
+//            System.out.println(Client.getTestFlag());
             if (availableFlag) {
                 availableServer = i;
                 break;

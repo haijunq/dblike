@@ -47,12 +47,12 @@ public class ServerListenerServer implements Runnable {
             ActiveServer aServer = ActiveServerList.get(i);
             if (aServer.getStatus() == InternetUtil.getOK()) {
                 aServer.setIsConnect(1);
-                System.out.println(aServer.getServerIP() + ":" + aServer.getPort() + "---> OK");
+                //System.out.println(aServer.getServerIP() + ":" + aServer.getPort() + "---> OK");
                 aServer.setStatus(aServer.getStatus() - 1);
             } else {
                 aServer.setStatus(aServer.getStatus() - 1);
                 if (aServer.getStatus() == 0) {
-                    System.out.println(aServer.getServerIP() + ":" + aServer.getPort() + "---> NO");
+                    //System.out.println(aServer.getServerIP() + ":" + aServer.getPort() + "---> NO");
                     aServer.setIsConnect(0);
                     //ActiveServerListServer.removeServer(aServer.getServerIP(), aServer.getPort());
                     flag = false;

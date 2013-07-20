@@ -44,8 +44,8 @@ public class ClientStart {
 
     public static void bindForClient() {
         try {
-            System.out.println("Client start at " + ClientConfig.getCurrentClient().getIp() + ":" + ClientConfig.getCurrentClient().getPort());
-            System.out.println("Will connect to server " + ClientConfig.getServerList().get(0).getServerIP() + ":" + ClientConfig.getServerList().get(0).getPort());
+//            System.out.println("Client start at " + ClientConfig.getCurrentClient().getIp() + ":" + ClientConfig.getCurrentClient().getPort());
+//            System.out.println("Will connect to server " + ClientConfig.getServerList().get(0).getServerIP() + ":" + ClientConfig.getServerList().get(0).getPort());
 
             ClientImp client = new ClientImp();
             ClientAPI clientStub = (ClientAPI) UnicastRemoteObject.exportObject(client, 0);

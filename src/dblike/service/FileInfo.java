@@ -138,14 +138,22 @@ public class FileInfo {
             diff = new FileInfoDiff(1, fileInfoThis);
             return diff;
         }
-
+        
+        if (fileInfoThis.getFileHashCode().equals(fileInfoThat.getFileHashCode())) {
+            if (fileInfoThis.getVersion() >= fileInfoThat.getVersion())
+                diff = new FileInfoDiff(0, fileInfoThis);
+            else 
+                diff = new FileInfoDiff(0, fileInfoThat);
+            
+            return diff;
+        }
         // if fileInfoThat's version is not 0, and its hashcode table is empty, meaning the file on the other side was deleted      
 
         // if DeviceID are the same, then just check the version number to determain newer or older
         if (fileInfoThis.isSameDevice(fileInfoThat.getDeviceID())) {
             diff.setDeviceID(fileInfoThis.getDeviceID());
             diff.setFlag(fileInfoThis.isVersionNewer(fileInfoThat.getVersion()));
-            if (diff.getFlag() == 0 && fileInfoThis.getFileHashCode().equals(fileInfoThat.getFileHashCode())) {
+            if (diff.getFlag() == 0) {
                 return diff;
             }
             if (diff.getFlag() == 2) {

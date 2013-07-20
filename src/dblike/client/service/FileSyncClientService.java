@@ -74,9 +74,9 @@ public class FileSyncClientService implements Runnable {
 
     // how to guarantee the connection in case of failure
     private static void initSftpService() {
-        while (sftpService == null) {
+//        while (sftpService == null) {
             sftpService = new SFTPService(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP());
-        }
+//        }
     }
 
     /**
@@ -203,6 +203,7 @@ public class FileSyncClientService implements Runnable {
                 server.getFileInfoFromServer(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(),
                 ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getPort(), userName, directory, fileName));
         ClientConfig.getMyFileList().updateFileInfo(newFileInfo);
+        System.out.println(newFileInfo);
     }
 
     /**
@@ -259,7 +260,6 @@ public class FileSyncClientService implements Runnable {
         if (ClientConfig.getMyFileList().getFileHashTable().containsKey(fileName)) {
             if (ClientConfig.getMyFileList().getFileHashTable().get(fileName).getFileHashCode().equals(newFileInfo.getFileHashCode())) {
                 // the fileinfo and file are already same, do nothing
-                System.out.println("here");
                 newFileInfo = ClientConfig.getMyFileList().getFileHashTable().get(fileName);
             } else {
                 // for now, set the version increment by one
