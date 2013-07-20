@@ -75,7 +75,7 @@ public class FileSyncClientService implements Runnable {
     // how to guarantee the connection in case of failure
     private static void initSftpService() {
 //        while (sftpService == null) {
-            sftpService = new SFTPService(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP());
+        sftpService = new SFTPService(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP());
 //        }
     }
 
@@ -295,19 +295,19 @@ public class FileSyncClientService implements Runnable {
     public FileInfoDiff compareToServerFileInfo(String userName, String directory, String fileName) throws Exception {
         ServerAPI server = ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerAPI();
         FileInfo serverFileInfo;
-        
+
         if (server.containFileInfoFromServer(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(),
                 ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getPort(), userName, directory, fileName)) {
             serverFileInfo = FileInfoService.parseXMLStringToFileInfo(
-                server.getFileInfoFromServer(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(),
-                ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getPort(), userName, directory, fileName));
+                    server.getFileInfoFromServer(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(),
+                    ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getPort(), userName, directory, fileName));
         } else {
             serverFileInfo = new FileInfo();
             serverFileInfo.setVersion(0);
         }
-        
+
         FileInfo clientFileInfo = ClientConfig.getMyFileList().getFileInfoByFileName(fileName); // clientFileInfo must exist
-        
+
         FileInfoDiff diff = clientFileInfo.comparesToFileInfo(serverFileInfo);
         return diff;
     }
@@ -326,21 +326,21 @@ public class FileSyncClientService implements Runnable {
         System.out.println("Func: syncCreatedFileToServer");
         this.updateLocalFileInfo(userName, directory, fileName);
         System.out.println(ClientConfig.getMyFileList().toString());
-        
+
         FileInfoDiff diff = compareToServerFileInfo(userName, directory, fileName);
         if (diff.getFlag() == 1) {
             System.out.println("Func: syncCreatedFileToServer flag = 1");
             this.uploadCreatedFileToServer(userName, directory, fileName);
             this.updateFileInfoToServer(userName, directory, fileName, ClientConfig.getMyFileList().getFileInfo(fileName));
         }
-        
+
         if (diff.getFlag() == 3) {
             System.out.println("Func: syncCreatedFileToServer flag = 3");
             Path conflictFile = new File(ClientConfig.getCurrentClient().getFolderPath() + "/" + fileName).toPath();
             Path conflictCopy = new File(ClientConfig.getCurrentClient().getFolderPath() + "/conflicted_copy_from_" + ClientConfig.getCurrentClient().getDeviceID() + "/" + fileName).toPath();
             Files.copy(conflictFile, conflictCopy);
             this.syncCreatedFileFromServer(userName, directory, fileName);
-            this.updateFileInfoFromServer(userName, directory, fileName);            
+            this.updateFileInfoFromServer(userName, directory, fileName);
         }
 //        System.out.println(ClientConfig.getMyFileList());
 
@@ -387,10 +387,20 @@ public class FileSyncClientService implements Runnable {
     }
 
     public synchronized void syncDeletedFileToServer(String userName, String directory, String fileName) throws RemoteException, JSchException, SftpException, Exception {
+        System.out.println("Func: syncDeletedFileToServer");
         this.updateLocalFileInfo(userName, directory, fileName);
         System.out.println(ClientConfig.getMyFileList().getFileInfo(fileName));
-        this.uploadDeletedFileToServer(userName, directory, fileName);
-        this.updateFileInfoToServer(userName, directory, fileName, ClientConfig.getMyFileList().getFileInfo(fileName));
+
+        FileInfoDiff diff = compareToServerFileInfo(userName, directory, fileName);
+        if (diff.getFlag() == 1) {
+            this.uploadDeletedFileToServer(userName, directory, fileName);
+            this.updateFileInfoToServer(userName, directory, fileName, ClientConfig.getMyFileList().getFileInfo(fileName));
+        }
+
+        if (diff.getFlag() == 5) {
+            this.syncCreatedFileFromServer(userName, directory, fileName);
+            this.updateFileInfoFromServer(userName, directory, fileName);
+        }
         System.out.println(ClientConfig.getMyFileList());
 
 //        // get fileinfo from current server
@@ -509,7 +519,7 @@ public class FileSyncClientService implements Runnable {
                     System.out.println("directory: " + directory.getParent() + " file was created: " + fileName);
                 } else if (e.kind() == StandardWatchEventKinds.ENTRY_MODIFY) {
                     //if (!this.isFolderChangeFromServer(directoryName, fileName)) {
-                        this.syncModifiedFileToServer(ClientConfig.getCurrentClient().getClientID(), directoryName, fileName);
+                    this.syncModifiedFileToServer(ClientConfig.getCurrentClient().getClientID(), directoryName, fileName);
                     //}
                     System.out.println("file was modified: " + fileName);
                 } else if (e.kind() == StandardWatchEventKinds.ENTRY_DELETE) {

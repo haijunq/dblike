@@ -230,9 +230,10 @@ public class FileInfo {
             } // if not newer, then make a seperate copy
             else {
                 // if this is empty, meaning local file is deleted, then set local version as 0
+                // set the flag to be 5, this will force the local client to download from the server
                 if (fileInfoThis.getFileHashCode().isEmpty()) {
                     fileInfoThis.setVersion(0);
-                    diff = new FileInfoDiff(2, fileInfoThis);
+                    diff = new FileInfoDiff(5, fileInfoThis);
                     return diff;
                 }
                 // if that is empty, meaning remote file is deleted, then 
@@ -263,7 +264,7 @@ public class FileInfo {
                     return diff;
                 } else {
                     String conflict = "conflicted_copy_from_" + fileInfoThat.getDeviceID();
-                    diff.setFlag(4);
+                    diff.setFlag(1);
                     diff.setVersion(fileInfoThat.getVersion());
                     diff.setTimestamp(fileInfoThat.getTimestamp());
                     diff.setDeviceID(fileInfoThat.getDeviceID());
