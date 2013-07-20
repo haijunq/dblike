@@ -219,6 +219,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
         if (server.containFileInfoFromServer(activeServer.getServerIP(), activeServer.getPort(), userName, directory, fileName)) {
             fileInfoStr = server.getFileInfoFromServer(activeServer.getServerIP(), activeServer.getPort(), userName, directory, fileName);
             diff = fileInfo.comparesToFileInfo(FileInfoService.parseXMLStringToFileInfo(fileInfoStr));
+            System.out.println("diff.flag = " + diff.getFlag());
             if (diff.getFlag() == 1) {
                 uploadCreatedFileToServer(userName, directory, fileName, activeServer);
                 updateFileInfoToServer(userName, directory, fileName, activeServer, fileInfo);
@@ -274,9 +275,10 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
                 newFileInfo.setFileName(conflictCopy.getName(conflictCopy.getNameCount()-1).toString());
                 Hashtable<String, String> conflictHashtable = new Hashtable<String, String>();
                 for (String key : newFileInfo.getFileHashCode().keySet()) {
-                    key = "conflicted_copy_from_" + fileInfo.getDeviceID() + "_" + key;
-                    conflictHashtable.put(key, newFileInfo.getFileHashCode().get(key));
+                    String newkey = "conflicted_copy_from_" + fileInfo.getDeviceID() + "_" + key;
+                    conflictHashtable.put(newkey, newFileInfo.getFileHashCode().get(key));
                 }
+                newFileInfo.setFileHashCode(conflictHashtable);
                 System.out.println("conflict file fileInfo: "+newFileInfo);
                 fileListHashtable.get(directory).addNewFileInfo(newFileInfo);
             }
