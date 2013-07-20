@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 public class ClientStart {
 
     private static Registry registry;
-    private static String clientID = "001";
+    private static String clientID;
     public static Client aClient;
 
     /**
