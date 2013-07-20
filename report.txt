@@ -1,0 +1,68 @@
+
+Report for DBLike Assignment
+ 
+Names and student numbers:
+--------------------------
+Jingbo Yu, 87026126
+Wenhan Wu, 86573128
+Haijun Qiao, 87727129
+
+ 
+Description of implementation
+Overview:
+The system is consist of two main parts, the client and server. The communication mechanism we chose is Java RMI. In order to achieve the flexibility of the system, we use xml to save program configuration, which enables the program be able to work in different environments.
+When the client or server is started, they will export their API and bind the service methods to a port to prepare for being called by other machines. Also, assist threads will be created to send heartbeats and keep track of other related machines, or deal with file changes.
+If any machine failed, our system will detect the failure and take action to deal with the failure.
+
+Details implementation from each side:
+Client:
+This part is to run on the client machine.
+It maintains a static Lists:
+ActiveServerList: It is the list of active servers. It is used to keep track of all servers. 
+It has three assist threads:
+SyncActionClient: The sync thread to keep sending heartbeat to the server. The server will call this client¡¯s RMI to set the status of the corresponding object in the list.
+ServerListenerClient: The listener thread to keep track on the ActiveServerList. Will be used to check the current server's heartbeat.
+FileSyncClientService: The file sync thread to keep watching the changes on the sync folder. If any change happens, use sync algorithm to synchronize for the user on servers and devices.
+In order to manage some run time data, for example, the current user¡¯s information and the current server¡¯s data, we implement a ClientConfig class to centralize the common data and variables, some important data are:
+currentServerIndex: The index of the current server the client is connected to. It is always pointing to the current server.
+myFileList: The table contains all information of the files on the client machine.
+currentClient: The current client object.
+
+Server:
+This part is to run on the server machine.
+It maintains two static Lists:
+ActiveClientList: It is the list of all clients which are currently connected to the server. It is used to keep track of all these clients. The clients will call the server¡¯s RMI to set the status of the corresponding object in the list.
+ActiveServerList: It is the list of other servers, will be loaded from the xml configuration file. It is used to keep track of all other servers. The other servers will call this server¡¯s RMI to set the status of the corresponding object in the list.
+
+It has four assist threads:
+SyncActionServer: The sync thread to keep sending heartbeat to the clients and other servers. 
+ClientListenerServer: The listener thread to keep track on the ActiveClientList. Will be used to check the currently connected clients' heartbeat.
+
+ServerListenerServer: The listener thread to keep track on the ActiveServerList. Will be used to check all other servers¡¯ heartbeat.
+FileSyncServerService: The file sync thread to keep watching the changes on the sync folders for all the registered users. If any change happens, use sync algorithm to synchronize for the user on servers and devices.
+For the server side, we keep the server¡¯s information as static variables in the ServerStart class. Some important structures are:
+fileListHashtable: To maintain the file table structure for all the users, we use a static Hashtable (fileListHashtable) in the FileSyncServerService class.
+fileHashTable: This is the file table for each user. Will be loaded from xml file.
+
+Sync algorithm:
+
+Failure detection (Heartbeat mechanism):
+We choose to use the broadcast to send the heartbeat to all corresponding machines.
+For the client, it keeps sending heartbeats for the connected server in a thread. Also, it use another thread to check the server¡¯s heartbeat by checking if the corresponding object¡¯s status in the list is successfully set by the server.
+For the server, it keeps sending heartbeats for all other servers in a thread. Also, it use another thread to check the servers¡¯ heartbeat by checking if the corresponding object¡¯s status in the list is successfully set by the servers. It also keeps sending heartbeats for the connected clients in a thread. Also, it use another thread to check the clients¡¯ heartbeat by checking if the corresponding object¡¯s status in the list is successfully set by the clients.
+So any time if a machine down, the related machine will directly detect there is no heartbeat for the corresponding object in the list, so the heartbeat mechanism works.
+
+Failure handling mechanism:
+At any time, if a server failed, the heartbeat mechanism will detect this and handle the failure.
+On the client side, if it finds that the server failed, it will try to connect all the servers in the ActiveServerList. If it find an available server, it will end the assist threads and login to the new server, then initialize all data and create new assist threads.
+On the server, if it detects a client is failed, it will remove it from the ActiveClientList. If it find another server is failed, it will set the ¡°isConnected ¡± to be 0, then it can know that this server is not available.
+
+Rationale for the design choices:
+In the DBLike project, we made these important choices:
+1.	Use RMI on both side for calling each other. 
+Reason: we have considered different approaches on the calling mechanism. Another way to do this is sending TCP request. However, using this way cannot directly call the methods on the receiving side. Then a set of protocol need to be defined. So we decided to use RMI on both side, which enables client and server to call for each other.
+2.	Use heartbeat to detect the failure.
+Reason:
+3.	Use broadcast to send heartbeat.
+Reason:
+
