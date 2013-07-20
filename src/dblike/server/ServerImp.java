@@ -136,11 +136,11 @@ public class ServerImp implements ServerAPI {
         System.out.println("printMsg() in ServerImp!");
     }
     
-    public Hashtable<String, FileListService> getFileListHashtableFromServer() throws RemoteException {
-        return FileSyncServerService.fileListHashtable;
-    }
-    
-    public FileListService getFileListServiceFromServer(String pathName) throws RemoteException {
-        return FileSyncServerService.fileListHashtable.get(pathName);
-    }
+//    public Hashtable<String, FileListService> getFileListHashtableFromServer() throws RemoteException {
+//        return FileSyncServerService.getFileListHashtable();
+//    }
+//    
+//    public FileListService getFileListServiceFromServer(String pathName) throws RemoteException {
+//        return FileSyncServerService.fileListHashtable.get(pathName);
+//    }
 }

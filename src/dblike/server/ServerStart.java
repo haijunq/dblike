@@ -21,6 +21,8 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This is the main class for the server, server program will start from here.
@@ -108,6 +110,12 @@ public class ServerStart {
             syncThread.start();
 
             // new thread to synchronize files
+            try {
+                Thread.sleep(3 * 1000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(ClientListenerServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
             String directory = "/home/ec2-user/users";
             boolean isRecursive = true;
             FileSyncServerService fileSyncServer = new FileSyncServerService(Paths.get(directory), isRecursive);

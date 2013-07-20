@@ -46,7 +46,7 @@ public interface ServerAPI extends Remote {
     
     public void printMsg() throws RemoteException;
     
-    public FileListService getFileListServiceFromServer(String pathName) throws RemoteException;
-    
-    public Hashtable<String, FileListService> getFileListHashtableFromServer() throws RemoteException;
+//    public FileListService getFileListServiceFromServer(String pathName) throws RemoteException;
+//    
+//    public Hashtable<String, FileListService> getFileListHashtableFromServer() throws RemoteException;
 }

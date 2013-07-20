@@ -12,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.Hashtable;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -93,8 +94,9 @@ public class FileListXMLService {
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(fileListXML);
             File file = new File(filelist.getPathname() + "filelist.xml");
-            if (!file.exists())
+            if (!file.exists()) {
                 file.createNewFile();
+            }
             StreamResult result = new StreamResult(file);
             transformer.transform(source, result);
 
@@ -258,4 +260,84 @@ public class FileListXMLService {
     {
         ;
     }
+
+//    public static String fileSyncServerServiceToXMLString() {
+//        String xmlstring = "";
+////        if (fileinfo == null || fileinfo.getFileHashCode().isEmpty()) {
+////            return xmlstring;
+////        }
+//        try {
+//            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+//            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+//
+//            Document fileSyncServerServiceXML = docBuilder.newDocument();
+//            Element rootElement = fileSyncServerServiceXML.createElement("fileSyncServerServiceXML");
+//            fileSyncServerServiceXML.appendChild(rootElement);
+//
+//            if (!FileSyncServerService.fileListHashtable.isEmpty()) {
+//                for (String userPathKey : FileSyncServerService.fileListHashtable.keySet()) {
+//                    Element fileListElement = fileSyncServerServiceXML.createElement("fileList");
+//                    fileListElement.setAttribute("userPath", userPathKey);
+//                    rootElement.appendChild(fileListElement);
+//
+//                    Element pathnameElement = fileSyncServerServiceXML.createElement("pathname");
+//                    pathnameElement.appendChild(fileSyncServerServiceXML.createTextNode(FileSyncServerService.fileListHashtable.get(userPathKey).getPathname()));
+//                    fileListElement.appendChild(pathnameElement);
+//
+//                    Element fileInfoElement = fileSyncServerServiceXML.createElement("fileInfo");
+//                    fileListElement.appendChild(fileInfoElement);
+//
+//                    if (!FileSyncServerService.fileListHashtable.get(userPathKey).getFileHashTable().isEmpty()) {
+//                        for (String fileInfoKey : FileSyncServerService.fileListHashtable.)
+//                        Element versionElement = fileSyncServerServiceXML.createElement("version");
+//                        versionElement.appendChild(fileSyncServerServiceXML.createTextNode(Integer.toString(FileSyncServerService.fileListHashtable.get(userPathKey)..getVersion())));
+//                        fileInfoElement.appendChild(versionElement);
+//
+//                        Element deviceIDElement = fileSyncServerServiceXML.createElement("deviceID");
+//                        deviceIDElement.appendChild(fileSyncServerServiceXML.createTextNode(fileinfo.getDeviceID()));
+//                        fileInfoElement.appendChild(deviceIDElement);
+//
+//                        Element fileNameElement = fileSyncServerServiceXML.createElement("fileName");
+//                        fileNameElement.appendChild(fileSyncServerServiceXML.createTextNode(fileinfo.getFileName()));
+//                        fileInfoElement.appendChild(fileNameElement);
+//
+//                        Element timestampElement = fileSyncServerServiceXML.createElement("timestamp");
+//                        timestampElement.appendChild(fileSyncServerServiceXML.createTextNode(fileinfo.getTimestamp()));
+//                        fileInfoElement.appendChild(timestampElement);
+//
+//                        Element fileSizeElement = fileSyncServerServiceXML.createElement("fileSize");
+//                        fileSizeElement.appendChild(fileSyncServerServiceXML.createTextNode(Long.toString(fileinfo.getFileSize())));
+//                        fileInfoElement.appendChild(fileSizeElement);
+//
+//                        Element fileHashCodeElement = fileSyncServerServiceXML.createElement("fileHashCode");
+//                        fileInfoElement.appendChild(fileHashCodeElement);
+//
+//                        if (!fileinfo.getFileHashCode().isEmpty()) {
+//                            for (String fileChunkName : fileinfo.getFileHashCode().keySet()) {
+//                                Element fileChunkHashCodeElement = fileSyncServerServiceXML.createElement("fileChunkHashCode");
+//                                fileChunkHashCodeElement.appendChild(fileSyncServerServiceXML.createTextNode(fileinfo.getFileHashCode().get(fileChunkName)));
+//                                fileChunkHashCodeElement.setAttribute("fileChunkName", fileChunkName);
+//                                fileHashCodeElement.appendChild(fileChunkHashCodeElement);
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+//            Transformer transformer = transformerFactory.newTransformer();
+//            DOMSource source = new DOMSource(fileSyncServerServiceXML);
+//            StringWriter sw = new StringWriter();
+//            StreamResult result = new StreamResult(sw);
+//            transformer.transform(source, result);
+//            xmlstring = sw.toString();
+//
+//        } catch (ParserConfigurationException pce) {
+//            pce.printStackTrace();
+//            return xmlstring;
+//        } catch (TransformerException tfe) {
+//            tfe.printStackTrace();
+//            return xmlstring;
+//        }
+//        return xmlstring;
+//    }
 }

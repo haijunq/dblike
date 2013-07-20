@@ -247,7 +247,7 @@ public class FileInfo {
                 }
                 // if that is empty, meaning remote file is deleted, then 
                 if (fileInfoThat.getFileHashCode().isEmpty()) {
-                    diff.setFlag(3);
+                    diff.setFlag(1);
                     diff.setVersion(fileInfoThat.getVersion()); // get the larger version number
                     diff.setFileName(fileInfoThis.getFileName());
                     diff.setTimestamp(fileInfoThis.getTimestamp());

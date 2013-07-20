@@ -42,6 +42,7 @@ import java.util.logging.Logger;
 public class FileSyncServerService extends WatchDirectoryService implements Runnable {
 
     public static Hashtable<String, FileListService> fileListHashtable; // file info of all users in the memory
+    
 
     public FileSyncServerService(Path dir, boolean recursive) throws IOException, RemoteException, JSchException, SftpException, Exception {
 
@@ -66,10 +67,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
         }
 
         // sync with an active server (any one is fine)
-        Vector<ActiveServer> activeServerList = ActiveServerListServer.getActiveServerList();
-        if (!activeServerList.isEmpty()) {
-            syncWithAServer(activeServerList.get(0));
-        }
+        syncWithAllServers();
     }
 
     /**
@@ -95,31 +93,32 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
      * @throws Exception
      */
     public void syncWithAServer(ActiveServer activeServer) throws RemoteException, JSchException, SftpException, Exception {
-
-        System.out.println("Func: syncWithAServer");
-
-        // sync everything with an active server
-        ServerAPI server = activeServer.getServerAPI();
-        Hashtable<String, FileListService> upToDateFileListHashtable = server.getFileListHashtableFromServer();
-
-        // update hashtable
-        fileListHashtable.clear();
-        fileListHashtable = upToDateFileListHashtable;
-
-        // update files
-        for (Map.Entry<String, FileListService> entry : upToDateFileListHashtable.entrySet()) {
-            String pathName = entry.getKey();
-            int last = pathName.lastIndexOf("/");
-            int lastButOne = pathName.lastIndexOf("/", last - 1);
-            String userName = pathName.substring(lastButOne + 1, last);
-            System.out.println("Pathname: " + pathName + " username: " + userName);
-            for (Map.Entry<String, FileInfo> subEntry : entry.getValue().getFileHashTable().entrySet()) {
-                String fileName = subEntry.getKey();
-                downloadCreatedFileFromServer(userName, pathName, fileName, activeServer);
-            }
-        }
-
-        System.out.println("Func: syncWithAServer done");
+//
+//        System.out.println("Func: syncWithAServer " + activeServer.getServerIP());
+//
+//        // sync everything with an active server
+//        ServerAPI server = activeServer.getServerAPI();
+//        Hashtable<String, FileListService> upToDateFileListHashtable = server.getFileListHashtableFromServer();
+//        System.out.println("upToDateFileListHashtable " + upToDateFileListHashtable.toString());
+//
+//        // update hashtable
+//        fileListHashtable.clear();
+//        fileListHashtable = upToDateFileListHashtable;
+//
+//        // update files
+//        for (Map.Entry<String, FileListService> entry : upToDateFileListHashtable.entrySet()) {
+//            String pathName = entry.getKey();
+//            int last = pathName.lastIndexOf("/");
+//            int lastButOne = pathName.lastIndexOf("/", last - 1);
+//            String userName = pathName.substring(lastButOne + 1, last);
+//            System.out.println("Pathname: " + pathName + " username: " + userName);
+//            for (Map.Entry<String, FileInfo> subEntry : entry.getValue().getFileHashTable().entrySet()) {
+//                String fileName = subEntry.getKey();
+//                downloadCreatedFileFromServer(userName, pathName, fileName, activeServer);
+//            }
+//        }
+//
+//        System.out.println("Func: syncWithAServer done");
     }
 
     /**
@@ -135,7 +134,9 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
 
         // sync everything with active servers
         Vector<ActiveServer> activeServerList = ActiveServerListServer.getActiveServerList();
+        System.out.println("active server list size: " + activeServerList.size());
         for (ActiveServer activeServer : activeServerList) {
+            System.out.println("active server: " + activeServer.getServerIP() + " isconnect: " + activeServer.isIsConnect());
             if (!ServerStart.getServerIP().equals(activeServer.getServerIP()) && activeServer.isIsConnect() == 1) {
                 syncWithAServer(activeServer);
             }
@@ -313,7 +314,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
                 uploadCreatedFileToServer(userName, directory, fileName, activeServer);
                 updateFileInfoToServer(userName, directory, fileName, activeServer, fileInfo);
             }
-            if (diff.getFlag() == 3 | diff.getFlag() == 4) {
+            if (diff.getFlag() == 3 || diff.getFlag() == 4) {
                 System.out.println("Func: syncModifiedFileWithServer flag = 3 or 4");
                 Path conflictFile = new File(this.getDir() + "/" + userName + "/" + fileName).toPath();
                 File conflictFileCopy = new File(this.getDir() + "/" + userName + "/" + "conflicted_copy_from_" + fileInfo.getDeviceID() + "_" + fileInfo.getTimestamp() + "_" + fileName);
@@ -418,29 +419,10 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
             System.out.println("diff.flag = " + diff.getFlag());
             System.out.println("local server fileinfo: " + fileInfo);
             System.out.println("remote server fileinfo: " + FileInfoService.parseXMLStringToFileInfo(fileInfoStr));
-            if (diff.getFlag() == 1 || diff.getFlag() == 5) {
-                System.out.println("Func: syncModifiedFileWithServer flag = 1 or 5");
+            if (diff.getFlag() == 1) {
+                System.out.println("Func: syncModifiedFileWithServer flag = 1");
                 uploadDeletedFileToServer(userName, directory, fileName, activeServer);
                 updateFileInfoToServer(userName, directory, fileName, activeServer, fileInfo);
-            }
-            if (diff.getFlag() == 3 || diff.getFlag() == 4) {
-                System.out.println("Func: syncModifiedFileWithServer flag = 3 or 4");
-                Path conflictFile = new File(this.getDir() + "/" + userName + "/" + fileName).toPath();
-                File conflictFileCopy = new File(this.getDir() + "/" + userName + "/" + "conflicted_copy_from_" + fileInfo.getDeviceID() + "_" + fileInfo.getTimestamp() + "_" + fileName);
-                if (!conflictFileCopy.exists()) {
-                    Path conflictCopy = conflictFileCopy.toPath();
-                    Files.copy(conflictFile, conflictCopy);
-                    FileInfo newFileInfo = new FileInfo(fileInfo);
-                    newFileInfo.setFileName(conflictCopy.getName(conflictCopy.getNameCount() - 1).toString());
-                    Hashtable<String, String> conflictHashtable = new Hashtable<String, String>();
-                    for (String key : newFileInfo.getFileHashCode().keySet()) {
-                        String newkey = "conflicted_copy_from_" + fileInfo.getDeviceID() + "_" + key;
-                        conflictHashtable.put(newkey, newFileInfo.getFileHashCode().get(key));
-                    }
-                    newFileInfo.setFileHashCode(conflictHashtable);
-                    System.out.println("conflict file fileInfo: " + newFileInfo);
-                    fileListHashtable.get(directory).addNewFileInfo(newFileInfo);
-                }
             }
         }
     }
@@ -463,6 +445,9 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
             String fileInfoStrFromClient = client.getFileInfoFromClient(activeClient.getClientIP(), activeClient.getPort(),
                     userName, directory, fileName);
             FileInfoDiff diff = fileInfo.comparesToFileInfo(FileInfoService.parseXMLStringToFileInfo(fileInfoStrFromClient));
+            System.out.println("To Client-local fileinfo: " + fileInfo);
+            System.out.println("To Client: Flag = " + diff.getFlag());
+            System.out.println("To Client-remote fileinfo: " + FileInfoService.parseXMLStringToFileInfo(fileInfoStrFromClient));
             if (diff.getFlag() == 1) {
                 client.syncModifiedFileFromServer(activeClient.getClientIP(), activeClient.getPort(),
                         userName, directory, fileName, FileInfoService.fileInfoToXMLString(fileInfo));
