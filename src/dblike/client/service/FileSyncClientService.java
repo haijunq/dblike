@@ -518,9 +518,9 @@ public class FileSyncClientService implements Runnable {
                     }
                     System.out.println("directory: " + directory.getParent() + " file was created: " + fileName);
                 } else if (e.kind() == StandardWatchEventKinds.ENTRY_MODIFY) {
-                    //if (!this.isFolderChangeFromServer(directoryName, fileName)) {
-                    this.syncModifiedFileToServer(ClientConfig.getCurrentClient().getClientID(), directoryName, fileName);
-                    //}
+                    if (!this.isFolderChangeFromServer(directoryName, fileName)) {
+                        this.syncModifiedFileToServer(ClientConfig.getCurrentClient().getClientID(), directoryName, fileName);
+                    }
                     System.out.println("file was modified: " + fileName);
                 } else if (e.kind() == StandardWatchEventKinds.ENTRY_DELETE) {
                     if (!this.isFolderChangeFromServer(directoryName, fileName)) {
