@@ -17,6 +17,7 @@ import java.rmi.registry.Registry;
 import java.util.Scanner;
 
 /**
+ * This class contains the methods to initialize the client.
  *
  * @author wenhanwu
  */
@@ -112,7 +113,11 @@ public class Client {
         this.loginStatus = loginStatus;
     }
 
-    public void pickupNewServer() { 
+    /**
+     * Pick up a new server. Be used when the client need to change a new
+     * server.
+     */
+    public void pickupNewServer() {
 //        System.out.println("in pickupNewServer");
         stopThread();
         while (true) {
@@ -136,6 +141,9 @@ public class Client {
         }
     }
 
+    /**
+     * This is used to input the name and password.
+     */
     public void inputNamePassword() {
         Scanner scanUN = new Scanner(System.in);
         System.out.println("Username:");
@@ -158,11 +166,17 @@ public class Client {
         setPassword(scanPW.nextLine());
     }
 
+    /**
+     * This is to stop the listener thread and sync thread.
+     */
     public static void stopThread() {
         serverListener.setRunningFlag(false);
         sync.setRunningFlag(false);
     }
 
+    /**
+     * This is to start the listener thread and sync thread.
+     */
     public static void startThread(String clientID, String deviceID, String serverIP, int serverPort) {
         //New thread to listen to heartbeat from all servers
         serverListener = new ServerListenerClient();
@@ -178,16 +192,33 @@ public class Client {
         syncThread.start();
     }
 
+    /**
+     * Constructor, will use the server's IP and port.
+     *
+     * @param aServerIP
+     * @param aServerPort
+     */
     public Client(String aServerIP, int aServerPort) {
         this.serverIP = aServerIP;
         this.serverPort = aServerPort;
         loginStatus = 0;
     }
 
+    /**
+     * For testing
+     *
+     * @param message
+     * @throws RemoteException
+     */
     public void talk(String message) throws RemoteException {
         System.out.println(message + "\n");
     }
 
+    /**
+     * This is for login to the server, authentication.
+     *
+     * @return
+     */
     public String login() {
         try {
             boolean flag = true;
@@ -215,6 +246,9 @@ public class Client {
         return clientID;
     }
 
+    /**
+     * This is to initialize data and will call to start the threads.
+     */
     public void initData() {
         try {
             setLoginStatus(1);
@@ -224,17 +258,20 @@ public class Client {
 
             this.deviceID = ClientConfig.getCurrentClient().getDeviceID();
             this.clientIP = ClientConfig.getCurrentClient().getIp();
-            this.clientPort = Integer.parseInt(ClientConfig.getCurrentClient().getPort()); 
+            this.clientPort = Integer.parseInt(ClientConfig.getCurrentClient().getPort());
             server.addClient(clientID, deviceID, clientIP, clientPort);
             //ActiveServerListClient.addServer(serverIP, serverPort);
             System.out.println("Connection built!");
-            
+
             startThread(getClientID(), deviceID, serverIP, serverPort);
         } catch (Exception e) {
             System.out.println(e);
         }
     }
 
+    /**
+     * This is to prompt the welcome information.
+     */
     public void promptMessage() {
         System.out.println("--------------------------------------------------------------");
         System.out.println(" Hi, " + getClientID() + " on " + deviceID);
@@ -244,6 +281,9 @@ public class Client {
 
     }
 
+    /**
+     * This is for logout.
+     */
     private void logout() {
         try {
             if (server == null) {
@@ -255,6 +295,9 @@ public class Client {
         }
     }
 
+    /**
+     * This is to call the client, for testing.
+     */
     private void act() {
         try {
             server.callClient(getClientID(), deviceID, "Client!!!");
@@ -263,6 +306,9 @@ public class Client {
         }
     }
 
+    /**
+     * This is to lookup to prepare to call server.
+     */
     public void lookup() {
         try {
             server = (ServerAPI) registry.lookup("serverUtility");
