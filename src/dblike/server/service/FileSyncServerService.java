@@ -256,31 +256,36 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
         ServerAPI server = activeServer.getServerAPI();
         String fileInfoStr;
         FileInfoDiff diff;
-        System.out.println("current fileinfo: " + fileInfo);
 
         if (server.containFileInfoFromServer(activeServer.getServerIP(), activeServer.getPort(), userName, directory, fileName)) {
             fileInfoStr = server.getFileInfoFromServer(activeServer.getServerIP(), activeServer.getPort(), userName, directory, fileName);
             diff = fileInfo.comparesToFileInfo(FileInfoService.parseXMLStringToFileInfo(fileInfoStr));
+            System.out.println("diff.flag = " + diff.getFlag());
+            System.out.println("local server fileinfo: " + fileInfo);
+            System.out.println("remote server fileinfo: " + FileInfoService.parseXMLStringToFileInfo(fileInfoStr));
             if (diff.getFlag() == 1) {
                 System.out.println("Func: syncModifiedFileWithServer flag = 1");
                 uploadModifiedFileToServer(userName, directory, fileName, activeServer, diff);
                 updateFileInfoToServer(userName, directory, fileName, activeServer, fileInfo);
             }
-            if (diff.getFlag() == 3) {
-                System.out.println("Func: syncModifiedFileWithServer flag = 3");
+            if (diff.getFlag() == 3 || diff.getFlag() == 4) {
+                System.out.println("Func: syncModifiedFileWithServer flag = 3 or 4");
                 Path conflictFile = new File(this.getDir() + "/" + userName + "/" + fileName).toPath();
-                Path conflictCopy = new File(this.getDir() + "/" + userName + "/" + "conflicted_copy_from_" + fileInfo.getDeviceID() + "_" + fileName).toPath();
-                Files.copy(conflictFile, conflictCopy);
-                FileInfo newFileInfo = new FileInfo(fileInfo);
-                newFileInfo.setFileName(conflictCopy.getName(conflictCopy.getNameCount()-1).toString());
-                Hashtable<String, String> conflictHashtable = new Hashtable<String, String>();
-                for (String key : newFileInfo.getFileHashCode().keySet()) {
-                    String newkey = "conflicted_copy_from_" + fileInfo.getDeviceID() + "_" + key;
-                    conflictHashtable.put(newkey, newFileInfo.getFileHashCode().get(key));
+                File conflictFileCopy = new File(this.getDir() + "/" + userName + "/" + "conflicted_copy_from_" + fileInfo.getDeviceID() + "_" + fileInfo.getTimestamp() + "_" + fileName);
+                if (!conflictFileCopy.exists()) {
+                    Path conflictCopy = conflictFileCopy.toPath();
+                    Files.copy(conflictFile, conflictCopy);
+                    FileInfo newFileInfo = new FileInfo(fileInfo);
+                    newFileInfo.setFileName(conflictCopy.getName(conflictCopy.getNameCount() - 1).toString());
+                    Hashtable<String, String> conflictHashtable = new Hashtable<String, String>();
+                    for (String key : newFileInfo.getFileHashCode().keySet()) {
+                        String newkey = "conflicted_copy_from_" + fileInfo.getDeviceID() + "_" + key;
+                        conflictHashtable.put(newkey, newFileInfo.getFileHashCode().get(key));
+                    }
+                    newFileInfo.setFileHashCode(conflictHashtable);
+                    System.out.println("conflict file fileInfo: " + newFileInfo);
+                    fileListHashtable.get(directory).addNewFileInfo(newFileInfo);
                 }
-                newFileInfo.setFileHashCode(conflictHashtable);
-                System.out.println("conflict file fileInfo: "+newFileInfo);
-                fileListHashtable.get(directory).addNewFileInfo(newFileInfo);
             }
         } else {
             uploadCreatedFileToServer(userName, directory, fileName, activeServer);
