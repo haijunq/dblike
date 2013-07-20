@@ -337,7 +337,7 @@ public class FileSyncClientService implements Runnable {
         if (diff.getFlag() == 3) {
             System.out.println("Func: syncCreatedFileToServer flag = 3");
             Path conflictFile = new File(ClientConfig.getCurrentClient().getFolderPath() + "/" + fileName).toPath();
-            Path conflictCopy = new File(ClientConfig.getCurrentClient().getFolderPath() + "/conflicted_copy_from_" + ClientConfig.getCurrentClient().getDeviceID() + "/" + fileName).toPath();
+            Path conflictCopy = new File(ClientConfig.getCurrentClient().getFolderPath() + "/conflicted_copy_from_" + ClientConfig.getCurrentClient().getDeviceID() + "_" + fileName).toPath();
             Files.copy(conflictFile, conflictCopy);
             this.syncCreatedFileFromServer(userName, directory, fileName);
             this.updateFileInfoFromServer(userName, directory, fileName);
