@@ -13,13 +13,16 @@ import org.apache.sshd.server.session.ServerSession;
 import org.apache.sshd.server.shell.ProcessShellFactory;
 
 /**
- * Not done yet!!!!!!!!!!!!!!!!!!!!
+ * Client side SSH Daemon service, deprecated. 
  * @author haijun
  */
 public class ClientSSHDaemonService {
 
     private static SshServer sshd = SshServer.setUpDefaultServer();    
 
+    /**
+     * Start a SSH session. 
+     */
     public static void startSSHServer() {
         if (sshd == null) {
             sshd =  SshServer.setUpDefaultServer(); 

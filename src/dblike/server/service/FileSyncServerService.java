@@ -71,7 +71,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     }
 
     /**
-     *
+     * Synchronize with all clients and servers, deprecated. 
      */
     public void syncWithAll() throws RemoteException, JSchException, SftpException, Exception {
 
@@ -85,7 +85,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     }
 
     /**
-     *
+     * Synchronize with one server, deprecated. 
      * @param activeServer
      * @throws RemoteException
      * @throws JSchException
@@ -122,7 +122,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     }
 
     /**
-     *
+     * Synchronize with all servers, deprecated. 
      * @throws RemoteException
      * @throws JSchException
      * @throws SftpException
@@ -146,7 +146,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     }
 
     /**
-     *
+     * Synchronize with a client, deprecated. 
      * @param activeClient
      * @throws RemoteException
      * @throws JSchException
@@ -176,7 +176,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     }
 
     /**
-     *
+     * Synchronize with all clients. 
      * @throws RemoteException
      * @throws JSchException
      * @throws SftpException
@@ -208,7 +208,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     }
 
     /**
-     *
+     * Update created file to server. 
      * @param userName
      * @param directory
      * @param fileName
@@ -225,7 +225,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     }
 
     /**
-     *
+     * Download created file from server. 
      * @param userName
      * @param directory
      * @param fileName
@@ -242,7 +242,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     }
 
     /**
-     *
+     * Uploaded modified file to server. 
      * @param userName
      * @param directory
      * @param fileName
@@ -260,7 +260,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     }
 
     /**
-     *
+     * Upload deleted file to server. 
      * @param userName
      * @param directory
      * @param fileName
@@ -276,7 +276,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     }
 
     /**
-     *
+     * Update fileInfo to server. 
      * @param userName
      * @param directory
      * @param fileName
@@ -340,7 +340,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     }
 
     /**
-     *
+     * Synchronized modified file with server. 
      * @param userName
      * @param directory
      * @param fileName
@@ -394,7 +394,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     }
 
     /**
-     *
+     * Synchronize deleted file with server. 
      * @param userName
      * @param directory
      * @param fileName
@@ -405,10 +405,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
      */
     public void syncDeletedFileWithServer(String userName, String directory, String fileName, ActiveServer activeServer) throws RemoteException, JSchException, SftpException, IOException {
 
-//        System.out.println("Func: syncDeletedFileWithServer: " + activeServer.getServerIP());
         FileInfo fileInfo = fileListHashtable.get(directory).getFileInfoByFileName(fileName);
-//        uploadDeletedFileToServer(userName, directory, fileName, activeServer);
-//        updateFileInfoToServer(userName, directory, fileName, activeServer, fileInfo);
         ServerAPI server = activeServer.getServerAPI();
         String fileInfoStr;
         FileInfoDiff diff;
@@ -428,7 +425,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     }
 
     /**
-     *
+     * Synchronize created file with client.
      * @param directory
      * @param fileName
      * @param activeClient
@@ -459,7 +456,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     }
 
     /**
-     *
+     * Synchronize the modified file with Client.
      * @param userName
      * @param directory
      * @param fileName
@@ -488,7 +485,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     }
 
     /**
-     *
+     * Synchronize deleted file with client.
      * @param userName
      * @param directory
      * @param fileName
@@ -518,7 +515,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     }
 
     /**
-     *
+     * Synchronize created local file. 
      * @param userName
      * @param directory
      * @param fileName
@@ -550,7 +547,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     }
 
     /**
-     *
+     * Synchronize modified file. 
      * @param userName
      * @param directory
      * @param fileName
@@ -582,7 +579,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     }
 
     /**
-     *
+     * Synchronize deleted file. 
      * @param userName
      * @param directory
      * @param fileName
@@ -614,7 +611,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     }
 
     /**
-     *
+     * Watch a folder service. 
      * @throws JSchException
      * @throws RemoteException
      * @throws SftpException
@@ -700,7 +697,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
     }
 
     /**
-     *
+     * run() method.
      */
     @Override
     public void run() {

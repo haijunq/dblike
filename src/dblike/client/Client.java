@@ -296,7 +296,7 @@ public class Client {
     }
 
     /**
-     * This is to call the client, for testing.
+     * This is to call the client, for testing, deprecated.
      */
     private void act() {
         try {

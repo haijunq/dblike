@@ -39,7 +39,7 @@ public class ServerListenerClient implements Runnable {
     }
 
     /**
-     * To get the ActiveServerList
+     * To get the ActiveServerList.
      */
     public ServerListenerClient() {
         this.ActiveServerList = ActiveServerListClient.getActiveServerList();
@@ -73,24 +73,21 @@ public class ServerListenerClient implements Runnable {
     }
 
     /**
-     * Wait for a while
+     * Wait for a while.
      *
      * @param timeOut
      */
     public void waitForAWhile(int timeOut) {
         try {
             Thread.sleep(timeOut * 1000);
-
-
         } catch (InterruptedException ex) {
-            Logger.getLogger(ServerListenerClient.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ServerListenerClient.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
 
     /**
-     * Put the checking into a loop to keep track of the server
+     * Put the checking into a loop to keep track of the server.
      */
     public void run() {
         while (runningFlag) {

@@ -14,7 +14,7 @@ import dblike.service.FileInfoService;
 import java.rmi.RemoteException;
 
 /**
- *
+ * Implementation of the Client API.
  * @author wenhanwu
  */
 public class ClientImp implements ClientAPI {
@@ -29,26 +29,44 @@ public class ClientImp implements ClientAPI {
         return ActiveServerListClient.beatCurrentServer(serverIP, port);
     }
     
-//    // to do
-//    public FileInfo getFileInfoFromServer(String serverIP, int port, String userName, String directory, String fileName) {
-//        return FileListXMLService.getFileInfo(userName, directory, fileName);
-//    }
-//    
-//    // to do
-//    public void setFileInfoToServer(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) {
-//        FileListXMLService.setFileInfo(userName, directory, fileName, fileInfo);
-//    }
-    
+    /**
+     * Check whether a server contains a fileInfo. 
+     * @param serverIP
+     * @param port
+     * @param userName
+     * @param directory
+     * @param fileName
+     * @return
+     * @throws Exception 
+     */
     public boolean containFileInfo(String serverIP, int port, String userName, String directory, String fileName) throws Exception {
         return ClientConfig.getMyFileList().getFileHashTable().containsKey(fileName);
     }
-    
+   
+    /**
+     * Get the fileInfo from Server. 
+     * @param serverIP
+     * @param port
+     * @param userName
+     * @param directory
+     * @param fileName
+     * @return 
+     */
     public String getFileInfo(String serverIP, int port, String userName, String directory, String fileName) {
         return FileInfoService.fileInfoToXMLString(ClientConfig.getMyFileList().getFileHashTable().get(fileName));
     }
             
+    /**
+     * Get fileInfo from Client.
+     * @param serverIP
+     * @param port
+     * @param userName
+     * @param directory
+     * @param fileName
+     * @return
+     * @throws Exception 
+     */
     public String getFileInfoFromClient(String serverIP, int port, String userName, String directory, String fileName) throws Exception{
-        // to do 
         if (ClientConfig.getMyFileList().getFileHashTable().containsKey(fileName))
             return FileInfoService.fileInfoToXMLString(ClientConfig.getMyFileList().getFileHashTable().get(fileName));
         else {
@@ -59,20 +77,54 @@ public class ClientImp implements ClientAPI {
         }
     }
     
+    /**
+     * Set the fileInfo to Client.
+     * @param serverIP
+     * @param port
+     * @param userName
+     * @param directory
+     * @param fileName
+     * @param fileInfoXML
+     * @throws Exception 
+     */
     public void setFileInfoToClient(String serverIP, int port, String userName, String directory, String fileName, String fileInfoXML) throws Exception{
          ClientConfig.getMyFileList().updateFileInfo(FileInfoService.parseXMLStringToFileInfo(fileInfoXML));
     }
     
+    /**
+     * Synchronize the modified file from Server.
+     * @param serverIP
+     * @param port
+     * @param userName
+     * @param directory
+     * @param fileName
+     * @param fileInfoXML
+     * @throws Exception 
+     */
     public synchronized void syncModifiedFileFromServer(String serverIP, int port, String userName, String directory, String fileName, String fileInfoXML) throws Exception {
-        System.out.println("Func: syncModifiedFileFromServer");
+//        System.out.println("Func: syncModifiedFileFromServer");
         FileSyncClientService.syncCreatedFileFromServer(userName, directory, fileName);
     }
     
+    /**
+     * Synchronize the deleted file from server. 
+     * @param serverIP
+     * @param port
+     * @param userName
+     * @param directory
+     * @param fileName
+     * @param fileInfoXML
+     * @throws Exception 
+     */
     public void syncDeletedFileFromServer(String serverIP, int port, String userName, String directory, String fileName, String fileInfoXML) throws Exception {
         FileSyncClientService.syncDeletedFileFromServer(userName, directory, fileName);
         
     }
     
+    /**
+     * Test method.
+     * @throws RemoteException 
+     */
     public void printMsg() throws RemoteException {
         System.out.println("printMsg() from ClientAPI!");
     }

@@ -5,7 +5,7 @@
 package dblike.client;
 
 /**
- *
+ * Return a random server IP, deprecated. 
  * @author haijun
  */
 public class ClientLookForServer {
@@ -13,6 +13,10 @@ public class ClientLookForServer {
         "23.23.129.169", "54.244.115.114", "54.245.231.227"
     };
     
+    /**
+     * Return a server IP.
+     * @return 
+     */
     public static String selectServer() {
         return serverIPs[(int)(Math.random() * serverIPs.length)];
     }

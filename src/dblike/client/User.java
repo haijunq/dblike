@@ -10,7 +10,7 @@ import dblike.service.InternetUtil;
 import java.rmi.registry.Registry;
 
 /**
- *
+ * Define a user, deprecated. 
  * @author wenhanwu
  */
 public class User {
@@ -62,6 +62,12 @@ public class User {
     }
  
 
+    /**
+     * Constructor. 
+     * @param aClientID
+     * @param aDeviceID
+     * @param aFolderPath 
+     */
     public User(String aClientID, String aDeviceID, String aFolderPath) {
         this.clientID = aClientID;
         this.deviceID = aDeviceID; 

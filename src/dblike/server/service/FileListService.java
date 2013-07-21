@@ -17,23 +17,6 @@ public final class FileListService {
     private String pathname; //username
     private Hashtable<String, FileInfo> fileHashTable ;
     
-    
-    //    public FileListService getInstance() {
-    //        if (fileHashTable == null) {
-    //            fileHashTable = new Hashtable<String, byte []>();
-    //        }
-    //        return fileHashTable;
-    //    }
-    
-    
-    //every user needs a FileListService object, so I removed "static"
-    //        if (fileHashTable == null) {
-    //            fileHashTable = new Hashtable<String, byte []>();
-    //        }
-    //        return fileHashTable;
-    //    }
-    
-    
     public String getPathname() {
         return pathname;
     }
@@ -46,8 +29,6 @@ public final class FileListService {
         this.pathname = "";
         this.fileHashTable = new Hashtable<>();
     }
-    
-    
     
     public FileListService(String pathName) {
         this.pathname = pathName;
@@ -62,16 +43,31 @@ public final class FileListService {
         this.fileHashTable = fileHashTable;
     }
     
+    /**
+     * Check whether there is a file in the fileInfo. 
+     * @param fileName
+     * @return 
+     */
     public boolean containFileInfo(String fileName) {
         
         return fileHashTable.containsKey(fileName);
     }
     
+    /**
+     * Get a fileInfo. 
+     * @param fileName
+     * @return 
+     */
     public FileInfo getFileInfo(String fileName) {
         
         return fileHashTable.get(fileName);
     }
     
+    /**
+     * Get fileInfo by filename. 
+     * @param fileName
+     * @return 
+     */
     public FileInfo getFileInfoByFileName(String fileName) {
         
         if (fileHashTable.containsKey(fileName))
@@ -85,15 +81,26 @@ public final class FileListService {
         return "FileListService{" + "pathname=" + pathname + ", fileHashTable=" + fileHashTable + '}';
     }
     
-    
+    /**
+     * Add new infoInfo.
+     * @param newFileInfo 
+     */
     public void addNewFileInfo(FileInfo newFileInfo) {
         this.fileHashTable.put(newFileInfo.getFileName(), newFileInfo);
     }
     
+    /**
+     * Update infoInfo. 
+     * @param newFileInfo 
+     */
     public void updateFileInfo(FileInfo newFileInfo) {
         this.fileHashTable.put(newFileInfo.getFileName(), newFileInfo);
     }
     
+    /**
+     * Remove fileInfo. 
+     * @param fileName 
+     */
     public void removeFileInfo(String fileName) {
         this.fileHashTable.remove(fileName);
     }

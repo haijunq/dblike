@@ -87,6 +87,8 @@ public class ClientStart {
             System.out.println("No server available!!!");
             return;
         }
+        
+        // new thread to inilialize client.
         ClientConfig.setCurrentServerIndex(ClientConfig.pickupAvailableServer());
         aClient = new Client(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(), ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getPort());
         clientID = aClient.login();

@@ -8,7 +8,7 @@ import dblike.api.ServerAPI;
 import dblike.service.MD5Service;
 
 /**
- *
+ * Deprecated, client Authentication method. 
  * @author haijun
  */
 public class ClientAuthentication {
@@ -18,7 +18,4 @@ public class ClientAuthentication {
         //need to call server side UserListXMLReader() to do the authentication
     }
     
-//    public boolean authenticate(ServerAPI serverAPI, String username, String password) {
-//        return serverAPI.checkAuthentication(username, MD5Service.getInstance().getMD5HashCode(password));
-//    }
 }

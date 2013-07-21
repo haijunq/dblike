@@ -19,7 +19,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- *
+ * Helper class for XML file and user list. 
  * @author haijun
  */
 public class UserListXMLReader {
@@ -27,7 +27,7 @@ public class UserListXMLReader {
     private static Hashtable<String, String> validUserList = new Hashtable<>();
 
     /**
-     * 
+     * Check user authentication.
      * @param username
      * @param password
      * @return 
@@ -40,13 +40,17 @@ public class UserListXMLReader {
         return validUserList.containsKey(username) && password.equals(validUserList.get(username));
     }
 
+    /**
+     * Load userlist from XML file. 
+     * @return 
+     */
     public static Hashtable<String, String> getValidUserList() {
         loadUserListFromXML();
         return validUserList;
     }
     
     /**
-     * 
+     * Load user list from XML file. 
      * @return 
      */
     public static boolean loadUserListFromXML() {

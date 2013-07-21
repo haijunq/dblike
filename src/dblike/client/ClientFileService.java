@@ -7,7 +7,7 @@ package dblike.client;
 import dblike.service.FileInfo;
 
 /**
- *
+ * 
  * @author haijun
  */
 public class ClientFileService {
