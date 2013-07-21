@@ -37,6 +37,14 @@ public class FileSegmentService {
         return TEMP_DOWNDIR;
     }
 
+    public static String getABS_TEMP_UPDIR () throws Exception {
+        return FileInfoService.getAbsolutePathName(TEMP_UPDIR) + "/";
+    }
+    
+    public static String getABS_TEMP_DOWNDIR () throws Exception {
+        return FileInfoService.getAbsolutePathName(TEMP_DOWNDIR) + "/";
+    }
+    
     /**
      * Split a file into multiple segments.
      *

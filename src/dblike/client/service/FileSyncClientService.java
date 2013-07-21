@@ -98,8 +98,8 @@ public class FileSyncClientService implements Runnable {
      * @throws JSchException
      * @throws SftpException
      */
-    public synchronized void uploadCreatedFileToServer(String userName, String directory, String fileName) throws JSchException, SftpException, Exception {
-        this.initSftpService();
+    public synchronized static void uploadCreatedFileToServer(String userName, String directory, String fileName) throws JSchException, SftpException, Exception {
+        initSftpService();
         String srcFilePath = ClientConfig.getCurrentClient().getFolderPath() + fileName;
         String dstFilePath = FileInfoService.getSERVER_USERS_FOLDER() + userName + "/" + fileName;
         System.out.println(srcFilePath);
@@ -198,7 +198,7 @@ public class FileSyncClientService implements Runnable {
      * @param activeServer
      * @throws RemoteException
      */
-    public synchronized void updateFileInfoToServer(String userName, String directory, String fileName, FileInfo fileInfo) throws RemoteException {
+    public synchronized static void updateFileInfoToServer(String userName, String directory, String fileName, FileInfo fileInfo) throws RemoteException {
         // get fileinfo from server
         ServerAPI server = ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerAPI();
         server.setFileInfoToServer(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(),
@@ -248,7 +248,7 @@ public class FileSyncClientService implements Runnable {
         System.out.println("initial FileList: " + ClientConfig.getMyFileList());
         File dir = new File(directory);
         HashSet<String> curfiles = new HashSet<String>(Arrays.asList(dir.list()));
-
+        
         // for deleted files
         if (!ClientConfig.getMyFileList().getFileHashTable().isEmpty()) {
             for (String oldfile : ClientConfig.getMyFileList().getFileHashTable().keySet()) {
@@ -323,7 +323,7 @@ public class FileSyncClientService implements Runnable {
      * @return
      * @throws Exception
      */
-    public FileInfoDiff compareToServerFileInfo(String userName, String directory, String fileName) throws Exception {
+    public static FileInfoDiff compareToServerFileInfo(String userName, String directory, String fileName) throws Exception {
         ServerAPI server = ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerAPI();
         FileInfo serverFileInfo;
 
@@ -354,16 +354,16 @@ public class FileSyncClientService implements Runnable {
      * @throws JSchException
      * @throws SftpException
      */
-    public synchronized void syncCreatedFileToServer(String userName, String directory, String fileName) throws RemoteException, JSchException, SftpException, Exception {
+    public synchronized static void syncCreatedFileToServer(String userName, String directory, String fileName) throws RemoteException, JSchException, SftpException, Exception {
         System.out.println("Func: syncCreatedFileToServer");
-        this.updateLocalFileInfo(userName, directory, fileName);
+        updateLocalFileInfo(userName, directory, fileName);
         System.out.println(ClientConfig.getMyFileList().toString());
 
         FileInfoDiff diff = compareToServerFileInfo(userName, directory, fileName);
         if (diff.getFlag() == 1) {
             System.out.println("Func: syncCreatedFileToServer flag = 1");
-            this.uploadCreatedFileToServer(userName, directory, fileName);
-            this.updateFileInfoToServer(userName, directory, fileName, ClientConfig.getMyFileList().getFileInfo(fileName));
+            uploadCreatedFileToServer(userName, directory, fileName);
+            updateFileInfoToServer(userName, directory, fileName, ClientConfig.getMyFileList().getFileInfo(fileName));
         }
 
         if (diff.getFlag() == 3) {
@@ -371,8 +371,8 @@ public class FileSyncClientService implements Runnable {
             Path conflictFile = new File(ClientConfig.getCurrentClient().getFolderPath() + "/" + fileName).toPath();
             Path conflictCopy = new File(ClientConfig.getCurrentClient().getFolderPath() + "/conflicted_copy_from_" + ClientConfig.getCurrentClient().getDeviceID() + "_" + fileName).toPath();
             Files.copy(conflictFile, conflictCopy);
-            this.syncCreatedFileFromServer(userName, directory, fileName);
-            this.updateFileInfoFromServer(userName, directory, fileName);
+            syncCreatedFileFromServer(userName, directory, fileName);
+            updateFileInfoFromServer(userName, directory, fileName);
         }
     }
 
