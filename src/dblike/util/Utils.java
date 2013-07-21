@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- *
+ * 
  * @author JingboYu
  */
 public class Utils {

@@ -11,7 +11,7 @@ import java.util.Hashtable;
 import org.joda.time.DateTime;
 
 /**
- *
+ * Information and metadata of a file, also contains a logic clock. 
  * @author JingboYu
  */
 public class FileInfo {
@@ -23,10 +23,17 @@ public class FileInfo {
     private long fileSize;
     private Hashtable<String, String> fileHashCode;
 
+    /**
+     * Constructor. 
+     */
     public FileInfo() {
         this.fileHashCode = new Hashtable<>();
     }
 
+    /**
+     * Constructor. 
+     * @param fileInfo 
+     */
     public FileInfo(FileInfo fileInfo) {
         this.version = fileInfo.getVersion();
         this.timestamp = fileInfo.getTimestamp();
@@ -36,6 +43,15 @@ public class FileInfo {
         this.fileHashCode = fileInfo.getFileHashCode();
     }
 
+    /**
+     * Constructor.
+     * @param version
+     * @param deviceID
+     * @param fileName
+     * @param timestamp
+     * @param fileSize
+     * @param fileHashCode 
+     */
     public FileInfo(int version, String deviceID, String fileName, String timestamp, long fileSize, Hashtable<String, String> fileHashCode) {
         this.version = version;
         this.deviceID = deviceID;
@@ -93,6 +109,11 @@ public class FileInfo {
         this.fileHashCode = fileHashCode;
     }
 
+    /**
+     * Test whether this fileInfo object is newer than another fileInfo.
+     * @param timestamp
+     * @return 
+     */
     public int isTimestampNewer(String timestamp) {
         DateTime thisTimestamp = new DateTime(this.timestamp);
         DateTime thatTimestamp = new DateTime(timestamp);
@@ -121,6 +142,11 @@ public class FileInfo {
         }
     }
 
+    /**
+     * Check whether fileInfo from the same device. 
+     * @param deviceID
+     * @return 
+     */
     public boolean isSameDevice(String deviceID) {
         return this.deviceID.equals(deviceID);
     }
@@ -131,9 +157,9 @@ public class FileInfo {
     }
 
     /**
-     *
+     * Compare to the other fileInfo and returns the result which is indicated by the flag bit. 
      * @param anotherFileInfo
-     * @return
+     * @return FileInfoDiff object in which the flag and different fileInfo is set. 
      */
     public FileInfoDiff comparesToFileInfo(FileInfo anotherFileInfo) {
         FileInfoDiff diff = new FileInfoDiff();
@@ -147,6 +173,7 @@ public class FileInfo {
             return diff;
         }
 
+        // if this and that have the same hashtable, return 0.
         if (fileInfoThis.getFileHashCode().equals(fileInfoThat.getFileHashCode())) {
             if (fileInfoThis.getVersion() >= fileInfoThat.getVersion()) {
                 diff = new FileInfoDiff(0, fileInfoThis);
@@ -192,7 +219,7 @@ public class FileInfo {
 //            for (String chunkName1 : fileInfoThis.getFileHashCode().keySet()) {
 //                for (String chunkName2 : fileInfoThat.getFileHashCode().keySet()) {
 //                    if (chunkName1.equals(chunkName2) && fileInfoThis.getFileHashCode().get(chunkName1).equals(fileInfoThat.getFileHashCode().get(chunkName2))) {
-////                        fileInfoThis.getFileHashCode().remove(chunkName1);
+//                        fileInfoThis.getFileHashCode().remove(chunkName1);
 //                        continue;
 //                    }
 //                    diff.getFileHashCode().put(chunkName1, fileInfoThis.getFileHashCode().get(chunkName1));
@@ -227,7 +254,7 @@ public class FileInfo {
 //                for (String chunkName1 : fileInfoThis.getFileHashCode().keySet()) {
 //                    for (String chunkName2 : fileInfoThat.getFileHashCode().keySet()) {
 //                        if (chunkName1.equals(chunkName2) && fileInfoThis.getFileHashCode().get(chunkName1).equals(fileInfoThat.getFileHashCode().get(chunkName2))) {
-////                            fileInfoThis.getFileHashCode().remove(chunkName1);
+//                            fileInfoThis.getFileHashCode().remove(chunkName1);
 //                            continue;
 //                        }
 //                        diff.getFileHashCode().put(chunkName1, fileInfoThis.getFileHashCode().get(chunkName1));
@@ -258,6 +285,7 @@ public class FileInfo {
                 }
 
                 // if both not empty, then make a conflict copy by changing the newer 
+                // if this is newer 
                 if (fileInfoThis.isTimestampNewer(fileInfoThat.getTimestamp()) == 1) {
                     String conflict = "conflicted_copy_from_" + fileInfoThis.getDeviceID();
                     diff.setFlag(3);
@@ -271,7 +299,8 @@ public class FileInfo {
                         diff.getFileHashCode().put(conflict + key, fileInfoThis.getFileHashCode().get(key));
                     }
                     return diff;
-                } else if (fileInfoThis.isTimestampNewer(fileInfoThat.getTimestamp()) == -1) {
+                } // if that is newer
+                else if (fileInfoThis.isTimestampNewer(fileInfoThat.getTimestamp()) == -1) {
                     String conflict = "conflicted_copy_from_" + fileInfoThat.getDeviceID();
                     diff.setFlag(4);
                     diff.setVersion(fileInfoThat.getVersion());
@@ -284,7 +313,8 @@ public class FileInfo {
                         diff.getFileHashCode().put(conflict + key, fileInfoThat.getFileHashCode().get(key));
                     }
                     return diff;
-                } else {
+                } // if this and that timestamp is the same, break the tie and set the conflict bit
+                else {
                     if (fileInfoThis.getDeviceID().compareTo(fileInfoThat.getDeviceID()) == -1) {
                         String conflict = "conflicted_copy_from_" + fileInfoThis.getDeviceID();
                         diff.setFlag(3);

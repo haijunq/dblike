@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 /**
+ * This is a helper class for File segmentation.
  *
  * @author haijun
  */
@@ -36,8 +37,8 @@ public class FileSegmentService {
         return TEMP_DOWNDIR;
     }
 
-    
     /**
+     * Split a file into multiple segments.
      *
      * @param directory
      * @param filename
@@ -94,6 +95,7 @@ public class FileSegmentService {
     }
 
     /**
+     * Merge byte [] to a single file.
      *
      * @param srcDir
      * @param filename
@@ -138,6 +140,7 @@ public class FileSegmentService {
     }
 
     /**
+     * Insert a set of segments to a single file.
      *
      * @param srcDir
      * @param filename
@@ -168,6 +171,14 @@ public class FileSegmentService {
 
     }
 
+    /**
+     * Get a piece of segment from a file.
+     *
+     * @param directory
+     * @param filename
+     * @param fileChunkName
+     * @throws Exception
+     */
     public static void getChunkFromSingleFile(String directory, String filename, String fileChunkName) throws Exception {
         File file = new File(directory + "/" + filename);
         long fileSize = file.length();

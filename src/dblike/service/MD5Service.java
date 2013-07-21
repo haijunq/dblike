@@ -54,6 +54,11 @@ public final class MD5Service {
         return convertByteArrayToString(digest);
     }
 
+    /**
+     * Convert a byte [] to a string.
+     * @param digest
+     * @return 
+     */
     private static String convertByteArrayToString(byte[] digest) {
         String checksum = "";
         for (int i = 0; i < digest.length; i++) {
@@ -62,6 +67,13 @@ public final class MD5Service {
         return checksum;
     }
 
+    /**
+     * Get a MD5 hashtable for a single file. 
+     * @param directory
+     * @param filename
+     * @return
+     * @throws Exception 
+     */
     public static Hashtable<String, String> getMD5StringTableFromSingleFile(final String directory, final String filename) throws Exception {
         Hashtable<String, String> fileHashTable = new Hashtable<>();
         File file = new File(directory + "/" + filename);
@@ -117,7 +129,7 @@ public final class MD5Service {
     }
 
     /**
-     *
+     * Get MD5 hash from a string.
      * @param password
      * @return
      */

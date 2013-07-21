@@ -7,7 +7,7 @@ package dblike.service;
 import java.util.Hashtable;
 
 /**
- *
+ * This class extends FileInfo and set the different bit. 
  * @author haijun
  */
 public class FileInfoDiff extends FileInfo{

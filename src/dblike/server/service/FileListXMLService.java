@@ -30,11 +30,16 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- *
+ * Helper class for FileList. 
  * @author haijun
  */
 public class FileListXMLService {
 
+    /**
+     * Save the fileList to an XML file. 
+     * @param filelist
+     * @throws IOException 
+     */
     public static void saveFileListToXML(FileListService filelist) throws IOException {
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -107,6 +112,11 @@ public class FileListXMLService {
         }
     }
 
+    /**
+     * Load fileList from an XML file.
+     * @param username
+     * @return 
+     */
     public static FileListService loadFileListFromXML(String username) {
         FileListService filelist = new FileListService(username);
         DocumentBuilderFactory domfac = DocumentBuilderFactory.newInstance();
@@ -201,7 +211,7 @@ public class FileListXMLService {
     }
 
     /**
-     *
+     * Load the configurations of server from an XML file. 
      * @return
      */
     public static boolean loadServerInfo() {
@@ -261,6 +271,9 @@ public class FileListXMLService {
         ;
     }
 
+    /**
+     * Deprecated. 
+     */
 //    public static String fileSyncServerServiceToXMLString() {
 //        String xmlstring = "";
 ////        if (fileinfo == null || fileinfo.getFileHashCode().isEmpty()) {

@@ -13,7 +13,7 @@ import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 
 /**
- *
+ * SFTP service class. 
  * @author JingboYu
  */
 public class SFTPService {
@@ -43,7 +43,7 @@ public class SFTPService {
     }
     
     /**
-     *
+     * Constructor.
      * @param sftpHost
      * @param sftpPort
      * @param userName
@@ -61,7 +61,7 @@ public class SFTPService {
     }
     
     /**
-     *
+     * Return a session. 
      * @return
      * @throws JSchException
      */
@@ -78,7 +78,7 @@ public class SFTPService {
     }
     
     /**
-     *
+     * Upload a file.
      * @param sourceFile
      * @param destinationFile
      * @return
@@ -100,7 +100,7 @@ public class SFTPService {
     }
     
     /**
-     *
+     * Download a file.
      * @param sourceFile
      * @param destinationFile
      * @throws JSchException
@@ -120,6 +120,12 @@ public class SFTPService {
         session.disconnect();
     }
     
+    /**
+     * Delete a file.
+     * @param file
+     * @throws JSchException
+     * @throws SftpException 
+     */
     public void deleteFile(String file) throws JSchException, SftpException
     {
         Session session = getSession();
@@ -135,7 +141,7 @@ public class SFTPService {
     }
     
     /**
-     *
+     * Upload a file. 
      * @param sourceFile
      * @param destinationFile
      * @return
@@ -159,7 +165,7 @@ public class SFTPService {
     }
     
     /**
-     *
+     * Download a file.
      * @param sourceFile
      * @param destinationFile
      * @throws JSchException
@@ -181,6 +187,13 @@ public class SFTPService {
         session.disconnect();
     }
     
+    /**
+     * Delete a file.
+     * @param file
+     * @param curRemoteDir
+     * @throws JSchException
+     * @throws SftpException 
+     */
     public void deleteFile(String file, String curRemoteDir) throws JSchException, SftpException
     {
         Session session = getSession();

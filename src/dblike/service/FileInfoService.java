@@ -30,7 +30,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- *
+ * This is a helper class for FileInfo conversion.
  * @author haijun
  */
 public class FileInfoService {
@@ -44,7 +44,7 @@ public class FileInfoService {
 
     
     /**
-     *
+     * Convert the fileInfo object to an XML string.
      * @param fileinfo
      * @return
      */
@@ -111,7 +111,7 @@ public class FileInfoService {
     }
 
     /**
-     *
+     * Parse an XML string and reconstruct a fileInfo object. 
      * @param xmlstring
      * @return
      */
@@ -166,6 +166,13 @@ public class FileInfoService {
         return fileinfo;
     }
 
+    /**
+     * Construct a fileInfo from a file. 
+     * @param directory
+     * @param filename
+     * @return
+     * @throws Exception 
+     */
     public static FileInfo getFileInfoByFileName(String directory, String filename) throws Exception {
         FileInfo fileInfo = new FileInfo();
         File file = new File(directory + "/" + filename);
@@ -192,6 +199,12 @@ public class FileInfoService {
         return fileInfo;
     }
 
+    /** 
+     * Get the absolute path for a relative path.
+     * @param pathName
+     * @return
+     * @throws Exception 
+     */
     public static String getAbsolutePathName(String pathName) throws Exception {
         File path = new File(pathName);
         String pathString = "";

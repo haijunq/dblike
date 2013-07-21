@@ -4,7 +4,6 @@
  */
 package dblike.service;
 
-
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
@@ -24,25 +23,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Watch folder change service class.
  *
  * @author JingboYu
  */
 public class WatchDirectoryService {
-    
+
     protected WatchService watcher;
-    protected Map<WatchKey,Path> keys;
+    protected Map<WatchKey, Path> keys;
     protected Path dir;
     protected boolean recursive;
     protected boolean trace = false;
-    
+
     /**
-     * Creates a WatchService and registers the given directory
+     * Creates a WatchService and registers the given directory.
      */
     public WatchDirectoryService(Path dir, boolean recursive) throws IOException {
-        
+
         this.dir = dir;
         this.watcher = FileSystems.getDefault().newWatchService();
-        this.keys = new HashMap<WatchKey,Path>();
+        this.keys = new HashMap<WatchKey, Path>();
         this.recursive = recursive;
 
         if (recursive) {
@@ -56,7 +56,7 @@ public class WatchDirectoryService {
         // enable trace after initial registration
         this.trace = true;
     }
-    
+
     public WatchService getWatcher() {
         return watcher;
     }
@@ -96,14 +96,14 @@ public class WatchDirectoryService {
     public void setTrace(boolean trace) {
         this.trace = trace;
     }
-    
+
     @SuppressWarnings("unchecked")
     protected static <T> WatchEvent<T> cast(WatchEvent<?> event) {
-        return (WatchEvent<T>)event;
+        return (WatchEvent<T>) event;
     }
-        
+
     /**
-     * Register the given directory with the WatchService
+     * Register the given directory with the WatchService.
      */
     protected void register(Path dir) throws IOException {
         WatchKey key = dir.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
@@ -129,8 +129,7 @@ public class WatchDirectoryService {
         Files.walkFileTree(start, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
-                throws IOException
-            {
+                    throws IOException {
                 register(dir);
                 return FileVisitResult.CONTINUE;
             }
@@ -138,7 +137,7 @@ public class WatchDirectoryService {
     }
 
     /**
-     * Process all events for keys queued to the watcher
+     * Process all events for keys queued to the watcher.
      */
     public void processEvents() {
         for (;;) {
@@ -157,7 +156,7 @@ public class WatchDirectoryService {
                 continue;
             }
 
-            for (WatchEvent<?> event: key.pollEvents()) {
+            for (WatchEvent<?> event : key.pollEvents()) {
                 WatchEvent.Kind kind = event.kind();
 
                 // TBD - provide example of how OVERFLOW event is handled
@@ -198,5 +197,4 @@ public class WatchDirectoryService {
             }
         }
     }
-
 }

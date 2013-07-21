@@ -41,7 +41,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- *
+ * Contains all information an active client.
  * @author wenhanwu
  */
 public class ClientConfig {
@@ -75,6 +75,11 @@ public class ClientConfig {
         return availableServer;
     }
 
+    /**
+     * Try to connect a server. 
+     * @param ip
+     * @param port 
+     */
     public static void tryToConect(String ip, int port) {
         try {
             ServerAPI server;
@@ -139,6 +144,14 @@ public class ClientConfig {
         myFileList = fileList;
     }
 
+    /**
+     * Initialize a current client object. 
+     * @param aClientID
+     * @param aDeviceID
+     * @param aFolderPath
+     * @param aIP
+     * @param aPort 
+     */
     public static void initCurrentClient(String aClientID, String aDeviceID, String aFolderPath, String aIP, String aPort) {
         getCurrentClient().setClientID(aClientID);
         getCurrentClient().setDeviceID(aDeviceID);
@@ -148,7 +161,7 @@ public class ClientConfig {
     }
 
     /**
-     *
+     * Load the current user from an XML file. 
      * @return
      */
     public static boolean loadCurrentUser() throws Exception {
@@ -241,7 +254,7 @@ public class ClientConfig {
     }
 
     /**
-     *
+     * Load the server lists from an XML file. 
      * @return
      */
     public static boolean loadServerList() {
@@ -301,6 +314,9 @@ public class ClientConfig {
         }
     }
 
+    /**
+     * Save the FileList to an XML file. 
+     */
     public static void saveFileListToXML() {
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -362,6 +378,10 @@ public class ClientConfig {
         }
     }
 
+    /**
+     * Load fileList from an XML file. 
+     * @return 
+     */
     public static FileListService loadFileListFromXML() {
         DocumentBuilderFactory domfac = DocumentBuilderFactory.newInstance();
         try {

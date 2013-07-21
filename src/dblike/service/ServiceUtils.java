@@ -5,8 +5,8 @@
 package dblike.service;
 
 /**
- *
- * @author JingboYu
+ * This file defines constants for SFTP service. 
+ * @author JingboYu 
  */
 public class ServiceUtils {
     
@@ -14,7 +14,6 @@ public class ServiceUtils {
     public static int SFTP_PORT = 22;
     public static String SFTP_USERNAME = "ec2-user";
     public static String SFTP_PASSWORD = "";
-    //public static String SFTP_PRIVATE_KEY = "E:\\Dropbox\\Course\\CICS525\\dblike\\misc\\CICS525-G5.ppk";
     public static String SFTP_PRIVATE_KEY = "./key/CICS525-G5.ppk";
     
 }

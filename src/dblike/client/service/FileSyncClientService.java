@@ -524,6 +524,7 @@ public class FileSyncClientService implements Runnable {
                     System.out.println("file was modified: " + fileName);
                 } else if (e.kind() == StandardWatchEventKinds.ENTRY_DELETE) {
                     if (!this.isFolderChangeFromServer(directoryName, fileName)) {
+                        System.out.println("Deletion comes from local.....");
                         this.syncDeletedFileToServer(ClientConfig.getCurrentClient().getClientID(), directoryName, fileName);
                     }
                     System.out.println("file was deleted: " + fileName);
