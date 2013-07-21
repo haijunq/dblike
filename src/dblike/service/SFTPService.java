@@ -11,6 +11,8 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
+import java.io.File;
+import java.util.Vector;
 
 /**
  *
@@ -177,6 +179,57 @@ public class SFTPService {
         sftpChannel.cd(curRemoteDir);
         sftpChannel.lcd(curLocalDir);
         sftpChannel.get(sourceFile, destinationFile);
+        sftpChannel.exit();
+        session.disconnect();
+    }
+    
+    public void downloadDirectory(String sourceDir, String destinationDir, String curLocalDir, String curRemoteDir) throws JSchException, SftpException {
+        
+        Session session = getSession();
+        
+        Channel channel = session.openChannel("sftp");
+        channel.connect();
+        //        System.out.println("Channel connected!");
+        
+        ChannelSftp sftpChannel = (ChannelSftp) channel;
+        
+        System.out.println("mkdir: " + destinationDir);
+        (new File(destinationDir)).mkdirs();
+        
+        sftpChannel.cd(curRemoteDir);
+        sftpChannel.lcd(curLocalDir);
+        
+        
+        Vector<ChannelSftp.LsEntry> list = sftpChannel.ls(sourceDir);
+        for (ChannelSftp.LsEntry entry : list) {
+            String fileName = entry.getFilename();
+            SftpATTRS attr = entry.getAttrs();
+//            System.out.println("file name: " + fileName + " is dir: " + attr.isDir());
+            if (attr.isDir())
+            {
+                if (fileName.equals(".") || fileName.equals(".."))
+                    continue;
+//                System.out.println("mkdir: " + sourceDir + "/" + fileName);
+                (new File(destinationDir + "/" + fileName)).mkdirs();
+                Vector<ChannelSftp.LsEntry> subList = sftpChannel.ls(sourceDir + "/" + fileName);
+                for (ChannelSftp.LsEntry subEntry : subList)
+                {
+                    String subFileName = subEntry.getFilename();
+                    SftpATTRS subAttr = subEntry.getAttrs();
+//                    System.out.println("file name: " + subFileName + " is dir: " + subAttr.isDir());
+                    if (subAttr.isDir())
+                        continue;
+                    String srcFile = sourceDir + "/" + fileName + "/" + subFileName;
+                    String dstFile = destinationDir + "/" + fileName + "/" + subFileName;
+                    sftpChannel.get(srcFile, dstFile);
+                }
+            }
+            else
+            {
+                sftpChannel.get(sourceDir + "/" + fileName, destinationDir + "/" + fileName);
+            }
+        }
+        
         sftpChannel.exit();
         session.disconnect();
     }
