@@ -41,6 +41,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
+ * This class defines static variables which is needed by the client part.
  *
  * @author wenhanwu
  */
@@ -52,6 +53,11 @@ public class ClientConfig {
     private static int currentServerIndex;
     private static boolean availableFlag = true;
 
+    /**
+     * Pick up an available server, and return the index.
+     *
+     * @return
+     */
     public static int pickupAvailableServer() {
         int availableServer = -1;
         availableFlag = true;
@@ -75,6 +81,12 @@ public class ClientConfig {
         return availableServer;
     }
 
+    /**
+     * This is the method to try to connect to a given server.
+     *
+     * @param ip
+     * @param port
+     */
     public static void tryToConect(String ip, int port) {
         try {
             ServerAPI server;
@@ -148,6 +160,7 @@ public class ClientConfig {
     }
 
     /**
+     * This is to load the information of the current user from the xml file.
      *
      * @return
      */
@@ -241,6 +254,7 @@ public class ClientConfig {
     }
 
     /**
+     * This is to load all of other servers' information.
      *
      * @return
      */
@@ -301,6 +315,9 @@ public class ClientConfig {
         }
     }
 
+    /**
+     * This is to save the file table to the xml file.
+     */
     public static void saveFileListToXML() {
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -362,6 +379,11 @@ public class ClientConfig {
         }
     }
 
+    /**
+     * This is to load the file table information from the xml file.
+     *
+     * @return
+     */
     public static FileListService loadFileListFromXML() {
         DocumentBuilderFactory domfac = DocumentBuilderFactory.newInstance();
         try {
