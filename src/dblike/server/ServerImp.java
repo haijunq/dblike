@@ -14,6 +14,7 @@ import dblike.server.service.FileListXMLService;
 import dblike.server.service.FileSyncServerService;
 import dblike.server.service.UserListXMLReader;
 import dblike.service.FileInfoService;
+import java.io.IOException;
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -134,6 +135,14 @@ public class ServerImp implements ServerAPI {
     
     public void printMsg() throws RemoteException {
         System.out.println("printMsg() in ServerImp!");
+    }
+    
+    public void saveFileListHashtable() throws RemoteException {
+        try {
+            FileSyncServerService.saveFileListHashtable();
+        } catch (IOException ex) {
+            Logger.getLogger(ServerImp.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
 //    public Hashtable<String, FileListService> getFileListHashtableFromServer() throws RemoteException {
