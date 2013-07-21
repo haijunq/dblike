@@ -85,6 +85,11 @@ public class ServerStart {
         registry = aRegistry;
     }
 
+    /**
+     * Delete all the file in local server.
+     * @param file
+     * @throws IOException 
+     */
     public static void delete(File file) throws IOException {
 
         if (file.isDirectory()) {
@@ -124,6 +129,13 @@ public class ServerStart {
         }
     }
 
+    /**
+     * Synchronize all the files and fileInfo with an online server. 
+     * @param directory
+     * @throws RemoteException
+     * @throws JSchException
+     * @throws SftpException 
+     */
     public static void syncWithAServer(String directory) throws RemoteException, JSchException, SftpException {
         // sync with an active server (any one is fine)
         Vector<ActiveServer> activeServerList = ActiveServerListServer.getActiveServerList();
@@ -137,13 +149,13 @@ public class ServerStart {
                     activeServer.setServerAPI((ServerAPI) (activeServer.getRegistry()).lookup("serverUtility"));
                 } catch (NotBoundException ex) {
                 }
-try {
+                try {
 
-                delete(new File(directory));
+                    delete(new File(directory));
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            } 
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 System.out.println("Saving xml filelist for server " + activeServer.getServerIP());
                 ServerAPI serverAPI = activeServer.getServerAPI();
                 System.out.println("Before serverAPI call.");
@@ -162,7 +174,7 @@ try {
     /**
      * This is the main method, the entry for the server.
      *     
-* @param args
+     * @param args
      */
     public static void main(String args[]) {
         try {
@@ -200,14 +212,11 @@ try {
 
             String directory = "/home/ec2-user/users";
             boolean isRecursive = true;
-            
-            
-            System.out.println("Just before the main thread.");
+
             syncWithAServer(directory);
             FileSyncServerService fileSyncServer = new FileSyncServerService(Paths.get(directory), isRecursive);
             Thread fileSyncServerThread = new Thread(fileSyncServer);
             fileSyncServerThread.start();
-            System.out.println("Just after the main thread");
 
         } catch (Exception e) {
             System.out.println(e);

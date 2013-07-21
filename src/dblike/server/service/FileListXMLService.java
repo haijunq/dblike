@@ -272,7 +272,7 @@ public class FileListXMLService {
     }
 
     /**
-     * Deprecated. 
+     * Deprecated, convert the filelist to xml string. 
      */
 //    public static String fileSyncServerServiceToXMLString() {
 //        String xmlstring = "";

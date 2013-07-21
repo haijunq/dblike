@@ -1,7 +1,7 @@
 /*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
-*/
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package dblike.client.service;
 
 import dblike.api.ServerAPI;
@@ -41,10 +41,10 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
-* This class defines static variables which is needed by the client part.
-*
+ * This class defines static variables which is needed by the client part.
+ * 
 * @author wenhanwu
-*/
+ */
 public class ClientConfig {
 
     private static CurrentClient currentClient = new CurrentClient();
@@ -54,22 +54,21 @@ public class ClientConfig {
     private static boolean availableFlag = true;
 
     /**
-* Pick up an available server, and return the index.
-*
-* @return
-*/
+     * Pick up an available server, and return the index.
+     * @return 
+     */
     public static int pickupAvailableServer() {
         int availableServer = -1;
         availableFlag = true;
-// for (int i = 0; i < ServerList.size(); i++) {
-// System.out.println(ServerList.get(i).getServerIP()+":"+ServerList.get(i).getPort());
-// }
+        // for (int i = 0; i < ServerList.size(); i++) {
+        // System.out.println(ServerList.get(i).getServerIP()+":"+ServerList.get(i).getPort());
+        // }
         for (int i = 0; i < ServerList.size(); i++) {
             Client.setTestFlag(0);
             ActiveServer aServer = ServerList.get(i);
             tryToConect(aServer.getServerIP(), aServer.getPort());
-// System.out.println(availableFlag);
-// System.out.println(Client.getTestFlag());
+            // System.out.println(availableFlag);
+            // System.out.println(Client.getTestFlag());
             if (availableFlag) {
                 availableServer = i;
                 break;
@@ -82,63 +81,63 @@ public class ClientConfig {
     }
 
     /**
-* This is the method to try to connect to a given server.
-*
-* @param ip
-* @param port
-*/
+     * This is the method to try to connect to a given server.
+     *     
+     * @param ip
+     * @param port
+     */
     public static void tryToConect(String ip, int port) {
         try {
             ServerAPI server;
             Registry registry;
             registry = LocateRegistry.getRegistry(ip, port);
             server = (ServerAPI) registry.lookup("serverUtility");
-// String bindParam = "clientUtility" + ClientConfig.getCurrentClient().getClientID() + ClientConfig.getCurrentClient().getDeviceID() + ClientConfig.getCurrentClient().getIp() + ClientConfig.getCurrentClient().getPort();
-// System.out.println(bindParam);
-// server.actClient(bindParam, ip, port);
+            // String bindParam = "clientUtility" + ClientConfig.getCurrentClient().getClientID() + ClientConfig.getCurrentClient().getDeviceID() + ClientConfig.getCurrentClient().getIp() + ClientConfig.getCurrentClient().getPort();
+            // System.out.println(bindParam);
+            // server.actClient(bindParam, ip, port);
         } catch (Exception ex) {
             availableFlag = false;
         }
     }
 
     /**
-* @return the currentServerIndex
-*/
+     * @return the currentServerIndex
+     */
     public static int getCurrentServerIndex() {
         return currentServerIndex;
     }
 
     /**
-* @param aCurrentServerIndex the currentServerIndex to set
-*/
+     * @param aCurrentServerIndex the currentServerIndex to set
+     */
     public static void setCurrentServerIndex(int aCurrentServerIndex) {
         currentServerIndex = aCurrentServerIndex;
     }
 
     /**
-* @return the currentClient
-*/
+     * @return the currentClient
+     */
     public static CurrentClient getCurrentClient() {
         return currentClient;
     }
 
     /**
-* @param aCurrentClient the currentClient to set
-*/
+     * @param aCurrentClient the currentClient to set
+     */
     public static void setCurrentClient(CurrentClient aCurrentClient) {
         currentClient = aCurrentClient;
     }
 
     /**
-* @return the ServerList
-*/
+     * @return the ServerList
+     */
     public static Vector<ActiveServer> getServerList() {
         return ServerList;
     }
 
     /**
-* @param aServerList the ServerList to set
-*/
+     * @param aServerList the ServerList to set
+     */
     public static void setServerList(Vector<ActiveServer> aServerList) {
         ServerList = aServerList;
     }
@@ -160,10 +159,10 @@ public class ClientConfig {
     }
 
     /**
-* This is to load the information of the current user from the xml file.
-*
-* @return
-*/
+     * This is to load the information of the current user from the xml file.
+     *     
+     * @return
+     */
     public static boolean loadCurrentUser() throws Exception {
         DocumentBuilderFactory domfac = DocumentBuilderFactory.newInstance();
         try {
@@ -254,10 +253,10 @@ public class ClientConfig {
     }
 
     /**
-* This is to load all of other servers' information.
-*
-* @return
-*/
+     * This is to load all of other servers' information.
+     *     
+     * @return
+     */
     public static boolean loadServerList() {
         DocumentBuilderFactory domfac = DocumentBuilderFactory.newInstance();
         try {
@@ -316,8 +315,8 @@ public class ClientConfig {
     }
 
     /**
-* This is to save the file table to the xml file.
-*/
+     * This is to save the file table to the xml file.
+     */
     public static void saveFileListToXML() {
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -380,10 +379,10 @@ public class ClientConfig {
     }
 
     /**
-* This is to load the file table information from the xml file.
-*
-* @return
-*/
+     * This is to load the file table information from the xml file.
+     *     
+     * @return
+     */
     public static FileListService loadFileListFromXML() {
         DocumentBuilderFactory domfac = DocumentBuilderFactory.newInstance();
         try {
@@ -398,7 +397,7 @@ public class ClientConfig {
                     getMyFileList().setPathname(pathNameNode.getFirstChild().getNodeValue());
                 }
 
-// System.out.println(fileInfoNode.getNodeName());
+                // System.out.println(fileInfoNode.getNodeName());
                 for (Node fileInfoNode = pathNameNode.getNextSibling(); fileInfoNode != null; fileInfoNode = fileInfoNode.getNextSibling()) {
                     FileInfo fileinfo = new FileInfo();
                     if (fileInfoNode.hasChildNodes()) {

@@ -405,9 +405,9 @@ public class FileSyncClientService implements Runnable {
     public synchronized void syncDeletedFileToServer(String userName, String directory, String fileName) throws RemoteException, JSchException, SftpException, Exception {
         System.out.println("Func: syncDeletedFileToServer");
         this.updateLocalFileInfo(userName, directory, fileName);
-        System.out.println(ClientConfig.getMyFileList().getFileInfo(fileName));
-
         FileInfoDiff diff = compareToServerFileInfo(userName, directory, fileName);
+        System.out.println("diff.flag = " + diff.getFlag());
+        System.out.println("Local fileInfo -> "+ClientConfig.getMyFileList().getFileInfo(fileName));       
         if (diff.getFlag() == 1) {
             this.uploadDeletedFileToServer(userName, directory, fileName);
             this.updateFileInfoToServer(userName, directory, fileName, ClientConfig.getMyFileList().getFileInfo(fileName));
@@ -417,7 +417,7 @@ public class FileSyncClientService implements Runnable {
             this.syncCreatedFileFromServer(userName, directory, fileName);
             this.updateFileInfoFromServer(userName, directory, fileName);
         }
-        System.out.println(ClientConfig.getMyFileList());
+//        System.out.println(ClientConfig.getMyFileList());
     }
 
     /**
@@ -448,6 +448,7 @@ public class FileSyncClientService implements Runnable {
      * @throws SftpException
      */
     public synchronized static void syncModifiedFileFromServer(String userName, String directory, String fileName) throws JSchException, RemoteException, SftpException, Exception {
+        System.out.println("Func: syncModifiedFileFromServer");
         syncCreatedFileFromServer(userName, directory, fileName);
     }
 
@@ -462,7 +463,9 @@ public class FileSyncClientService implements Runnable {
      * @throws SftpException
      */
     public synchronized static void syncDeletedFileFromServer(String userName, String directory, String fileName) throws JSchException, RemoteException, SftpException, Exception {
+        System.out.println("Func: syncDeletedFileFromServer body1");
         updateFileInfoFromServer(userName, directory, fileName);
+        System.out.println("Func: syncDeletedFileFromServer body2");
         deleteFile(directory, fileName);
     }
 
