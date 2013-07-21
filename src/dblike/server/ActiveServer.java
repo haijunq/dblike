@@ -132,7 +132,7 @@ public class ActiveServer {
         this.serverID = aServerID;
         this.serverIP = aClientIP;
         this.port = aPort;
-        this.status = InternetUtil.getOK();
+        this.status = InternetUtil.getOK()-1;
         this.isConnect = 0;
     }
 }
