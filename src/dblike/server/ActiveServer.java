@@ -132,7 +132,8 @@ public class ActiveServer {
         this.serverID = aServerID;
         this.serverIP = aClientIP;
         this.port = aPort;
-        this.status = InternetUtil.getOK()-1;
+        //This is for init the status, will be set back if alive
+        this.status = InternetUtil.getOK() - 1;
         this.isConnect = 0;
     }
 }
