@@ -4,14 +4,21 @@ package dblike.server;
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.SftpException;
 import dblike.api.ClientAPI;
 import dblike.api.ServerAPI;
+import dblike.server.service.ActiveServerListServer;
 import dblike.server.service.ClientListenerServer;
 import dblike.server.service.FileListXMLService;
 import dblike.server.service.FileSyncServerService;
 import dblike.server.service.ServerListenerServer;
 import dblike.server.service.SyncActionServer;
 import dblike.service.InternetUtil;
+import dblike.service.SFTPService;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,13 +28,14 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * This is the main class for the server, server program will start from here.
- *
- * @author wenhanwu
+ * 
+* @author wenhanwu
  */
 public class ServerStart {
 
@@ -77,10 +85,84 @@ public class ServerStart {
         registry = aRegistry;
     }
 
+    public static void delete(File file) throws IOException {
+
+        if (file.isDirectory()) {
+
+            //directory is empty, then delete it
+            if (file.list().length == 0) {
+
+                file.delete();
+                System.out.println("Directory is deleted : "
+                        + file.getAbsolutePath());
+
+            } else {
+
+                //list all the directory contents
+                String files[] = file.list();
+
+                for (String temp : files) {
+                    //construct the file structure
+                    File fileDelete = new File(file, temp);
+
+                    //recursive delete
+                    delete(fileDelete);
+                }
+
+                //check the directory again, if empty then delete it
+                if (file.list().length == 0) {
+                    file.delete();
+                    System.out.println("Directory is deleted : "
+                            + file.getAbsolutePath());
+                }
+            }
+
+        } else {
+            //if file, then delete it
+            file.delete();
+            System.out.println("File is deleted : " + file.getAbsolutePath());
+        }
+    }
+
+    public static void syncWithAServer(String directory) throws RemoteException, JSchException, SftpException {
+        // sync with an active server (any one is fine)
+        Vector<ActiveServer> activeServerList = ActiveServerListServer.getActiveServerList();
+        System.out.println("active server list size: " + activeServerList.size());
+        for (ActiveServer activeServer : activeServerList) {
+
+            if (!ServerStart.getServerIP().equals(activeServer.getServerIP()) && activeServer.isIsConnect() == 1) {
+
+                try {
+                    activeServer.setRegistry(LocateRegistry.getRegistry(activeServer.getServerIP(), activeServer.getPort()));
+                    activeServer.setServerAPI((ServerAPI) (activeServer.getRegistry()).lookup("serverUtility"));
+                } catch (NotBoundException ex) {
+                }
+try {
+
+                delete(new File(directory));
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } 
+                System.out.println("Saving xml filelist for server " + activeServer.getServerIP());
+                ServerAPI serverAPI = activeServer.getServerAPI();
+                System.out.println("Before serverAPI call.");
+                serverAPI.saveFileListHashtable();
+                System.out.println("downloading from server " + activeServer.getServerIP() + " on dir " + directory);
+
+
+
+                SFTPService sftpService = new SFTPService(activeServer.getServerIP());
+                sftpService.downloadDirectory(directory, directory, directory, directory);
+                break;
+            }
+        }
+    }
+
     /**
      * This is the main method, the entry for the server.
-     *
-     * @param args
+     *     
+* @param args
      */
     public static void main(String args[]) {
         try {
@@ -115,12 +197,17 @@ public class ServerStart {
             } catch (InterruptedException ex) {
                 Logger.getLogger(ClientListenerServer.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
             String directory = "/home/ec2-user/users";
             boolean isRecursive = true;
+            
+            
+            System.out.println("Just before the main thread.");
+            syncWithAServer(directory);
             FileSyncServerService fileSyncServer = new FileSyncServerService(Paths.get(directory), isRecursive);
             Thread fileSyncServerThread = new Thread(fileSyncServer);
             fileSyncServerThread.start();
+            System.out.println("Just after the main thread");
 
         } catch (Exception e) {
             System.out.println(e);

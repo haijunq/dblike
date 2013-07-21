@@ -1,9 +1,9 @@
 package dblike.api;
 
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+* To change this template, choose Tools | Templates
+* and open the template in the editor.
+*/
 import dblike.server.ActiveClient;
 import dblike.server.service.FileListService;
 import dblike.service.FileInfo;
@@ -11,9 +11,9 @@ import java.rmi.*;
 import java.util.Hashtable;
 
 /**
- * Server API.
- * @author wenhanwu
- */
+*
+* @author wenhanwu
+*/
 public interface ServerAPI extends Remote {
 
     public boolean addClient(String clientID, String deviceID, String clientIP, int clientPort) throws RemoteException;
@@ -38,8 +38,18 @@ public interface ServerAPI extends Remote {
 
     public void setFileInfoToServer(String serverIP, int port, String userName, String directory, String fileName, String fileInfoXML) throws RemoteException;
  
+// public FileInfo getFileInfoFromClient(String serverIP, int port, String userName, String directory, String fileName) throws RemoteException;
+//
+// public void setFileInfoToClient(String serverIP, int port, String userName, String directory, String fileName, FileInfo fileInfo) throws RemoteException;
+
     public boolean validateUser(String userID, String hashedPassword) throws RemoteException;
     
     public void printMsg() throws RemoteException;
     
+    public void saveFileListHashtable() throws RemoteException;
+    
+// public FileListService getFileListServiceFromServer(String pathName) throws RemoteException;
+//
+// public Hashtable<String, FileListService> getFileListHashtableFromServer() throws RemoteException;
 }
+

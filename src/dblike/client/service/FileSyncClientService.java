@@ -501,20 +501,20 @@ public class FileSyncClientService implements Runnable {
                 Thread.sleep(1000);
 
                 if (e.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
-                    if (!this.isFolderChangeFromServer(directoryName, fileName)) {
+//                    if (!this.isFolderChangeFromServer(directoryName, fileName)) {
                         this.syncCreatedFileToServer(ClientConfig.getCurrentClient().getClientID(), directoryName, fileName);
-                    }
+//                    }
                     System.out.println("directory: " + directory.getParent() + " file was created: " + fileName);
                 } else if (e.kind() == StandardWatchEventKinds.ENTRY_MODIFY) {
-                    if (!this.isFolderChangeFromServer(directoryName, fileName)) {
+//                    if (!this.isFolderChangeFromServer(directoryName, fileName)) {
                         this.syncModifiedFileToServer(ClientConfig.getCurrentClient().getClientID(), directoryName, fileName);
-                    }
+//                    }
                     System.out.println("file was modified: " + fileName);
                 } else if (e.kind() == StandardWatchEventKinds.ENTRY_DELETE) {
-                    if (!this.isFolderChangeFromServer(directoryName, fileName)) {
+//                    if (!this.isFolderChangeFromServer(directoryName, fileName)) {
                         System.out.println("Deletion comes from local.....");
                         this.syncDeletedFileToServer(ClientConfig.getCurrentClient().getClientID(), directoryName, fileName);
-                    }
+//                    }
                     System.out.println("file was deleted: " + fileName);
                 } else if (e.kind() == StandardWatchEventKinds.OVERFLOW) {
                     System.out.println("overflow occurred");

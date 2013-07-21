@@ -124,6 +124,7 @@ public class ActiveServerListServer {
             return false;
         } else {
             ActiveServerList.get(position).setStatus(InternetUtil.getOK());
+            ActiveServerList.get(position).setIsConnect(1);
             return true;
         }
     }
