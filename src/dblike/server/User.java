@@ -5,7 +5,7 @@
 package dblike.server;
 
 /**
- *
+ * User in the server side, deprecated. 
  * @author wenhanwu
  */
 public class User {
@@ -41,8 +41,14 @@ public class User {
     public void setDeviceID(String deviceID) {
         this.deviceID = deviceID;
     }
- 
 
+    /**
+     * Constructor. 
+     * @param aUserID
+     * @param aDeviceID
+     * @param aUserIP
+     * @param aPort 
+     */
     public User(String aUserID, String aDeviceID, String aUserIP, int aPort) {
         this.userID = aUserID;
         this.deviceID = aDeviceID; 
