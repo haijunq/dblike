@@ -1,2 +1,2 @@
 Default:
-	javac -d ./bin ./src/dblike/server/*.java ./src/dblike/server/service/*.java ./src/dblike/api/*.java ./src/dblike/client/*.java ./src/dblike/client/service/*.java ./src/dblike/service/*.java -classpath ./lib/*.jar
+	javac -classpath :./lib/joda-time-2.2.jar:./lib/jsch-0.1.50.jar:./lib/slf4j-jdk14-1.5.2.jar:./lib/joda-time-2.2-javadoc.jar:./lib/mina-core-2.0.5.jar:./lib/sshd-core-0.8.0.jar:./lib/joda-time-2.2-sources.jar:./lib/slf4j-api-1.5.2.jar  -d ./bin  ./src/dblike/server/*.java ./src/dblike/server/service/*.java ./src/dblike/api/*.java ./src/dblike/client/*.java ./src/dblike/client/service/*.java ./src/dblike/service/*.java
