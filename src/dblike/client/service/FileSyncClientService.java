@@ -151,12 +151,12 @@ public class FileSyncClientService implements Runnable {
      * @throws JSchException
      * @throws SftpException
      */
-    public synchronized static void createFile(String directory, String fileName, FileInfo fileInfo) throws JSchException, SftpException {
+    public synchronized static void createFile(String directory, String fileName, FileInfo fileInfo) throws JSchException, SftpException, Exception {
         //download all file segments to ./tmp/download/ and merge to single file
         // for now download the file from server directly
         initSftpService();
         String dstFilePath = ClientConfig.getCurrentClient().getFolderPath() + "/" + fileName;
-        String srcFilePath = "./users/" + ClientConfig.getCurrentClient().getClientID() + "/" + fileName;
+        String srcFilePath = FileInfoService.getSERVER_USERS_FOLDER() + ClientConfig.getCurrentClient().getClientID() + "/" + fileName;
         sftpService.downloadFile(srcFilePath, dstFilePath);
     }
 
@@ -169,7 +169,7 @@ public class FileSyncClientService implements Runnable {
      * @throws JSchException
      * @throws SftpException
      */
-    public synchronized static void modifieFile(String directory, String fileName, FileInfoDiff diff) throws JSchException, SftpException {
+    public synchronized static void modifieFile(String directory, String fileName, FileInfoDiff diff) throws JSchException, SftpException, Exception {
         createFile(directory, fileName, diff);
     }
 
