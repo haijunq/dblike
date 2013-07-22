@@ -77,7 +77,7 @@ public class FileSyncClientService implements Runnable {
         System.out.println("Registered watchService on " + directory);
 
 //        updateAllLocalFileInfo(directory);
-//        FileListXMLService.saveFileListToXML(ClientConfig.getMyFileList());   // for debug
+        FileListXMLService.saveFileListToXML(ClientConfig.getMyFileList());   // for debug
         initSftpService();
     }
 
@@ -248,7 +248,7 @@ public class FileSyncClientService implements Runnable {
         System.out.println("initial FileList: " + ClientConfig.getMyFileList());
         File dir = new File(directory);
         HashSet<String> curfiles = new HashSet<String>(Arrays.asList(dir.list()));
-        
+
         // for deleted files
         if (!ClientConfig.getMyFileList().getFileHashTable().isEmpty()) {
             for (String oldfile : ClientConfig.getMyFileList().getFileHashTable().keySet()) {
@@ -407,7 +407,7 @@ public class FileSyncClientService implements Runnable {
         this.updateLocalFileInfo(userName, directory, fileName);
         FileInfoDiff diff = compareToServerFileInfo(userName, directory, fileName);
         System.out.println("diff.flag = " + diff.getFlag());
-        System.out.println("Local fileInfo -> "+ClientConfig.getMyFileList().getFileInfo(fileName));       
+        System.out.println("Local fileInfo -> " + ClientConfig.getMyFileList().getFileInfo(fileName));
         if (diff.getFlag() == 1) {
             this.uploadDeletedFileToServer(userName, directory, fileName);
             this.updateFileInfoToServer(userName, directory, fileName, ClientConfig.getMyFileList().getFileInfo(fileName));
@@ -505,18 +505,18 @@ public class FileSyncClientService implements Runnable {
 
                 if (e.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
 //                    if (!this.isFolderChangeFromServer(directoryName, fileName)) {
-                        this.syncCreatedFileToServer(ClientConfig.getCurrentClient().getClientID(), directoryName, fileName);
+                    this.syncCreatedFileToServer(ClientConfig.getCurrentClient().getClientID(), directoryName, fileName);
 //                    }
                     System.out.println("directory: " + directory.getParent() + " file was created: " + fileName);
                 } else if (e.kind() == StandardWatchEventKinds.ENTRY_MODIFY) {
 //                    if (!this.isFolderChangeFromServer(directoryName, fileName)) {
-                        this.syncModifiedFileToServer(ClientConfig.getCurrentClient().getClientID(), directoryName, fileName);
+                    this.syncModifiedFileToServer(ClientConfig.getCurrentClient().getClientID(), directoryName, fileName);
 //                    }
                     System.out.println("file was modified: " + fileName);
                 } else if (e.kind() == StandardWatchEventKinds.ENTRY_DELETE) {
 //                    if (!this.isFolderChangeFromServer(directoryName, fileName)) {
-                        System.out.println("Deletion comes from local.....");
-                        this.syncDeletedFileToServer(ClientConfig.getCurrentClient().getClientID(), directoryName, fileName);
+                    System.out.println("Deletion comes from local.....");
+                    this.syncDeletedFileToServer(ClientConfig.getCurrentClient().getClientID(), directoryName, fileName);
 //                    }
                     System.out.println("file was deleted: " + fileName);
                 } else if (e.kind() == StandardWatchEventKinds.OVERFLOW) {
@@ -524,6 +524,7 @@ public class FileSyncClientService implements Runnable {
                     continue;
                 }
 
+                FileListXMLService.saveFileListToXML(ClientConfig.getMyFileList());
 
                 boolean valid = key.reset();
                 if (!valid) {

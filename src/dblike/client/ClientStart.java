@@ -30,6 +30,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
@@ -90,20 +91,19 @@ public class ClientStart {
     }
 
     public static void downloadFileListFromConnectedServer() throws RemoteException, JSchException, SftpException, Exception {
-        
+
         if (ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerAPI() == null) {
             try {
                 ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).setRegistry(
-                        LocateRegistry.getRegistry(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(), 
+                        LocateRegistry.getRegistry(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(),
                         ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getPort()));
-                ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).setServerAPI((ServerAPI) 
-                        (ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getRegistry()).lookup("serverUtility"));
+                ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).setServerAPI((ServerAPI) (ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getRegistry()).lookup("serverUtility"));
             } catch (NotBoundException ex) {
             }
         }
-        
-        ServerAPI server = ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerAPI();        
-        
+
+        ServerAPI server = ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerAPI();
+
         server.saveFileListHashtable();
 
         SFTPService sftpService = new SFTPService(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP());
@@ -114,29 +114,65 @@ public class ClientStart {
         FileSyncClientService.updateAllLocalFileInfo(ClientConfig.getCurrentClient().getFolderPath());
         Hashtable<String, FileInfo> fileListThis = ClientConfig.getMyFileList().getFileHashTable();
         Hashtable<String, FileInfo> fileListThat = FileListXMLService.loadFileListFromXML(FileInfoService.getSERVER_USERS_FOLDER() + ClientConfig.getCurrentClient().getClientID() + "/").getFileHashTable();
+        System.out.println("fileListThis.size = " + fileListThis.size());
+        System.out.println("fileListThat.size = " + fileListThat.size());
         Hashtable<String, FileInfoDiff> diffList = compareFileLists(fileListThis, fileListThat);
-
+        System.out.println("diffList.size = " + diffList.size());
+        
         for (String key : diffList.keySet()) {
+            System.out.println("file: " + key + "    diff.flag = " + diffList.get(key).getFlag());
+            System.out.println("thiscontains? " + key + " " + fileListThis.keySet().contains(key));
+            System.out.println("thatcontains? " + key + " " + fileListThat.keySet().contains(key));
+
             if (diffList.get(key).getFlag() == 1) {
-                FileSyncClientService.uploadCreatedFileToServer(ClientConfig.getCurrentClient().getClientID(),
-                        ClientConfig.getCurrentClient().getFolderPath(), key);
-                FileSyncClientService.updateFileInfoToServer(ClientConfig.getCurrentClient().getClientID(),
-                        ClientConfig.getCurrentClient().getFolderPath(), key, diffList.get(key));
+
+                if (fileListThis.keySet().contains(key) && fileListThat.keySet().contains(key)) {
+                    if (!fileListThis.get(key).getFileHashCode().isEmpty()) {
+                        FileSyncClientService.uploadCreatedFileToServer(ClientConfig.getCurrentClient().getClientID(),
+                                "./users/" + ClientConfig.getCurrentClient().getClientID() + "/", key);
+                        FileSyncClientService.updateFileInfoToServer(ClientConfig.getCurrentClient().getClientID(),
+                                "./users/" + ClientConfig.getCurrentClient().getClientID() + "/", key, diffList.get(key));
+                        System.out.println("After update fileInfo to Server.");
+                    }
+                }
+
+                if (fileListThis.keySet().contains(key) && !fileListThat.keySet().contains(key)) {
+                    if (!fileListThis.get(key).getFileHashCode().isEmpty()) {
+                        FileSyncClientService.uploadCreatedFileToServer(ClientConfig.getCurrentClient().getClientID(),
+                                "./users/" + ClientConfig.getCurrentClient().getClientID() + "/", key);
+                        FileSyncClientService.updateFileInfoToServer(ClientConfig.getCurrentClient().getClientID(),
+                                "./users/" + ClientConfig.getCurrentClient().getClientID() + "/", key, diffList.get(key));
+                        System.out.println("After update fileInfo to Server.");
+                    }
+                }
+                if (!fileListThis.keySet().contains(key) && fileListThat.keySet().contains(key)) {
+                    if (fileListThat.get(key).getFileHashCode().isEmpty()) {
+                        FileSyncClientService.syncCreatedFileFromServer(ClientConfig.getCurrentClient().getClientID(),
+                                "./users/" + ClientConfig.getCurrentClient().getClientID() + "/", key);
+                        FileSyncClientService.updateFileInfoFromServer(ClientConfig.getCurrentClient().getClientID(),
+                                "./users/" + ClientConfig.getCurrentClient().getClientID() + "/", key);
+                        System.out.println("After update fileInfo from Server.");
+                    }
+                }
             }
-            if (diffList.get(key).getFlag() == 3 || diffList.get(key).getFlag() == 4) {
+
+
+
+
+            if ((diffList.get(key).getFlag() == 3 || diffList.get(key).getFlag() == 4) && !fileListThat.get(key).getFileHashCode().isEmpty()) {
                 Path conflictFile = new File(ClientConfig.getCurrentClient().getFolderPath() + "/" + key).toPath();
                 Path conflictCopy = new File(ClientConfig.getCurrentClient().getFolderPath() + "/conflicted_copy_from_" + ClientConfig.getCurrentClient().getDeviceID() + "_" + key).toPath();
                 Files.copy(conflictFile, conflictCopy);
                 FileSyncClientService.syncCreatedFileFromServer(ClientConfig.getCurrentClient().getClientID(),
-                        ClientConfig.getCurrentClient().getFolderPath(), key);
+                        "./users/" + ClientConfig.getCurrentClient().getClientID() + "/", key);
                 FileSyncClientService.updateFileInfoFromServer(ClientConfig.getCurrentClient().getClientID(),
-                        ClientConfig.getCurrentClient().getFolderPath(), key);
+                        "./users/" + ClientConfig.getCurrentClient().getClientID() + "/", key);
             }
-            if (diffList.get(key).getFlag() == 5) {
+            if (diffList.get(key).getFlag() == 5 && !fileListThat.get(key).getFileHashCode().isEmpty()) {
                 FileSyncClientService.syncCreatedFileFromServer(ClientConfig.getCurrentClient().getClientID(),
-                        ClientConfig.getCurrentClient().getFolderPath(), key);
+                        "./users/" + ClientConfig.getCurrentClient().getClientID() + "/", key);
                 FileSyncClientService.updateFileInfoFromServer(ClientConfig.getCurrentClient().getClientID(),
-                        ClientConfig.getCurrentClient().getFolderPath(), key);
+                        "./users/" + ClientConfig.getCurrentClient().getClientID() + "/", key);
             }
         }
     }
@@ -161,14 +197,22 @@ public class ClientStart {
         }
 
         // get the union of all keys (fileNames)
-        Set<String> allKeys = fileListThis.keySet();
-        allKeys.addAll(fileListThat.keySet());
+        ArrayList<String> allKeys = new ArrayList<>();
+        for (String key : fileListThis.keySet()) {
+            allKeys.add(key);
+        }
+        for (String key : fileListThat.keySet()) {
+            if (!fileListThat.keySet().contains(key)) {
+                allKeys.add(key);
+            }
+        }
 
         for (String key : allKeys) {
-            if (!fileListThis.contains(key)) { // then must be in remote, set flag = 5 for downloading
+            if (!fileListThis.keySet().contains(key)) { // then must be in remote, set flag = 5 for downloading
                 diffList.put(key, new FileInfoDiff(5, fileListThat.get(key)));
             } else {
-                if (!fileListThat.contains(key)) { // then must be new, set flag = 1 for uploading
+                System.out.println("FileInfo = " + fileListThis.get(key));
+                if (!fileListThat.keySet().contains(key)) { // then must be new, set flag = 1 for uploading
                     diffList.put(key, new FileInfoDiff(1, fileListThis.get(key)));
                 } else {
                     diffList.put(key, fileListThis.get(key).comparesToFileInfo(fileListThat.get(key)));
