@@ -445,6 +445,9 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
 
         System.out.println("Func: syncCreatedFileWithClient: " + activeClient.getClientIP());
         FileInfo fileInfo = fileListHashtable.get(directory).getFileInfoByFileName(fileName);
+        if (fileInfo == null) {
+            return;
+        }
         ClientAPI client = activeClient.getClientAPI();
         if (client.containFileInfo(activeClient.getClientIP(), activeClient.getPort(), userName, directory, fileName)) {
             String fileInfoStrFromClient = client.getFileInfoFromClient(activeClient.getClientIP(), activeClient.getPort(),
@@ -477,6 +480,9 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
 
         System.out.println("Func: syncModifiedFileWithClient: " + activeClient.getClientIP());
         FileInfo fileInfo = fileListHashtable.get(directory).getFileInfoByFileName(fileName);
+        if (fileInfo == null) {
+            return;
+        }
         ClientAPI client = activeClient.getClientAPI();
         if (client.containFileInfo(activeClient.getClientIP(), activeClient.getPort(), userName, directory, fileName)) {
             String fileInfoStrFromClient = client.getFileInfo(activeClient.getClientIP(), activeClient.getPort(),
@@ -507,6 +513,10 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
 
         System.out.println("Func: syncDeletedFileWithClient: " + activeClient.getClientIP());
         FileInfo fileInfo = fileListHashtable.get(directory).getFileInfoByFileName(fileName);
+        if (fileInfo == null) {
+            return;
+        }
+        
         ClientAPI client = activeClient.getClientAPI();
         if (client.containFileInfo(activeClient.getClientIP(), activeClient.getPort(), userName, directory, fileName)) {
             String fileInfoStrFromClient = client.getFileInfo(activeClient.getClientIP(), activeClient.getPort(),

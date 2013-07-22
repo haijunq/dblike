@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.rmi.AccessException;
 import java.rmi.AlreadyBoundException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -89,7 +90,20 @@ public class ClientStart {
     }
 
     public static void downloadFileListFromConnectedServer() throws RemoteException, JSchException, SftpException, Exception {
-        ServerAPI server = ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerAPI();
+        
+        if (ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerAPI() == null) {
+            try {
+                ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).setRegistry(
+                        LocateRegistry.getRegistry(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP(), 
+                        ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getPort()));
+                ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).setServerAPI((ServerAPI) 
+                        (ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getRegistry()).lookup("serverUtility"));
+            } catch (NotBoundException ex) {
+            }
+        }
+        
+        ServerAPI server = ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerAPI();        
+        
         server.saveFileListHashtable();
 
         SFTPService sftpService = new SFTPService(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP());
@@ -97,13 +111,15 @@ public class ClientStart {
     }
 
     public static void syncWithConnectedServer() throws JSchException, SftpException, Exception {
+        FileSyncClientService.updateAllLocalFileInfo(ClientConfig.getCurrentClient().getFolderPath());
         Hashtable<String, FileInfo> fileListThis = ClientConfig.getMyFileList().getFileHashTable();
-        Hashtable<String, FileInfo> fileListThat = FileListXMLService.loadFileListFromXML(ClientConfig.getCurrentClient().getClientID()).getFileHashTable();
+        Hashtable<String, FileInfo> fileListThat = FileListXMLService.loadFileListFromXML(FileInfoService.getSERVER_USERS_FOLDER() + ClientConfig.getCurrentClient().getClientID() + "/").getFileHashTable();
         Hashtable<String, FileInfoDiff> diffList = compareFileLists(fileListThis, fileListThat);
 
         for (String key : diffList.keySet()) {
             if (diffList.get(key).getFlag() == 1) {
-                FileSyncClientService.uploadCreatedFileToServer(key, key, key);
+                FileSyncClientService.uploadCreatedFileToServer(ClientConfig.getCurrentClient().getClientID(),
+                        ClientConfig.getCurrentClient().getFolderPath(), key);
                 FileSyncClientService.updateFileInfoToServer(ClientConfig.getCurrentClient().getClientID(),
                         ClientConfig.getCurrentClient().getFolderPath(), key, diffList.get(key));
             }
@@ -189,7 +205,7 @@ public class ClientStart {
 
         downloadFileListFromConnectedServer();
         syncWithConnectedServer();
-                
+
         // new thread to synchronize files 
         String directory = ClientConfig.getCurrentClient().getFolderPath();
         FileSyncClientService fileSyncServer = new FileSyncClientService(directory);
