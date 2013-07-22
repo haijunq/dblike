@@ -304,7 +304,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
      * @throws JSchException
      * @throws SftpException
      */
-    public void syncCreatedFileWithServer(String userName, String directory, String fileName, ActiveServer activeServer) throws RemoteException, JSchException, SftpException, IOException {
+    public synchronized void syncCreatedFileWithServer(String userName, String directory, String fileName, ActiveServer activeServer) throws RemoteException, JSchException, SftpException, IOException {
 
         System.out.println("Func: syncCreatedFileWithServer: " + activeServer.getServerIP());
         FileInfo fileInfo = fileListHashtable.get(directory).getFileInfoByFileName(fileName);
@@ -408,7 +408,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
      * @throws JSchException
      * @throws SftpException
      */
-    public void syncDeletedFileWithServer(String userName, String directory, String fileName, ActiveServer activeServer) throws RemoteException, JSchException, SftpException, IOException {
+    public synchronized void syncDeletedFileWithServer(String userName, String directory, String fileName, ActiveServer activeServer) throws RemoteException, JSchException, SftpException, IOException {
 
         // System.out.println("Func: syncDeletedFileWithServer: " + activeServer.getServerIP());
         FileInfo fileInfo = fileListHashtable.get(directory).getFileInfoByFileName(fileName);
@@ -441,7 +441,7 @@ public class FileSyncServerService extends WatchDirectoryService implements Runn
      * @throws JSchException
      * @throws SftpException
      */
-    public void syncCreatedFileWithClient(String userName, String directory, String fileName, ActiveClient activeClient) throws RemoteException, JSchException, SftpException, Exception {
+    public synchronized void syncCreatedFileWithClient(String userName, String directory, String fileName, ActiveClient activeClient) throws RemoteException, JSchException, SftpException, Exception {
 
         System.out.println("Func: syncCreatedFileWithClient: " + activeClient.getClientIP());
         FileInfo fileInfo = fileListHashtable.get(directory).getFileInfoByFileName(fileName);

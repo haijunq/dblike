@@ -1,2 +1,0 @@
-Main-Class: dblike.server.ServerStart  
-Class-Path: lib/joda-time-2.2.jar lib/jsch-0.1.50.jar lib/slf4j-jdk14-1.5.2.jar lib/joda-time-2.2-javadoc.jar lib/mina-core-2.0.5.jar lib/sshd-core-0.8.0.jar lib/joda-time-2.2-sources.jar lib/slf4j-api-1.5.2.jar  

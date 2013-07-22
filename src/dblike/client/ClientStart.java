@@ -90,6 +90,13 @@ public class ClientStart {
         }
     }
 
+    /**
+     * Download FileList XML file from the connected server. 
+     * @throws RemoteException
+     * @throws JSchException
+     * @throws SftpException
+     * @throws Exception 
+     */
     public static void downloadFileListFromConnectedServer() throws RemoteException, JSchException, SftpException, Exception {
 
         if (ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerAPI() == null) {
@@ -110,19 +117,25 @@ public class ClientStart {
         sftpService.downloadFile(FileInfoService.getSERVER_USERS_FOLDER() + ClientConfig.getCurrentClient().getClientID() + "/filelist.xml", FileInfoService.getSERVER_USERS_FOLDER() + ClientConfig.getCurrentClient().getClientID() + "/filelist.xml");
     }
 
+    /**
+     * Synchronize the local and the connected server. 
+     * @throws JSchException
+     * @throws SftpException
+     * @throws Exception 
+     */
     public static void syncWithConnectedServer() throws JSchException, SftpException, Exception {
         FileSyncClientService.updateAllLocalFileInfo(ClientConfig.getCurrentClient().getFolderPath());
         Hashtable<String, FileInfo> fileListThis = ClientConfig.getMyFileList().getFileHashTable();
         Hashtable<String, FileInfo> fileListThat = FileListXMLService.loadFileListFromXML(FileInfoService.getSERVER_USERS_FOLDER() + ClientConfig.getCurrentClient().getClientID() + "/").getFileHashTable();
-        System.out.println("fileListThis.size = " + fileListThis.size());
-        System.out.println("fileListThat.size = " + fileListThat.size());
+//        System.out.println("fileListThis.size = " + fileListThis.size());
+//        System.out.println("fileListThat.size = " + fileListThat.size());
         Hashtable<String, FileInfoDiff> diffList = compareFileLists(fileListThis, fileListThat);
-        System.out.println("diffList.size = " + diffList.size());
+//        System.out.println("diffList.size = " + diffList.size());
         
         for (String key : diffList.keySet()) {
-            System.out.println("file: " + key + "    diff.flag = " + diffList.get(key).getFlag());
-            System.out.println("thiscontains? " + key + " " + fileListThis.keySet().contains(key));
-            System.out.println("thatcontains? " + key + " " + fileListThat.keySet().contains(key));
+//            System.out.println("file: " + key + "    diff.flag = " + diffList.get(key).getFlag());
+//            System.out.println("thiscontains? " + key + " " + fileListThis.keySet().contains(key));
+//            System.out.println("thatcontains? " + key + " " + fileListThat.keySet().contains(key));
 
             if (diffList.get(key).getFlag() == 1) {
 
@@ -156,9 +169,6 @@ public class ClientStart {
                 }
             }
 
-
-
-
             if ((diffList.get(key).getFlag() == 3 || diffList.get(key).getFlag() == 4) && !fileListThat.get(key).getFileHashCode().isEmpty()) {
                 Path conflictFile = new File(ClientConfig.getCurrentClient().getFolderPath() + "/" + key).toPath();
                 Path conflictCopy = new File(ClientConfig.getCurrentClient().getFolderPath() + "/conflicted_copy_from_" + ClientConfig.getCurrentClient().getDeviceID() + "_" + key).toPath();
@@ -177,6 +187,12 @@ public class ClientStart {
         }
     }
 
+    /**
+     * Compare two file lists from client and server. 
+     * @param fileListThis
+     * @param fileListThat
+     * @return 
+     */
     public static Hashtable<String, FileInfoDiff> compareFileLists(Hashtable<String, FileInfo> fileListThis, Hashtable<String, FileInfo> fileListThat) {
         Hashtable<String, FileInfoDiff> diffList = new Hashtable<>();
 
@@ -197,16 +213,24 @@ public class ClientStart {
         }
 
         // get the union of all keys (fileNames)
-        ArrayList<String> allKeys = new ArrayList<>();
+//        ArrayList<String> allKeys = new ArrayList<>();
+//        for (String key : fileListThis.keySet()) {
+//            allKeys.add(key);
+//        }
+//        for (String key : fileListThat.keySet()) {
+//            if (!fileListThat.keySet().contains(key)) {
+//                allKeys.add(key);
+//            }
+//        }
+
+        HashSet<String> allKeys = new HashSet<>();
         for (String key : fileListThis.keySet()) {
             allKeys.add(key);
         }
         for (String key : fileListThat.keySet()) {
-            if (!fileListThat.keySet().contains(key)) {
-                allKeys.add(key);
-            }
-        }
-
+            allKeys.add(key);
+        }        
+        
         for (String key : allKeys) {
             if (!fileListThis.keySet().contains(key)) { // then must be in remote, set flag = 5 for downloading
                 diffList.put(key, new FileInfoDiff(5, fileListThat.get(key)));
