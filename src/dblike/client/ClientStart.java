@@ -93,7 +93,7 @@ public class ClientStart {
         server.saveFileListHashtable();
 
         SFTPService sftpService = new SFTPService(ClientConfig.getServerList().get(ClientConfig.getCurrentServerIndex()).getServerIP());
-        sftpService.downloadFile(FileInfoService.getSERVER_USERS_FOLDER() + ClientConfig.getCurrentClient().getClientID() + "/filelist.xml", FileInfoService.getSERVER_USERS_FOLDER() + ClientConfig.getCurrentClient().getClientID() + "filelist.xml");
+        sftpService.downloadFile(FileInfoService.getSERVER_USERS_FOLDER() + ClientConfig.getCurrentClient().getClientID() + "/filelist.xml", FileInfoService.getSERVER_USERS_FOLDER() + ClientConfig.getCurrentClient().getClientID() + "/filelist.xml");
     }
 
     public static void syncWithConnectedServer() throws JSchException, SftpException, Exception {
